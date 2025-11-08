@@ -1,0 +1,218 @@
+<app-adminlayout>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    <div
+      class="bg-[#00BFC5] text-white rounded-2xl shadow-lg p-6 flex justify-between items-center transition hover:scale-105 hover:shadow-2xl">
+      <div>
+        <h3 class="text-lg font-semibold">Books</h3>
+        <p class="text-3xl font-extrabold mt-2">1,250</p>
+        <p class="text-sm opacity-80 mt-1">+12% this month</p>
+      </div>
+      <div class="text-white text-5xl opacity-40 animate-pulse">📚</div>
+    </div>
+
+    <div
+      class="bg-[#FFB703] text-[#333333] rounded-2xl shadow-lg p-6 flex justify-between items-center transition hover:scale-105 hover:shadow-2xl">
+      <div>
+        <h3 class="text-lg font-semibold">Orders</h3>
+        <p class="text-3xl font-extrabold mt-2">480</p>
+        <p class="text-sm opacity-80 mt-1">+5% this week</p>
+      </div>
+      <div class="text-5xl opacity-40 animate-bounce">📦</div>
+    </div>
+
+    <div
+      class="bg-[#333333] text-white rounded-2xl shadow-lg p-6 flex justify-between items-center transition hover:scale-105 hover:shadow-2xl">
+      <div>
+        <h3 class="text-lg font-semibold">Authors</h3>
+        <p class="text-3xl font-extrabold mt-2">135</p>
+        <p class="text-sm opacity-80 mt-1">+8 new</p>
+      </div>
+      <div class="text-white text-5xl opacity-40 animate-pulse">✍️</div>
+    </div>
+
+    <div
+      class="bg-[#009CA2] text-white rounded-2xl shadow-lg p-6 flex justify-between items-center transition hover:scale-105 hover:shadow-2xl">
+      <div>
+        <h3 class="text-lg font-semibold">Users</h3>
+        <p class="text-3xl font-extrabold mt-2">{{ totalUsers }}</p>
+        <p class="text-sm opacity-80 mt-1">+20 joined</p>
+      </div>
+      <div class="text-white text-5xl opacity-40 animate-bounce">👥</div>
+    </div>
+  </div>
+
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+
+    <!-- Sales Overview -->
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+      <h2 class="text-lg font-bold text-[#333333] mb-4 flex items-center gap-2">💹 Sales Overview</h2>
+      <div class="h-64">
+        <canvas id="salesChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Top Categories -->
+    <div class="bg-white rounded-2xl shadow-lg p-6">
+      <h2 class="text-lg font-bold text-[#333333] mb-4 flex items-center gap-2">🥇 Top Categories</h2>
+      <div class="h-64">
+        <canvas id="categoryChart"></canvas>
+      </div>
+    </div>
+
+    <!-- User Growth -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:col-span-2">
+      <h2 class="text-lg font-bold text-[#333333] mb-4 flex items-center gap-2">📈 User Growth</h2>
+      <div class="h-64">
+        <canvas id="userGrowthChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-1 gap-8 mb-10">
+
+ <!-- First 10 Users -->
+<div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-shadow duration-300">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-xl font-bold text-[#333333] flex items-center gap-2">👥 First 10 Users</h2>
+    <a routerLink="/admin/users"
+       class="bg-[#00BFC5]/10 hover:bg-[#00BFC5]/20 text-[#00BFC5] px-3 py-1 rounded-lg text-sm font-medium transition">
+       View All →
+    </a>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full border border-gray-200 text-sm">
+      <thead class="bg-[#00BFC5]/20 text-gray-700">
+        <tr>
+          <th class="px-4 py-2 text-left">#</th>
+          <th class="px-4 py-2 text-left">Name</th>
+          <th class="px-4 py-2 text-left">Email</th>
+          <th class="px-4 py-2 text-left">Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of first_Users; let i = index" class="border-b hover:bg-gray-50 transition">
+          <td class="px-4 py-2">{{ i + 1 }}</td>
+          <td class="px-4 py-2 font-medium">{{ user.firstName }} {{ user.lastName }}</td>
+          <td class="px-4 py-2 text-gray-600">{{ user.email }}</td>
+          <td class="px-4 py-2">{{ user.role }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+    <!-- Latest Orders -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-shadow duration-300">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold text-[#333333] flex items-center gap-2">📦 Latest Orders</h2>
+        <a routerLink="/admin/orders"
+          class="bg-[#00BFC5]/10 hover:bg-[#00BFC5]/20 text-[#00BFC5] px-3 py-1 rounded-lg text-sm font-medium transition">
+          View All →
+        </a>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-200 text-sm">
+          <thead class="bg-[#00BFC5]/20 text-gray-700">
+            <tr>
+              <th class="px-4 py-2 text-left">#</th>
+              <th class="px-4 py-2 text-left">Book</th>
+              <th class="px-4 py-2 text-left">User</th>
+              <th class="px-4 py-2 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of orders; let i = index" class="border-b hover:bg-gray-50 transition">
+              <td class="px-4 py-2">{{ i + 1 }}</td>
+              <td class="px-4 py-2 font-medium">{{ order.book }}</td>
+              <td class="px-4 py-2 text-gray-600">{{ order.user }}</td>
+              <td class="px-4 py-2">
+                <span class="px-3 py-1 rounded-full text-xs font-medium" [ngClass]="{
+                  'bg-green-100 text-green-700': order.status === 'Completed',
+                  'bg-yellow-100 text-yellow-700': order.status === 'Pending',
+                  'bg-red-100 text-red-700': order.status === 'Cancelled'
+                }">
+                  {{ order.status }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-shadow duration-300 mb-10">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold text-[#333333] flex items-center gap-2">✍️ Top Author Requests</h2>
+        <a routerLink="/admin/authors"
+          class="bg-[#00BFC5]/10 hover:bg-[#00BFC5]/20 text-[#00BFC5] px-3 py-1 rounded-lg text-sm font-medium transition">
+          View All →
+        </a>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-200 text-sm">
+          <thead class="bg-[#00BFC5]/20 text-gray-700">
+            <tr>
+              <th class="px-4 py-2 text-left">#</th>
+              <th class="px-4 py-2 text-left">Name</th>
+              <th class="px-4 py-2 text-left">Email</th>
+              <th class="px-4 py-2 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let author of topAuthorRequests; let i = index" class="border-b hover:bg-gray-50 transition">
+              <td class="px-4 py-2">{{ i + 1 }}</td>
+              <td class="px-4 py-2 font-medium">{{ author.name }}</td>
+              <td class="px-4 py-2 text-gray-600">{{ author.email }}</td>
+              <td class="px-4 py-2">
+                <span class="px-3 py-1 rounded-full text-xs font-medium" [ngClass]="{
+              'bg-yellow-100 text-yellow-700': author.status === 'Pending',
+              'bg-green-100 text-green-700': author.status === 'Approved',
+              'bg-red-100 text-red-700': author.status === 'Rejected'
+            }">
+                  {{ author.status }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-shadow duration-300 mb-10">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold text-[#333333] flex items-center gap-2">📚 Top Books</h2>
+        <a routerLink="/admin/books"
+          class="bg-[#00BFC5]/10 hover:bg-[#00BFC5]/20 text-[#00BFC5] px-3 py-1 rounded-lg text-sm font-medium transition">
+          View All →
+        </a>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-200 text-sm">
+          <thead class="bg-[#00BFC5]/20 text-gray-700">
+            <tr>
+              <th class="px-4 py-2 text-left">#</th>
+              <th class="px-4 py-2 text-left">Title</th>
+              <th class="px-4 py-2 text-left">Category</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let book of books; let i = index" class="border-b hover:bg-gray-50 transition">
+              <td class="px-4 py-2">{{ i + 1 }}</td>
+              <td class="px-4 py-2 font-medium">{{ book.title }}</td>
+              <td class="px-4 py-2 text-gray-600">{{ book.category }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</app-adminlayout>

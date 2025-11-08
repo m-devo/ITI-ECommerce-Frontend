@@ -4,13 +4,13 @@ import { AdminlayoutComponent } from '../adminlayout/adminlayout.component';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-book-management',
+  selector: 'app-authoradmin',
   standalone: true,
   imports: [CommonModule,
-      RouterModule,AdminlayoutComponent],
-  templateUrl: './book-management.component.html',
-  styleUrl: './book-management.component.css'
+        RouterModule,AdminlayoutComponent],
+  templateUrl: './authoradmin.component.html',
+  styleUrl: './authoradmin.component.css'
 })
-export class BookManagementComponent {
+export class AuthoradminComponent {
 
 }
