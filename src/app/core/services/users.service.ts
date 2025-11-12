@@ -7,8 +7,6 @@ import { environment } from '../../../environments/environment.prod';
   providedIn: 'root'
 })
 export class UsersService {
-
-
   constructor(private http: HttpClient) { }
 
   getUsers(page: number = 1, limit: number = 10): Observable<any> {

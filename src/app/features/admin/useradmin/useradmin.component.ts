@@ -20,7 +20,8 @@ interface User {
 @Component({
   selector: 'app-useradmin',
   standalone: true,
-  imports: [CommonModule, AdminlayoutComponent, HttpClientModule, FormsModule],
+  imports: [CommonModule, AdminlayoutComponent,
+     HttpClientModule, FormsModule],
   templateUrl: './useradmin.component.html',
 })
 export class UseradminComponent implements OnInit {
@@ -36,7 +37,8 @@ export class UseradminComponent implements OnInit {
   showModal: boolean = false;
 
 
-  constructor(private userService: UsersService, private dashboardService: DashboardService) { }
+  constructor(private userService: UsersService, 
+    private dashboardService: DashboardService) { }
 
   ngOnInit() {
     this.fetchUsers();
@@ -44,7 +46,6 @@ export class UseradminComponent implements OnInit {
 
   generatePages() {
     this.pages = [];
-
     for (let i = 1; i <= this.totalPages; i++) {
       this.pages.push(i);
     }
@@ -81,6 +82,7 @@ export class UseradminComponent implements OnInit {
     console.log('Useradmin Total Users:', this.totalUsers);
 
   })}
+  
   filteredUsers() {
     const term = this.searchTerm.toLowerCase();
     return this.users.filter(
@@ -115,8 +117,6 @@ export class UseradminComponent implements OnInit {
     this.showModal = false;
     this.selectedUser = null;
   }
-
-
   editMode = false;
   editUserData: any = {};
   selectedUserId: string = "";

@@ -18,18 +18,41 @@ export class DashboardComponent implements OnInit {
   totalUsers: number = 0;
   userService: any;
   first_Users: any[] = [];
+  first_Books: any[] = [];
+  totalBooks: number = 0;
+  totalOrders: number = 0;
+
+  numberOfAuthor: number = 0;
 
   constructor(private dashboardService: DashboardService) { }
 
-ngOnInit() {
-  this.dashboardService.totalUsers$.subscribe(total => {
-    this.totalUsers = total;
-  });
+  ngOnInit() {
+    this.dashboardService.totalUsers$.subscribe(total => {
+      this.totalUsers = total;
+    });
+    this.dashboardService.totalAuthors$.subscribe(total => {
+      this.numberOfAuthor = total;
+    });
 
-  this.dashboardService.first10Users$.subscribe(users => {
-    this.first_Users = users;
-  });
-}
+    this.dashboardService.first10Users$.subscribe(users => {
+      this.first_Users = users;
+    });
+    this.dashboardService.totalBooks$.subscribe(total => {
+      this.totalBooks = total;
+      console.log(this.totalBooks);
+
+    });
+    this.dashboardService.first10Books$.subscribe(books => {
+      this.first_Books = books;
+      console.log(this.first_Books);
+    });
+    this.dashboardService.totalOrder$.subscribe(total => {
+      console.log('Total Orders Updated:', total);
+      this.totalOrders = total;
+    });
+  
+
+  }
 
 
   links = [
@@ -39,41 +62,6 @@ ngOnInit() {
     { label: 'Orders', path: '/orders', icon: '📦' },
     { label: 'Users', path: '/users', icon: '👥' },
   ];
-
-  topAuthorRequests = [
-    { name: 'John Doe', email: 'john@example.com', status: 'Pending' },
-    { name: 'Sara Ahmed', email: 'sara@example.com', status: 'Approved' },
-    { name: 'Ali Mahmoud', email: 'ali@example.com', status: 'Pending' },
-    { name: 'Lina Youssef', email: 'lina@example.com', status: 'Rejected' },
-    { name: 'Mark Adel', email: 'mark@example.com', status: 'Approved' },
-  ];
-
-  books = [
-    { title: 'Atomic Habits', category: 'Self-help' },
-    { title: 'Deep Work', category: 'Productivity' },
-    { title: 'Clean Code', category: 'Programming' },
-    { title: 'The Alchemist', category: 'Fiction' },
-    { title: '1984', category: 'Dystopian' },
-    { title: 'Rich Dad Poor Dad', category: 'Finance' },
-    { title: 'Think Like a Monk', category: 'Mindfulness' },
-    { title: 'The Psychology of Money', category: 'Finance' },
-    { title: 'Ego is the Enemy', category: 'Philosophy' },
-    { title: 'Hooked', category: 'Business' }
-  ];
-
-  orders = [
-    { book: 'Atomic Habits', user: 'Omar', status: 'Completed' },
-    { book: 'Deep Work', user: 'Laila', status: 'Pending' },
-    { book: 'Clean Code', user: 'Ahmed', status: 'Cancelled' },
-    { book: 'Rich Dad Poor Dad', user: 'Nour', status: 'Completed' },
-    { book: '1984', user: 'Sarah', status: 'Pending' },
-    { book: 'Ego is the Enemy', user: 'Ali', status: 'Completed' },
-    { book: 'Hooked', user: 'Mona', status: 'Completed' },
-    { book: 'Think Like a Monk', user: 'Youssef', status: 'Cancelled' },
-    { book: 'The Alchemist', user: 'Karim', status: 'Completed' },
-    { book: 'Deep Work', user: 'Farah', status: 'Pending' }
-  ];
-
   ngAfterViewInit() {
 
     new Chart("salesChart", {
