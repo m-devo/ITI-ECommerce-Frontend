@@ -36,7 +36,7 @@
 
     <!-- Gallery -->
     <div class="gallery grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <div class="content bg-white shadow rounded-lg p-4" *ngFor="let b of Books">
+      <div class="content bg-white shadow rounded-lg p-4" *ngFor="let b of filteredBooks">
         <img [src]="b.imagePath" alt="{{b.title}}" class="w-full h-56 object-cover rounded-lg mb-3">
         <h3 class="text-xl font-semibold mb-1">{{b.title}}</h3>
         <p class="text-gray-600 mb-1">{{b.author}}</p>
@@ -89,7 +89,7 @@
 
 </app-adminlayout>
 
-<div *ngIf="showModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+<!-- <div *ngIf="showModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
   (click)="closeModal()">
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-8 relative" (click)="$event.stopPropagation()">
 
@@ -137,6 +137,65 @@
   </ng-template>
 </div>
 
+
+ -->
+<div *ngIf="showModal && selectedBook" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+     (click)="closeModal()">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl flex flex-col md:flex-row p-6 relative"
+       (click)="$event.stopPropagation()">
+
+    <button (click)="closeModal()"
+            class="absolute top-4 right-4 text-red-500 hover:text-red-700 transition text-2xl font-bold">
+      &times;
+    </button>
+
+    <div class="flex justify-center items-start md:w-1/2 p-4">
+      <img [src]="selectedBook.imagePath" alt="{{selectedBook.title}}"
+           class="rounded-lg max-h-64 md:max-h-96 object-contain border border-gray-200 p-2 shadow-md">
+    </div>
+
+    <div class="md:w-1/2 flex flex-col justify-between p-4 space-y-3 overflow-y-auto max-h-[32rem]">
+      <div class="space-y-2 ">
+        <h2 class="text-2xl font-bold text-gray-800">{{selectedBook.title}}</h2>
+        <p><strong>Author:</strong> {{selectedBook.author}}</p>
+        <p><strong>Description:</strong> {{selectedBook.description}}</p>
+        <p><strong>Price:</strong> ${{selectedBook.price}}</p>
+        <p [ngClass]="getCategoryClass(selectedBook.category)">
+          <strong>Category:</strong> {{selectedBook.category}}
+        </p>
+        <p><strong>Availability:</strong> {{selectedBook.stock}}</p>
+        <p><strong>Book Path:</strong>
+          <a [href]="selectedBook.bookPath" target="_blank" class="underline text-blue-600 hover:text-blue-800">
+            View Book
+          </a>
+        </p>
+
+    
+        <div class="flex items-center gap-2 mt-2">
+          <ul class="flex">
+            <li *ngFor="let s of [1,2,3,4,5]">
+              <i class="fa fa-star text-yellow-400" 
+                 [ngClass]="selectedBook.averageRating >= s ? 'checked' : 'text-gray-300'"></i>
+            </li>
+          </ul>
+          <span class="text-gray-500">({{selectedBook.averageRating | number:'1.1-1'}})</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- edit  -->
+
 <div *ngIf="editMode" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
   <div
     class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-8 relative border border-gray-200 max-h-[90vh] overflow-y-auto">
@@ -174,7 +233,7 @@
           <label class="block font-semibold text-gray-700">Price</label>
           <input type="number" name="price" [(ngModel)]="editBookData.price"
             class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
-          <p *ngIf="frontErrors.price" class="text-red-500 text-sm mt-1">{{ frontErrors.price }}</p>
+          <p *ngIf="frontErrors.price" class="!text-red-500 text-sm mt-1">{{ frontErrors.price }}</p>
         </div>
 
         <!-- Stock -->
@@ -190,7 +249,7 @@
           <label class="block font-semibold text-gray-700">Category</label>
           <input type="text" name="category" [(ngModel)]="editBookData.category"
             class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
-          <p *ngIf="frontErrors.category" class="text-red-500 text-sm mt-1">{{ frontErrors.category }}</p>
+          <p *ngIf="frontErrors.category" class="!text-red-500 text-sm mt-1">{{ frontErrors.category }}</p>
         </div>
 
         <!-- Book PDF Upload -->
@@ -200,7 +259,7 @@
             Upload PDF
             <input type="file" accept="application/pdf" class="hidden" (change)="onBookSelected($event)">
           </label>
-          <p *ngIf="frontErrors.book" class="text-red-500 text-sm mt-1">{{ frontErrors.book }}</p>
+          <p *ngIf="frontErrors.book" class="!text-red-500 text-sm mt-1">{{ frontErrors.book }}</p>
         </div>
       </div>
 
@@ -251,7 +310,7 @@
           <label class="block font-semibold text-gray-700">Title</label>
           <input type="text" name="title" [(ngModel)]="newBookData.title"
             class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
-          <p *ngIf="frontErrors.title" class="text-red-500 text-sm mt-1">
+          <p *ngIf="frontErrors.title" class="!text-red-500 text-sm mt-1">
             {{ frontErrors.title }}
           </p>
         </div>
@@ -271,7 +330,7 @@
           <label class="block font-semibold text-gray-700">Price</label>
           <input type="number" name="price" [(ngModel)]="newBookData.price"
             class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
-          <p *ngIf="frontErrors.price" class="text-red-500 text-sm mt-1">
+          <p *ngIf="frontErrors.price" class="!text-red-500 text-sm mt-1">
             {{ frontErrors.price }}
           </p>
         </div>
@@ -281,7 +340,7 @@
           <label class="block font-semibold text-gray-700">Stock</label>
           <input type="number" name="stock" [(ngModel)]="newBookData.stock"
             class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
-          <p *ngIf="frontErrors.stock" class="text-red-500 text-sm mt-1">
+          <p *ngIf="frontErrors.stock" class="!text-red-500 text-sm mt-1">
             {{ frontErrors.stock }}
           </p>
         </div>
@@ -291,7 +350,7 @@
           <label class="block font-semibold text-gray-700">Category</label>
           <input type="text" name="category" [(ngModel)]="newBookData.category"
             class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
-          <p *ngIf="frontErrors.category" class="text-red-500 text-sm mt-1">
+          <p *ngIf="frontErrors.category" class="!text-red-500 text-sm mt-1">
             {{ frontErrors.category }}
           </p>
         </div>
@@ -304,7 +363,7 @@
           <p *ngIf="newBookData.bookFile" class="text-gray-700 text-sm mt-1">
             Selected: {{ newBookData.bookFile.name }}
           </p>
-          <p *ngIf="frontErrors.book" class="text-red-500 text-sm mt-1">{{ frontErrors.book }}</p>
+          <p *ngIf="frontErrors.book" class="!text-red-500 text-sm mt-1">{{ frontErrors.book }}</p>
         </div>
       </div>
 
@@ -313,7 +372,7 @@
         <label class="block font-semibold text-gray-700">Description</label>
         <textarea name="description" rows="3" [(ngModel)]="newBookData.description"
           class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]"></textarea>
-        <p *ngIf="frontErrors.description" class="text-red-500 text-sm mt-1">
+        <p *ngIf="frontErrors.description" class="!text-red-500 text-sm mt-1">
           {{ frontErrors.description }}
         </p>
       </div>

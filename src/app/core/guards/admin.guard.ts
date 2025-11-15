@@ -10,7 +10,7 @@ export class AdminGuard implements CanActivate {
 
   canActivate(): Observable<boolean> | Promise<boolean> | boolean {
 
-    const isAdmin = true; // check if admin
+    const isAdmin = true; 
     if (!isAdmin) {
       this.router.navigate(['/']);
       return false;

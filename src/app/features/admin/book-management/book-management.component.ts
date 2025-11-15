@@ -56,7 +56,7 @@ export class BookManagementComponent {
   selectedBook: Book | null = null;
   Math: any;
   frontErrors: any = {};
-  constructor(private bookService: BookService, 
+  constructor(private bookService: BookService,
     private dashboardService: DashboardService
   ) { }
 
@@ -88,23 +88,24 @@ export class BookManagementComponent {
       this.fetchBooks();
     }
   }
-fetchBooks() {
-  this.bookService.getBooks(this.currentPage, this.limit).subscribe({
-    next: (res: any) => {
-      this.Books = res.data.data;
-      this.totalBooks = res.data.totalBooks;
-      this.totalPages = res.data.totalPages;
-      this.generatePages();
+  fetchBooks() {
+    this.bookService.getBooks(this.currentPage, this.limit).subscribe({
+      next: (res: any) => {
+        this.Books = res.data.data;
+        this.totalBooks = res.data.totalBooks;
+        this.totalPages = res.data.totalPages;
+        this.generatePages();
+        this.applyFilters(); 
 
-      console.log('Books:', this.Books);
-      console.log('Total Books:', this.totalBooks);
+        console.log('Books:', this.Books);
+        console.log('Total Books:', this.totalBooks);
 
-      this.dashboardService.setTotalBooks(this.totalBooks);
-      this.dashboardService.setFirst10Books(this.Books);
-    },
-    error: (err) => console.error('Error fetching books:', err)
-  });
-}
+        this.dashboardService.setTotalBooks(this.totalBooks);
+        this.dashboardService.setFirst10Books(this.Books);
+      },
+      error: (err) => console.error('Error fetching books:', err)
+    });
+  }
 
   filterBooks() {
     const term = this.searchTerm.toLowerCase();
@@ -280,74 +281,75 @@ fetchBooks() {
 
     return errors;
   }
-createMode = false;
-newBookData: any = {};
+  createMode = false;
+  newBookData: any = {};
 
-openCreateModel() {
-  this.newBookData = {
-    title: '',
-    price: '',
-    stock: '',
-    category: '',
-    description: '',
-    author: '',
-    imageFile: null,
-    bookFile: null
-  };
-  this.createMode = true;
-}
-onNewImageSelected(event: any) {
-  const file = event.target.files[0];
-  if (!file) return;
+  openCreateModel() {
+    this.newBookData = {
+      title: '',
+      price: '',
+      stock: '',
+      category: '',
+      description: '',
+      author: '',
+      imageFile: null,
+      bookFile: null
+    };
+    this.createMode = true;
+  }
+  onNewImageSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-  this.newBookData.imageFile = file;
+    this.newBookData.imageFile = file;
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    this.newBookData.imagePreview = reader.result; 
-  };
-  reader.readAsDataURL(file);
-}
-onNewBookSelected(event: any) {
-  const file = event.target.files[0];
-  if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.newBookData.imagePreview = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  onNewBookSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-  this.newBookData.bookFile = file;
-  this.newBookData.bookName = file.name; 
-}
-saveNewBook() {
-  this.frontErrors = this.validateBookData(this.newBookData);
+    this.newBookData.bookFile = file;
+    this.newBookData.bookName = file.name;
+  }
+  saveNewBook() {
+    this.frontErrors = this.validateBookData(this.newBookData);
 
-  if (Object.keys(this.frontErrors).length > 0) {
-    return; 
+    if (Object.keys(this.frontErrors).length > 0) {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", this.newBookData.title);
+    formData.append("author", this.newBookData.author);
+    formData.append("price", this.newBookData.price);
+    formData.append("stock", this.newBookData.stock);
+    formData.append("description", this.newBookData.description);
+    formData.append("category", this.newBookData.category);
+
+    if (this.newBookData.imageFile)
+      formData.append("image", this.newBookData.imageFile);
+
+    if (this.newBookData.bookFile)
+      formData.append("book", this.newBookData.bookFile);
+
+    this.bookService.createBooks(formData).subscribe({
+      next: (res) => {
+        this.createMode = false;
+        this.fetchBooks();
+      },
+      error: (err) => {
+        console.log(err);
+        this.frontErrors = err.error?.errors || ["Creation failed"];
+      }
+    });
   }
 
-  const formData = new FormData();
-  formData.append("title", this.newBookData.title);
-  formData.append("author", this.newBookData.author);
-  formData.append("price", this.newBookData.price);
-  formData.append("stock", this.newBookData.stock);
-  formData.append("description", this.newBookData.description);
-  formData.append("category", this.newBookData.category);
-
-  if (this.newBookData.imageFile)
-    formData.append("image", this.newBookData.imageFile);
-
-  if (this.newBookData.bookFile)
-    formData.append("book", this.newBookData.bookFile);
-
-  this.bookService.createBooks(formData).subscribe({
-    next: (res) => {
-      this.createMode = false;
-      this.fetchBooks();
-    },
-    error: (err) => {
-      console.log(err);
-      this.frontErrors = err.error?.errors || ["Creation failed"];
-    }
-  });
-}
-    deleteBook(req: any) {
+  deleteBook(req: any) {
     if (!confirm(`Are you want to delete book from ${req.title}?`)) return;
     this.bookService.deleteBooks(req._id).subscribe({
       next: (res) => {
