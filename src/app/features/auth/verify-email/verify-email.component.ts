@@ -22,8 +22,11 @@ export class VerifyEmailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Get token from URL (e.g., /auth/verify?token=abc123)
-    const token = this.route.snapshot.queryParamMap.get('token');
+    let token = this.route.snapshot.paramMap.get('token');
+
+    if (!token) {
+      token = this.route.snapshot.queryParamMap.get('token');
+    }
 
     if (!token) {
       this.loading = false;
@@ -31,16 +34,17 @@ export class VerifyEmailComponent implements OnInit {
       return;
     }
 
-    // Call verify API
+    // verify API
     this.authService.verifyEmail(token).subscribe({
       next: (response) => {
         this.loading = false;
-        this.success = true;
+        if (response.status === 'success') {
+          this.success = true;
 
-        // Redirect to login after 3 seconds
-        setTimeout(() => {
-          this.router.navigate(['/auth/login']);
-        }, 3000);
+          setTimeout(() => {
+            this.router.navigate(['/auth/login']);
+          }, 3000);
+        }
       },
       error: (error) => {
         this.loading = false;

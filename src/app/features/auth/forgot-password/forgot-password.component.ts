@@ -20,24 +20,23 @@ export class ForgotPasswordComponent {
   constructor(private authService: AuthService) {}
 
   onSubmit() {
-    // Clear previous messages
     this.errorMessage = '';
     this.successMessage = '';
 
-    // Simple validation
+    //  validation
     if (!this.email) {
       this.errorMessage = 'Please enter your email';
       return;
     }
 
-    // Call forgot password API
+    // forgot password API
     this.loading = true;
     this.authService.forgotPassword(this.email).subscribe({
       next: (response) => {
         this.loading = false;
         this.successMessage =
           'Password reset link has been sent to your email. Please check your inbox.';
-        this.email = ''; // Clear the form
+        this.email = '';
       },
       error: (error) => {
         this.loading = false;

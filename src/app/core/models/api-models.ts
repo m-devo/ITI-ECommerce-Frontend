@@ -18,12 +18,12 @@ export interface User {
   isSubscribedToNewsService: boolean;
 }
 
-// Auth Request/Response Models
 export interface RegisterRequest {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
+  role?: string;
 }
 
 export interface LoginRequest {
@@ -32,16 +32,31 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  token: string;
-  user: User;
+  status: string;
   message: string;
+  token: string;
+  data: {
+    email: string;
+  };
+  role: string;
 }
 
 export interface AuthResponse {
-  success: boolean;
+  status: string;
   message: string;
   token?: string;
-  user?: User;
+  data?: any;
 }
 
-// all models here
+export interface GoogleAuthResponse {
+  status: string;
+  message: string;
+  token: string;
+  data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: string;
+    isVerified: boolean;
+  };
+}

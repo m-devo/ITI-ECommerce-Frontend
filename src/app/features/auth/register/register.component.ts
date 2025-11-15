@@ -19,20 +19,18 @@ export class RegisterComponent {
   password = '';
   confirmPassword = '';
 
-  // UI states
+  // states
   loading = false;
   errorMessage = '';
   successMessage = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
-  // Handle form submission
   onSubmit() {
-    // Clear previous messages
     this.errorMessage = '';
     this.successMessage = '';
 
-    // Simple validation
+    // validation
     if (!this.firstName || !this.lastName || !this.email || !this.password) {
       this.errorMessage = 'Please fill in all fields';
       return;
@@ -48,7 +46,7 @@ export class RegisterComponent {
       return;
     }
 
-    // Call register API
+    // register API
     this.loading = true;
     this.authService
       .register({
@@ -56,19 +54,22 @@ export class RegisterComponent {
         lastName: this.lastName,
         email: this.email,
         password: this.password,
+        role: 'user',
       })
       .subscribe({
-        next: (response) => {
+        next: (response: any) => {
           this.loading = false;
-          this.successMessage =
-            'Registration successful! Please check your email to verify your account.';
+          if (response.status === 'success') {
+            this.successMessage =
+              response.message ||
+              'Registration successful! Please check your email to verify your account.';
 
-          // Redirect to login after 3 seconds
-          setTimeout(() => {
-            this.router.navigate(['/auth/login']);
-          }, 3000);
+            setTimeout(() => {
+              this.router.navigate(['/auth/login']);
+            }, 3000);
+          }
         },
-        error: (error) => {
+        error: (error: any) => {
           this.loading = false;
           this.errorMessage =
             error.error?.message || 'Registration failed. Please try again.';

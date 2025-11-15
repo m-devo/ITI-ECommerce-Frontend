@@ -16,7 +16,6 @@ import { AuthService } from '../../../core/services/auth.service';
       </div>
     </div>
   `,
-  styles: [],
 })
 export class GoogleCallbackComponent implements OnInit {
   constructor(
@@ -26,23 +25,30 @@ export class GoogleCallbackComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Get token and user from URL query params
-    // Example: /auth/google/callback?token=abc123&user=...
     this.route.queryParams.subscribe((params) => {
       const token = params['token'];
-      const userString = params['user'];
 
-      if (token && userString) {
-        try {
-          const user = JSON.parse(decodeURIComponent(userString));
-          this.authService.handleGoogleCallback(token, user);
-        } catch (error) {
-          console.error('Error parsing user data:', error);
-          this.router.navigate(['/auth/login']);
-        }
+      if (token) {
+        // user object from query params
+        const user = {
+          firstName: params['firstName'],
+          lastName: params['lastName'],
+          email: params['email'],
+          role: params['role'] || 'user',
+          isVerified: params['isVerified'] !== 'false',
+        };
+
+        // Save to localStorage
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('user', JSON.stringify(user));
+
+        // Redirect to dashboard
+        this.router.navigate(['/dashboard']);
       } else {
-        // If no token, redirect to login
-        this.router.navigate(['/auth/login']);
+        // Handle error when no token
+        this.router.navigate(['/auth/login'], {
+          queryParams: { error: 'Google authentication failed' },
+        });
       }
     });
   }

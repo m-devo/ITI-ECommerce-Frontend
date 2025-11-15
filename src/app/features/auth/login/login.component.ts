@@ -27,7 +27,7 @@ export class LoginComponent {
       return;
     }
 
-    // Call login API
+    // login API
     this.loading = true;
     this.authService
       .login({ email: this.email, password: this.password })
@@ -35,14 +35,16 @@ export class LoginComponent {
         next: (response: any) => {
           this.loading = false;
 
-          // Save token to localStorage (simple way)
-          if (response.token) {
-            localStorage.setItem('authToken', response.token);
-            localStorage.setItem('user', JSON.stringify(response.user));
+          // pending device verification
+          if (response.status === 'pending') {
+            this.errorMessage = response.message;
+            return;
           }
 
-          // Redirect to dashboard or home
-          this.router.navigate(['/dashboard']);
+          // Redirect to dashboard
+          if (response.status === 'success') {
+            this.router.navigate(['/dashboard']);
+          }
         },
         error: (error: any) => {
           this.loading = false;
@@ -53,7 +55,7 @@ export class LoginComponent {
       });
   }
 
-  // Handle Google login
+  // Google login
   loginWithGoogle() {
     this.authService.loginWithGoogle();
   }

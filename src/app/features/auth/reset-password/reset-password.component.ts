@@ -26,8 +26,12 @@ export class ResetPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Get token from URL (e.g., /auth/reset-password?token=abc123)
-    const urlToken = this.route.snapshot.queryParamMap.get('token');
+    let urlToken = this.route.snapshot.paramMap.get('token');
+
+    if (!urlToken) {
+      urlToken = this.route.snapshot.queryParamMap.get('token');
+    }
+
     if (!urlToken) {
       this.errorMessage = 'Invalid reset link';
     } else {
@@ -36,11 +40,11 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   onSubmit() {
-    // Clear previous messages
+    // Clear messages
     this.errorMessage = '';
     this.successMessage = '';
 
-    // Simple validation
+    // validation
     if (!this.password || !this.confirmPassword) {
       this.errorMessage = 'Please fill in all fields';
       return;
@@ -56,18 +60,19 @@ export class ResetPasswordComponent implements OnInit {
       return;
     }
 
-    // Call reset password API
+    //  reset password API
     this.loading = true;
     this.authService.resetPassword(this.token, this.password).subscribe({
       next: (response) => {
         this.loading = false;
-        this.successMessage =
-          'Password reset successful! Redirecting to login...';
+        if (response.status === 'success') {
+          this.successMessage =
+            'Password reset successful! Redirecting to login...';
 
-        // Redirect to login after 3 seconds
-        setTimeout(() => {
-          this.router.navigate(['/auth/login']);
-        }, 3000);
+          setTimeout(() => {
+            this.router.navigate(['/auth/login']);
+          }, 3000);
+        }
       },
       error: (error) => {
         this.loading = false;

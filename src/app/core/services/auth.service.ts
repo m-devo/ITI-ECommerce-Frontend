@@ -17,68 +17,70 @@ import {
 export class AuthService {
   private apiUrl = environment.apiUrl;
 
-  // Keep track of logged in user
+  // logged in user
   private currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {
-    // Load user from localStorage on service init
+    // Load user from localStorage
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       this.currentUserSubject.next(JSON.parse(savedUser));
     }
   }
 
-  // 1. Register - Create new account
+  // Register
   register(data: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data);
   }
 
-  // 2. Verify Email - Verify account with token from email
+  // Verify Email
   verifyEmail(token: string): Observable<AuthResponse> {
-    return this.http.get<AuthResponse>(
-      `${this.apiUrl}/auth/verify?token=${token}`
-    );
+    return this.http.get<AuthResponse>(`${this.apiUrl}/auth/verify/${token}`);
   }
 
-  // 3. Login - Login with email and password
+  // Login
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http
       .post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials)
       .pipe(
         tap((response) => {
-          // Save to localStorage and update current user
-          if (response.token) {
+          // Save to localStorage
+          if (response.token && response.status === 'success') {
             localStorage.setItem('authToken', response.token);
-            localStorage.setItem('user', JSON.stringify(response.user));
-            this.currentUserSubject.next(response.user);
+            const userData = {
+              email: response.data.email,
+              role: response.role,
+            };
+            localStorage.setItem('user', JSON.stringify(userData));
+            this.currentUserSubject.next(userData);
           }
         })
       );
   }
 
-  // 4. Forgot Password - Send reset link to email
+  // Forgot Password
   forgotPassword(email: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/forgot-password`, {
       email,
     });
   }
 
-  // 5. Reset Password - Reset password with token
+  // Reset Password
   resetPassword(token: string, newPassword: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/reset-password`, {
-      token,
-      password: newPassword,
-    });
+    return this.http.post<AuthResponse>(
+      `${this.apiUrl}/auth/reset-password/${token}`,
+      {
+        password: newPassword,
+      }
+    );
   }
 
-  // 6. Login with Google - Redirect to Google OAuth
+  //Login with Google
   loginWithGoogle(): void {
-    // Redirect to backend Google OAuth endpoint
     window.location.href = `${this.apiUrl}/auth/google`;
   }
 
-  // Handle Google OAuth callback (call this in a callback component)
   handleGoogleCallback(token: string, user: any): void {
     localStorage.setItem('authToken', token);
     localStorage.setItem('user', JSON.stringify(user));
@@ -86,7 +88,7 @@ export class AuthService {
     this.router.navigate(['/dashboard']);
   }
 
-  // Logout - Clear session
+  // Logout
   logout(): void {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
@@ -94,17 +96,17 @@ export class AuthService {
     this.router.navigate(['/auth/login']);
   }
 
-  // Check if user is logged in
+  // Check if is logged in
   isLoggedIn(): boolean {
     return !!localStorage.getItem('authToken');
   }
 
-  // Get current user
+  // Get user
   getCurrentUser(): any {
     return this.currentUserSubject.value;
   }
 
-  // Get auth token
+  // Get token
   getToken(): string | null {
     return localStorage.getItem('authToken');
   }

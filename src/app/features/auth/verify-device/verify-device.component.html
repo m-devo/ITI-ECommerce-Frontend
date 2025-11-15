@@ -1,25 +1,26 @@
 <div class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4">
   <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8 text-center">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6">Email Verification</h2>
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">Device Verification</h2>
 
-    <!-- Loading  -->
+    <!-- Loading State -->
     <div *ngIf="loading" class="py-8">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-      <p class="text-gray-600 mt-4">Verifying your email...</p>
+      <p class="text-gray-600 mt-4">Verifying your device...</p>
     </div>
 
-    <!-- Success  -->
+    <!-- Success State -->
     <div *ngIf="!loading && success" class="py-8">
       <div class="text-green-500 text-6xl mb-4">✓</div>
-      <h3 class="text-xl font-semibold text-gray-800 mb-2">Email Verified!</h3>
-      <p class="text-gray-600 mb-4">Your email has been successfully verified.</p>
-      <p class="text-sm text-gray-500">Redirecting to login page...</p>
-      <a routerLink="/auth/login" class="text-blue-500 hover:underline mt-4 inline-block">
-        Go to Login Now
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">Device Verified!</h3>
+      <p class="text-gray-600 mb-4">Your device has been successfully verified.</p>
+      <p class="text-sm text-gray-500 mb-2">Your previous session has been terminated.</p>
+      <p class="text-sm text-gray-500">Redirecting to dashboard...</p>
+      <a routerLink="/dashboard" class="text-blue-500 hover:underline mt-4 inline-block">
+        Go to Dashboard Now
       </a>
     </div>
 
-    <!-- Error  -->
+    <!-- Error State -->
     <div *ngIf="!loading && !success && errorMessage" class="py-8">
       <div class="text-red-500 text-6xl mb-4">✗</div>
       <h3 class="text-xl font-semibold text-gray-800 mb-2">Verification Failed</h3>
