@@ -1,0 +1,26 @@
+:host ::ng-deep .mat-mdc-raised-button.mat-primary {
+  background-color: #0891b2; /* (Cyan-600) */
+}
+
+:host ::ng-deep .mat-mdc-raised-button.mat-warn {
+  background-color: #dc2626; /* (Red-600) */
+}
+
+.quick-view-dialog .mat-mdc-dialog-container .mat-mdc-dialog-surface {
+  padding: 0 !important;
+}
+
+::ng-deep .quick-view-dialog .mat-mdc-dialog-container {
+  padding: 0 !important;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  ::ng-deep .quick-view-dialog .mat-mdc-dialog-container {
+    width: 95vw !important;
+    height: auto !important;
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+}

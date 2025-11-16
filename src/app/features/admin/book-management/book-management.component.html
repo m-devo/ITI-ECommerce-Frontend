@@ -1,6 +1,394 @@
 <app-adminlayout>
+  <div class="filters p-6 bg-white rounded-xl shadow-md space-y-4 border border-gray-200">
+    <input type="text" [(ngModel)]="searchTerm" (input)="applyFilters()" placeholder="Search by title or author"
+      class="p-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
-<p>book-management works!</p>
+    <div class="flex gap-4">
+      <select [(ngModel)]="selectedCategory" (change)="applyFilters()" class="p-3 border rounded-lg flex-1">
+        <option value="">All Categories</option>
+        <option *ngFor="let cat of categories" [value]="cat">{{cat}}</option>
+      </select>
 
+      <select [(ngModel)]="selectedPrice" (change)="applyFilters()" class="p-3 border rounded-lg flex-1">
+        <option value="">All Prices</option>
+        <option value="0-20">0 - 20</option>
+        <option value="20-40">20 - 40</option>
+        <option value="40-60">40 - 60</option>
+      </select>
+
+      <select [(ngModel)]="selectedStock" (change)="applyFilters()" class="p-3 border rounded-lg flex-1">
+        <option value="">Stock: All</option>
+        <option value="low">Low Stock ( < 5 )</option>
+        <option value="in">In Stock ( > 5 )</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="book-management-container p-6">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-3xl font-bold text-gray-800">All Books</h2>
+      <button (click)="openCreateModel()" class="px-4 py-2 bg-[#00BFC5] text-white rounded-lg hover:bg-[#009AA0]">
+        Create Book
+      </button>
+    </div>
+
+    <!-- Gallery -->
+    <div class="gallery grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div class="content bg-white shadow rounded-lg p-4" *ngFor="let b of filteredBooks">
+        <img [src]="b.imagePath" alt="{{b.title}}" class="w-full h-56 object-cover rounded-lg mb-3">
+        <h3 class="text-xl font-semibold mb-1">{{b.title}}</h3>
+        <p class="text-gray-600 mb-1">{{b.author}}</p>
+        <p [ngClass]="getCategoryClass(b.category)" class="mb-1">
+          Category: {{b.category}}
+        </p>
+        <h6 class="font-semibold mb-2">Price: ${{b.price}}</h6>
+
+        <ul class="stars flex mb-3">
+          <li *ngFor="let s of [1,2,3,4,5]; let i = index">
+            <i class="fa fa-star" [ngClass]="b.averageRating >= s ? 'checked text-yellow-400' : 'text-gray-300'"></i>
+          </li>
+        </ul>
+
+        <button class="read w-full mb-3 px-4 py-2 bg-[#00BFC5] text-white rounded-lg hover:bg-[#009AA0]"
+          (click)="showBook(b._id)">
+          Read More
+        </button>
+
+        <div class="flex justify-between gap-2">
+          <button class="px-3 py-2 bg-yellow-400 hover:bg-yellow-500 rounded text-white" (click)="openEditModel(b)">
+            <i class="fas fa-edit"></i>
+          </button>
+
+          <button class="px-3 py-2 bg-red-500 hover:bg-red-600 rounded text-white" (click)="deleteBook(b)">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Pagination -->
+  <div class="flex justify-center items-center gap-2 mt-6">
+    <button class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50" [disabled]="currentPage === 1"
+      (click)="previousPage()">Prev</button>
+
+    <button *ngFor="let p of pages" (click)="goToPage(p)" class="px-3 py-1 rounded-md border transition" [ngClass]="currentPage === p
+      ? 'bg-[#00BFC5] text-white border-[#00BFC5] shadow-md'
+      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'">
+      {{ p }}
+    </button>
+
+    <button class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50" [disabled]="currentPage === totalPages"
+      (click)="nextPage()">Next</button>
+  </div>
 
 </app-adminlayout>
+
+<!-- <div *ngIf="showModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+  (click)="closeModal()">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-8 relative" (click)="$event.stopPropagation()">
+
+    <h3 class="text-2xl font-extrabold text-[#00BFC5] mb-6">Book Details</h3>
+
+    <div *ngIf="selectedBook; else noData" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <div class="flex justify-center  ">
+        <img [src]="selectedBook.imagePath" alt="{{selectedBook.title}}" class="rounded-lg max-h-64 object-contain">
+      </div>
+
+      <div class="space-y-2 text-left flex flex-col items-start">
+        <p><strong>ID:</strong> {{selectedBook._id}}</p>
+        <p><strong>Title:</strong> {{selectedBook.title}}</p>
+        <p><strong>Author:</strong> {{selectedBook.author}}</p>
+        <p><strong>Description:</strong> {{selectedBook.description}}</p>
+        <p><strong>Price:</strong> ${{selectedBook.price}}</p>
+        <p [ngClass]="getCategoryClass(selectedBook.category)">
+          Category: {{selectedBook.category}}
+        </p>
+        <p><strong>Book Path:</strong>
+          <a [href]="selectedBook.bookPath" target="_blank" class="underline text-blue-600">View Book</a>
+        </p>
+        <p><strong>Avability:</strong> {{selectedBook.stock}}</p>
+
+        <ul class="stars">
+          <li *ngFor="let s of [1,2,3,4,5]; let i = index">
+            <i class="fa fa-star" [ngClass]="selectedBook.averageRating >= s ? 'checked' : ''"></i>
+          </li>
+        </ul>
+
+        <span class="text-gray-500 ml-2">({{selectedBook.averageRating | number:'1.1-1'}})</span>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition" (click)="closeModal()">
+          Close
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noData>
+    <p class="text-gray-500">No book data available.</p>
+  </ng-template>
+</div>
+
+
+ -->
+<div *ngIf="showModal && selectedBook" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+     (click)="closeModal()">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl flex flex-col md:flex-row p-6 relative"
+       (click)="$event.stopPropagation()">
+
+    <button (click)="closeModal()"
+            class="absolute top-4 right-4 text-red-500 hover:text-red-700 transition text-2xl font-bold">
+      &times;
+    </button>
+
+    <div class="flex justify-center items-start md:w-1/2 p-4">
+      <img [src]="selectedBook.imagePath" alt="{{selectedBook.title}}"
+           class="rounded-lg max-h-64 md:max-h-96 object-contain border border-gray-200 p-2 shadow-md">
+    </div>
+
+    <div class="md:w-1/2 flex flex-col justify-between p-4 space-y-3 overflow-y-auto max-h-[32rem]">
+      <div class="space-y-2 ">
+        <h2 class="text-2xl font-bold text-gray-800">{{selectedBook.title}}</h2>
+        <p><strong>Author:</strong> {{selectedBook.author}}</p>
+        <p><strong>Description:</strong> {{selectedBook.description}}</p>
+        <p><strong>Price:</strong> ${{selectedBook.price}}</p>
+        <p [ngClass]="getCategoryClass(selectedBook.category)">
+          <strong>Category:</strong> {{selectedBook.category}}
+        </p>
+        <p><strong>Availability:</strong> {{selectedBook.stock}}</p>
+        <p><strong>Book Path:</strong>
+          <a [href]="selectedBook.bookPath" target="_blank" class="underline text-blue-600 hover:text-blue-800">
+            View Book
+          </a>
+        </p>
+
+    
+        <div class="flex items-center gap-2 mt-2">
+          <ul class="flex">
+            <li *ngFor="let s of [1,2,3,4,5]">
+              <i class="fa fa-star text-yellow-400" 
+                 [ngClass]="selectedBook.averageRating >= s ? 'checked' : 'text-gray-300'"></i>
+            </li>
+          </ul>
+          <span class="text-gray-500">({{selectedBook.averageRating | number:'1.1-1'}})</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- edit  -->
+
+<div *ngIf="editMode" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+  <div
+    class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-8 relative border border-gray-200 max-h-[90vh] overflow-y-auto">
+    <h3 class="text-2xl font-extrabold text-[#00BFC5] mb-6 text-center">Edit Book</h3>
+
+    <form #f="ngForm" class="space-y-6">
+      <div class="flex flex-col items-center gap-4">
+        <img [src]="editBookData.imagePath" class="w-40 h-56 object-cover rounded-xl shadow" alt="Book Image">
+        <label class="px-4 py-2 bg-[#00BFC5] text-white rounded-lg cursor-pointer hover:bg-[#009AA0]">
+          Change Image
+          <input type="file" accept="image/*" class="hidden" (change)="onImageSelected($event)">
+        </label>
+        <p *ngIf="frontErrors.image" class="!text-red-500 text-sm mt-1 text-center">{{ frontErrors.image }}</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <!-- Title -->
+        <div>
+          <label class="block font-semibold text-gray-700">Title</label>
+          <input type="text" name="title" [(ngModel)]="editBookData.title"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
+          <p *ngIf="frontErrors.title" class="!text-red-500 text-sm mt-1">{{ frontErrors.title }}</p>
+        </div>
+
+        <!-- Author -->
+        <div>
+          <label class="block font-semibold text-gray-700">Author</label>
+          <input type="text" name="author" [(ngModel)]="editBookData.author"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
+          <p *ngIf="frontErrors.author" class="!text-red-500 text-sm mt-1">{{ frontErrors.author }}</p>
+        </div>
+
+        <!-- Price -->
+        <div>
+          <label class="block font-semibold text-gray-700">Price</label>
+          <input type="number" name="price" [(ngModel)]="editBookData.price"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
+          <p *ngIf="frontErrors.price" class="!text-red-500 text-sm mt-1">{{ frontErrors.price }}</p>
+        </div>
+
+        <!-- Stock -->
+        <div>
+          <label class="block font-semibold text-gray-700">Stock</label>
+          <input type="number" name="stock" [(ngModel)]="editBookData.stock"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
+          <p *ngIf="frontErrors.stock" class="!text-red-500 text-sm mt-1">{{ frontErrors.stock }}</p>
+        </div>
+
+        <!-- Category -->
+        <div>
+          <label class="block font-semibold text-gray-700">Category</label>
+          <input type="text" name="category" [(ngModel)]="editBookData.category"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
+          <p *ngIf="frontErrors.category" class="!text-red-500 text-sm mt-1">{{ frontErrors.category }}</p>
+        </div>
+
+        <!-- Book PDF Upload -->
+        <div>
+          <label class="block font-semibold text-gray-700">Replace Book File</label>
+          <label class="px-4 py-2 bg-gray-300 rounded-lg cursor-pointer hover:bg-gray-400 block text-center">
+            Upload PDF
+            <input type="file" accept="application/pdf" class="hidden" (change)="onBookSelected($event)">
+          </label>
+          <p *ngIf="frontErrors.book" class="!text-red-500 text-sm mt-1">{{ frontErrors.book }}</p>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="block font-semibold text-gray-700">Description</label>
+        <textarea name="description" rows="3" [(ngModel)]="editBookData.description"
+          class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]"></textarea>
+        <p *ngIf="frontErrors.description" class="!text-red-500 text-sm mt-1">{{ frontErrors.description }}</p>
+      </div>
+
+      <div class="flex justify-end gap-4">
+        <button type="button" (click)="editMode = false"
+          class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">Cancel</button>
+        <button type="button" (click)="saveBookEdits()"
+          class="px-6 py-2 rounded-lg bg-[#00BFC5] text-white hover:bg-[#009AA0]">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- Create Book Modal -->
+<div *ngIf="createMode" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+  <div
+    class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-8 relative border border-gray-200 max-h-[90vh] overflow-y-auto">
+
+    <h3 class="text-2xl font-extrabold text-[#00BFC5] mb-6 text-center">
+      Create New Book
+    </h3>
+
+    <form #f="ngForm" class="space-y-6">
+      <div>
+        <label class="block font-semibold text-gray-700 mb-1">Upload Image</label>
+        <input type="file" accept="image/*" (change)="onNewImageSelected($event)"
+          class="border rounded px-2 py-1 w-full">
+
+        <p *ngIf="newBookData.imageFile" class="text-gray-700 text-sm mt-1">
+          Selected: {{ newBookData.imageFile.name }}
+        </p>
+        <p *ngIf="frontErrors.image" class="!text-red-500 text-sm mt-1">{{ frontErrors.image }}</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+
+        <!-- Title -->
+        <div>
+          <label class="block font-semibold text-gray-700">Title</label>
+          <input type="text" name="title" [(ngModel)]="newBookData.title"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
+          <p *ngIf="frontErrors.title" class="!text-red-500 text-sm mt-1">
+            {{ frontErrors.title }}
+          </p>
+        </div>
+
+        <!-- Author -->
+        <div>
+          <label class="block font-semibold text-gray-700">Author</label>
+          <input type="text" name="author" [(ngModel)]="newBookData.author"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
+          <p *ngIf="frontErrors.author" class="text-red-500 text-sm mt-1">
+            {{ frontErrors.author }}
+          </p>
+        </div>
+
+        <!-- Price -->
+        <div>
+          <label class="block font-semibold text-gray-700">Price</label>
+          <input type="number" name="price" [(ngModel)]="newBookData.price"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
+          <p *ngIf="frontErrors.price" class="!text-red-500 text-sm mt-1">
+            {{ frontErrors.price }}
+          </p>
+        </div>
+
+        <!-- Stock -->
+        <div>
+          <label class="block font-semibold text-gray-700">Stock</label>
+          <input type="number" name="stock" [(ngModel)]="newBookData.stock"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
+          <p *ngIf="frontErrors.stock" class="!text-red-500 text-sm mt-1">
+            {{ frontErrors.stock }}
+          </p>
+        </div>
+
+        <!-- Category -->
+        <div>
+          <label class="block font-semibold text-gray-700">Category</label>
+          <input type="text" name="category" [(ngModel)]="newBookData.category"
+            class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]">
+          <p *ngIf="frontErrors.category" class="!text-red-500 text-sm mt-1">
+            {{ frontErrors.category }}
+          </p>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-gray-700 mb-1">Upload Book PDF</label>
+          <input type="file" accept="application/pdf" (change)="onNewBookSelected($event)"
+            class="border rounded px-2 py-1 w-full">
+
+          <p *ngIf="newBookData.bookFile" class="text-gray-700 text-sm mt-1">
+            Selected: {{ newBookData.bookFile.name }}
+          </p>
+          <p *ngIf="frontErrors.book" class="!text-red-500 text-sm mt-1">{{ frontErrors.book }}</p>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="block font-semibold text-gray-700">Description</label>
+        <textarea name="description" rows="3" [(ngModel)]="newBookData.description"
+          class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#00BFC5]"></textarea>
+        <p *ngIf="frontErrors.description" class="!text-red-500 text-sm mt-1">
+          {{ frontErrors.description }}
+        </p>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex justify-end gap-4">
+        <button type="button" (click)="createMode = false" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
+          Cancel
+        </button>
+
+        <button type="button" (click)="saveNewBook()" class="px-6 py-2 rounded-lg bg-[#00BFC5] text-white hover:bg-[#009AA0]">
+          Create Book
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>

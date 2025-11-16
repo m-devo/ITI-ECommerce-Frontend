@@ -1,0 +1,20 @@
+@if (isVisible && featuredBook) {
+  <div class="relative flex items-center justify-center bg-cyan-600 px-4 py-3 text-white transition-all">
+
+    <p class="text-center text-sm font-medium">
+      ✨ Book of the Day:
+
+      <a [routerLink]="['/book', featuredBook._id]" class="ml-1.5 inline-block font-bold underline hover:text-cyan-100">
+        {{ featuredBook.title }} by {{ featuredBook.author }} - Shop Now!
+      </a>
+    </p>
+
+    <button
+      mat-icon-button
+      (click)="closeBar()"
+      aria-label="Close announcement bar"
+      class="!absolute !top-1/2 !right-2 -translate-y-1/2 !text-white !opacity-70 hover:!opacity-100">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+}

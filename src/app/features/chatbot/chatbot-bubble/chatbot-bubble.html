@@ -1,0 +1,102 @@
+<button (click)="toggleChat()" mat-fab color="primary"
+        class="!fixed !bottom-6 !right-6 !z-[1000] !shadow-lg fab-button">
+  @if (isChatOpen()) {
+    <mat-icon>close</mat-icon>
+  } @else {
+    <mat-icon>chat</mat-icon>
+  }
+</button>
+
+@if (isChatOpen()) {
+  <div class="fixed bottom-24 right-6 w-[360px] h-[500px] bg-white
+              rounded-lg shadow-xl border border-gray-200 z-[1000]
+              flex flex-col overflow-hidden
+              chat-window"
+        [class.is-open]="isChatOpen()">
+
+    <header class="bg-cyan-600 text-white p-4 flex justify-between items-center shadow-md">
+      <h3 class="font-bold text-lg">BookVerse Support</h3>
+      <button (click)="toggleChat()" class="text-white opacity-70 hover:opacity-100">
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+
+    <div class="flex-1 p-4 overflow-y-auto bg-gray-50" #messagesContainer>
+      <div class="flex flex-col gap-3">
+
+        @if (isConnecting()) {
+          <div class="text-center text-gray-500 text-sm p-2">
+            Connecting to chat...
+          </div>
+        }
+
+        @for (msg of chatMessages(); track $index) {
+          @if (msg.sender === 'bot') {
+            <div class="flex justify-start">
+              <div class="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-xs rounded-bl-none shadow-sm">
+                <p [innerHTML]="msg.message"></p>
+                <div class="text-xs text-gray-500 text-right mt-1">
+                  {{ msg.timestamp | date:'shortTime' }}
+                </div>
+              </div>
+            </div>
+          }
+          @if (msg.sender === 'user') {
+            <div class="flex justify-end">
+              <div class="bg-blue-600 text-white p-3 rounded-lg max-w-xs rounded-br-none shadow-sm">
+                <p [innerHTML]="msg.message"></p>
+                <div class="text-xs text-blue-100 text-right mt-1">
+                  {{ msg.timestamp | date:'shortTime' }}
+                </div>
+              </div>
+            </div>
+          }
+        }
+
+        @if (chatOptions().length > 0) {
+          <div class="flex flex-col gap-2 items-start mt-2">
+            @for (option of chatOptions(); track $index) {
+              <button (click)="sendOption(option)"
+                      class="bg-white border border-cyan-500 text-cyan-600
+                             px-3 py-1.5 rounded-full text-sm hover:bg-cyan-50 transition-colors">
+                {{ option }}
+              </button>
+            }
+          </div>
+        }
+
+        @if (isTyping()) {
+          <div class="flex justify-start">
+            <div class="bg-gray-200 text-gray-500 p-3 rounded-lg rounded-bl-none inline-block shadow-sm">
+              <div class="flex gap-1.5 items-center typing-dots">
+                <span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
+                <span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
+                <span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
+              </div>
+            </div>
+          </div>
+        }
+
+      </div>
+    </div>
+
+    <footer class="p-4 border-t bg-white">
+      <form (ngSubmit)="sendMessage()" [formGroup]="messageForm" class="flex gap-2">
+
+        <input type="text" formControlName="message"
+               [placeholder]="chatOptions().length > 0 ? 'Please select an option...' : 'Type your message...'"
+               class="flex-1 border-gray-300 rounded-full shadow-sm
+                      focus:border-cyan-500 focus:ring-cyan-500 px-4
+                      disabled:bg-gray-100"
+               [disabled]="isConnecting() || chatOptions().length > 0">
+
+        <button mat-flat-button color="primary" type="submit"
+                class="!rounded-full"
+                [disabled]="messageForm.invalid || isConnecting() || chatOptions().length > 0">
+          <mat-icon>send</mat-icon>
+        </button>
+      </form>
+    </footer>
+
+  </div>
+}
