@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
+import { AdminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'admin', pathMatch: 'full' },
+  { path: '', redirectTo: 'admin', pathMatch: 'full'},
 
   {
     path: 'admin',
