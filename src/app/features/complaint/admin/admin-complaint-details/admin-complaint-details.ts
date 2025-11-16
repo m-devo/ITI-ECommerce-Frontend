@@ -18,6 +18,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { BehaviorSubject, of } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
 import { StatusBgPipe } from '../../../../core/pipes/status-bg.pipe';
+import { AdminlayoutComponent } from '../../../admin/adminlayout/adminlayout.component';
 
 @Component({
   selector: 'app-admin-complaint-details',
@@ -36,7 +37,8 @@ import { StatusBgPipe } from '../../../../core/pipes/status-bg.pipe';
     MatCardModule,
     MatChipsModule,
     MatSelectModule,
-    StatusBgPipe
+    StatusBgPipe,
+    AdminlayoutComponent
   ],
   templateUrl: './admin-complaint-details.html',
   styleUrl: './admin-complaint-details.css'
