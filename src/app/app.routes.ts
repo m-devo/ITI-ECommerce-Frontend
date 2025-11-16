@@ -7,10 +7,9 @@ import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password.component';
 import { GoogleCallbackComponent } from './features/auth/google-callback/google-callback.component';
 import { DashboardComponent } from './features/profile/dashboard/dashboard.component';
+import { AdminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
-  // Default route
-  { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
 
   // Auth routes
   { path: 'auth/login', component: LoginComponent },
@@ -23,5 +22,46 @@ export const routes: Routes = [
 
   { path: 'dashboard', component: DashboardComponent },
 
-  { path: '**', redirectTo: '/auth/login' },
+
+  {
+    path: 'admin',
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+
+      // Dashboard
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/admin/dashboard/dashboard.component')
+          .then(m => m.DashboardComponent)
+      },
+
+      // Books
+      {
+        path: 'books',
+        loadComponent: () => import('./features/admin/book-management/book-management.component')
+          .then(m => m.BookManagementComponent)
+      },
+
+      // Authors
+      {
+        path: 'authors',
+        loadComponent: () => import('./features/admin/authoradmin/authoradmin.component')
+          .then(m => m.AuthoradminComponent)
+      },
+
+      // Orders
+      {
+        path: 'orders',
+        loadComponent: () => import('./features/admin/orderadmin/orderadmin.component')
+          .then(m => m.OrderadminComponent)
+      },
+
+      // Users
+      {
+        path: 'users',
+        loadComponent: () => import('./features/admin/useradmin/useradmin.component')
+          .then(m => m.UseradminComponent)
+      }
+    ],
+  },
 ];
