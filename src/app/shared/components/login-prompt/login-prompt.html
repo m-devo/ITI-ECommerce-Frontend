@@ -1,0 +1,19 @@
+<div class="p-4">
+  <div class="flex justify-between items-center mb-4">
+    <h2 mat-dialog-title class="text-xl font-bold m-0">Login Required</h2>
+    <button mat-icon-button (click)="onClose()" aria-label="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    <p>Please log in to add items to your cart.</p>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="mt-4 flex gap-3">
+    <button mat-stroked-button (click)="onClose()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="onLogin()">
+      Go to Login
+    </button>
+  </mat-dialog-actions>
+</div>

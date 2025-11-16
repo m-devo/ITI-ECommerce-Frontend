@@ -1,0 +1,155 @@
+<header class="shadow-md bg-white relative">
+  <div class="container mx-auto px-4">
+
+    <div class="flex justify-between items-center py-5">
+      <div class="text-3xl font-bold">
+        <a routerLink="/" class="transition-transform duration-200 hover:scale-105 inline-block">
+          BookVerse<span class="text-cyan-500">.</span>
+        </a>
+      </div>
+      <div class="flex items-center space-x-2 md:space-x-4">
+        <button mat-icon-button aria-label="Search"
+        class="hover:text-cyan-500 transition-colors duration-200" (click)="openSearchModal()">
+          <mat-icon>search</mat-icon>
+        </button>
+        <button mat-icon-button aria-label="Cart"
+        class="hover:text-cyan-500 transition-colors duration-200" (click)="openCartModal()">
+        <mat-icon
+          matBadgeColor="warn"
+          aria-hidden="false"
+          aria-label="4 new notifications"
+          [matBadge]="(cartService.cartItemsCount$ | async)"
+          matBadgeColor="warn"
+          [matBadgeHidden]="(cartService.cartItemsCount$ | async) === 0">
+          shopping_bag
+        </mat-icon>
+
+        </button>
+        <button mat-icon-button aria-label="My Account" class="hover:text-cyan-500 transition-colors
+        duration-200 !hidden md:!inline-flex" [matMenuTriggerFor]="accountMenu">
+          <mat-icon>person_outline</mat-icon>
+        </button>
+        <button mat-icon-button aria-label="Menu" class="!inline-flex md:!hidden
+        hover:text-cyan-500 transition-colors duration-200" (click)="onToggleNav()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div role="navigation" class="hidden md:flex justify-center items-center space-x-10 pb-4">
+      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}"
+      class="font-medium text-gray-600 relative after:content-[''] after:absolute after:left-0
+      after:-bottom-1 after:h-0.5 after:w-0 after:bg-cyan-500 after:transition-all
+      after:duration-300 hover:after:w-full hover:text-gray-900">HOME</a>
+
+      <button
+        (click)="toggleShopMenu()"
+        (mouseenter)="isShopMenuOpen = true"
+        class="font-medium text-gray-600 relative after:content-['']
+        after:absolute after:left-0 after:-bottom-1
+        after:h-0.5 after:w-0 after:bg-cyan-500 after:transition-all
+        after:duration-300 hover:after:w-full hover:text-gray-900">
+        SHOP
+        <mat-icon class="!text-sm !h-auto !w-auto ml-1">expand_more</mat-icon>
+      </button>
+
+      <a routerLink="/about" routerLinkActive="active-link"
+      class="font-medium text-gray-600 relative after:content-['']
+      after:absolute after:left-0 after:-bottom-1
+      after:h-0.5 after:w-0 after:bg-cyan-500 after:transition-all
+      after:duration-300 hover:after:w-full hover:text-gray-900">ABOUT</a>
+
+      <a routerLink="/contact" routerLinkActive="active-link"
+      class="font-medium text-gray-600 relative after:content-['']
+      after:absolute after:left-0 after:-bottom-1 after:h-0.5
+      after:w-0 after:bg-cyan-500 after:transition-all after:duration-300
+      hover:after:w-full hover:text-gray-900">CONTACT</a>
+    </div>
+
+  </div>
+
+  <div
+    *ngIf="isShopMenuOpen"
+    (mouseleave)="isShopMenuOpen = false"
+    class="
+      absolute top-full left-1/2 transform -translate-x-1/2 z-30
+      bg-white rounded-lg shadow-xl p-0 w-[700px]
+      transition-opacity duration-300
+    ">
+
+    <div class="w-full">
+      <div class="p-6 grid grid-cols-2 gap-10">
+        <div>
+          <h4 class="text-sm font-bold uppercase text-gray-500 mb-4">Book Type</h4>
+          <div class="flex flex-col space-y-2">
+            <a routerLink="/shop" class="text-gray-700 hover:text-cyan-600 hover:underline">All Books</a>
+            <a [routerLink]="['/shop']" [queryParams]="{ category: 'Science' }"
+            class="text-gray-700 hover:text-cyan-600 hover:underline">Science</a>
+            <a [routerLink]="['/shop']" [queryParams]="{ category: 'Humanities' }"
+            class="text-gray-700 hover:text-cyan-600 hover:underline">Humanities</a>
+            <a [routerLink]="['/shop']" [queryParams]="{ category: 'Fantasy' }"
+            class="text-gray-700 hover:text-cyan-600 hover:underline">Fantasy</a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-bold uppercase text-gray-500 mb-4">Featured Authors</h4>
+          <div class="flex flex-col space-y-2">
+            <a [routerLink]="['/shop']" [queryParams]="{ author: 'Erik Larson' }"
+            class="text-gray-700 hover:text-cyan-600 hover:underline">Erik Larson</a>
+            <a [routerLink]="['/shop']" [queryParams]="{ author: 'Stephen King' }"
+            class="text-gray-700 hover:text-cyan-600 hover:underline">Stephen King</a>
+            <a [routerLink]="['/shop']" [queryParams]="{ author: 'J.K. Rowling' }"
+            class="text-gray-700 hover:text-cyan-600 hover:underline">J.K. Rowling</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 pb-6 pt-4 border-t border-gray-100">
+        <a routerLink="/shop" [queryParams]="{ collection: 'bestsellers' }" class="block rounded-lg
+        overflow-hidden group relative bg-gray-100 p-6 flex
+        items-center justify-between hover:shadow-lg transition-shadow">
+          <div>
+            <h3 class="text-2xl font-bold text-gray-800">Bestseller</h3>
+            <p class="text-lg text-gray-600 mb-3">Best Discount.</p>
+            <span class="font-bold text-sm text-gray-800 border-b-2 border-cyan-500 pb-0.5
+            group-hover:text-cyan-600 transition-colors">SHOP NOW</span>
+          </div>
+          <img src="assets/images/notebook-mockup.png" alt="Bestseller Booklist" class="w-24 h-auto
+          object-contain transition-transform duration-300 group-hover:scale-105">
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+  <mat-menu #accountMenu="matMenu">
+    @if (authService.isLoggedIn$ | async) {
+      <div class="px-4 py-2 w-48">
+        <h4 class="font-bold text-gray-800">MY ACCOUNT</h4>
+        <mat-divider class="my-2"></mat-divider>
+        <button mat-menu-item routerLink="/user/profile">Profile</button>
+        <button mat-menu-item routerLink="/user/orders">My Orders</button>
+
+        @if (!(authService.isAdmin$ | async)) {
+          <button mat-menu-item routerLink="/user/complaints">My Complaints</button>
+        }
+
+        <button mat-menu-item routerLink="/user/books">My Books</button>
+
+        @if (authService.isAdmin$ | async) {
+          <mat-divider class="my-2"></mat-divider>
+          <button mat-menu-item routerLink="/admin">Admin Page</button>
+        }
+        <mat-divider class="my-2"></mat-divider>
+        <button mat-menu-item (click)="logout()">Logout</button>
+      </div>
+    } @else {
+      <div class="px-4 py-2 w-48">
+        <h4 class="font-bold text-gray-800">MY ACCOUNT</h4>
+        <mat-divider class="my-2"></mat-divider>
+        <button mat-menu-item routerLink="/login">Log in</button>
+        <button mat-menu-item routerLink="/register">Create account</button>
+      </div>
+    }
+  </mat-menu>

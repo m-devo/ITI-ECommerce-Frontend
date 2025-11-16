@@ -23,6 +23,9 @@ export class AdminlayoutComponent {
     { label: 'Authors', path: '/admin/authors', icon: '✍️' },
     { label: 'Orders', path: '/admin/orders', icon: '📦' },
     { label: 'Users', path: '/admin/users', icon: '👥' },
+    { label: 'Complaints', path: '/admin/complaints', icon: '🗣️' },
+    { label: 'Live Chat', path: '/admin/chat', icon: '💬' },
+
   ];
     toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
@@ -30,8 +33,6 @@ export class AdminlayoutComponent {
   scrolled = false;
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    this.scrolled = typeof window !== 'undefined' && typeof window.scrollY === 'number' && window.scrollY > 30; 
+    this.scrolled = typeof window !== 'undefined' && typeof window.scrollY === 'number' && window.scrollY > 30;
   }
-
-  
-}  
+}

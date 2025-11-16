@@ -1,0 +1,69 @@
+@if (cart$ | async; as cart) {
+  <div class="flex items-center justify-between p-4 border-b">
+    <h2 class="text-xl font-semibold">Your Cart</h2>
+    <button mat-icon-button (click)="closeModal()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div mat-dialog-content class="p-4">
+
+    @if (cart.items && cart.items.length > 0) {
+
+      <div class="max-h-[300px] overflow-auto pr-2">
+
+        @for (item of cart.items; track item.book._id) {
+          <div class="flex items-center gap-4 mb-4">
+            <img [src]="item.book.imagePath" [alt]="item.book.title" class="w-16 h-20 object-cover rounded-md border">
+            <div class="flex-grow">
+              <a [routerLink]="['/book', item.book._id]" (click)="closeModal()" class="font-semibold text-gray-800 hover:text-cyan-600">
+                {{ item.book.title }}
+              </a>
+              <p class="text-gray-500 text-sm">
+                {{ item.quantity }} x {{ item.book.price | number:'1.2-2' }} LE
+              </p>
+            </div>
+            <button
+              mat-icon-button
+              (click)="removeItem(item.book._id)"
+              aria-label="Remove item"
+              class="text-gray-400 hover:text-red-600">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+
+    } @else {
+      <p class="text-gray-500">Your cart is empty.</p>
+    }
+  </div>
+
+  <div mat-dialog-actions class="flex flex-col gap-3 p-4 border-t">
+
+    <div class="flex justify-between font-bold text-lg">
+      <span>Sub Total:</span>
+      <span>{{ calculateSubtotal(cart.items) | number:'1.2-2' }} LE</span>
+    </div>
+
+    <button
+      mat-stroked-button
+      routerLink="/cart"
+      (click)="closeModal()"
+      class="!py-5 !w-full">
+      View Cart
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      routerLink="/checkout"
+      (click)="closeModal()"
+      class="!py-5 !w-full">
+      Checkout
+    </button>
+  </div>
+
+} @else {
+  <div class="p-8 text-center">
+    <p class="text-gray-500">Your cart is empty.</p>
+  </div>
+}
