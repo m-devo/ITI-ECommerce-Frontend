@@ -1,0 +1,22 @@
+<app-announcement-bar [featuredBook]="(featuredBook$ | async)"></app-announcement-bar>
+
+<mat-drawer-container class="main-layout-container" [hasBackdrop]="true">
+
+  <mat-drawer #navDrawer mode="over" position="start" class="mobile-nav-drawer">
+    <app-mobile-nav></app-mobile-nav>
+  </mat-drawer>
+
+  <mat-drawer-content class="flex flex-col min-h-screen">
+
+    <app-header (toggleNav)="toggleNavDrawer()"></app-header>
+
+    <main class="flex-grow">
+      <router-outlet></router-outlet>
+    </main>
+
+    <app-footer></app-footer>
+
+  </mat-drawer-content>
+
+</mat-drawer-container>
+<app-chat-bubble></app-chat-bubble>

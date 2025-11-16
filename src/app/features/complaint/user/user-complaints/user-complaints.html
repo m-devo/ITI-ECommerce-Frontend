@@ -1,0 +1,105 @@
+<div class="container mx-auto px-4 py-16">
+
+  <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
+    <h1 class="text-3xl font-serif font-bold text-gray-800">My Complaints</h1>
+    <button mat-flat-button color="primary"
+            class="w-full sm:w-auto"
+            (click)="openNewComplaintDialog()"
+            [disabled]="hasOpenComplaint">
+      <mat-icon>add</mat-icon>
+      Submit New Complaint
+    </button>
+  </div>
+
+  @if (hasOpenComplaint && !isLoading) {
+    <div class="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg mb-6">
+      <p>You have an open complaint. Please wait for a response before submitting a new one.</p>
+    </div>
+  }
+<!-- Tabs -->
+  <mat-tab-group mat-stretch-tabs="false" animationDuration="0ms">
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="mr-2">open_in_new</mat-icon>
+        Open Complaints
+      </ng-template>
+
+      <div class="p-4">
+        @if (isLoading) {
+          <div class="flex justify-center items-center p-8 h-48">
+            <mat-progress-spinner diameter="50"></mat-progress-spinner>
+          </div>
+        }
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          @for (complaint of openComplaints; track complaint._id) {
+            <mat-card appearance="outlined"
+                      [routerLink]="['/user/complaint', complaint._id]"
+                      class="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
+              <mat-card-header>
+                <div mat-card-avatar class="bg-blue-100 text-blue-700 flex items-center justify-center">
+                  <mat-icon>hourglass_top</mat-icon>
+                </div>
+                <mat-card-title class="text-lg">Complaint #{{ complaint._id.slice(-6) }}</mat-card-title>
+                <mat-card-subtitle>{{ complaint.createdAt | date: 'medium' }}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+              <mat-chip [color]="complaint.status | statusBg" selected>
+                {{ complaint.status === 'new' ? 'Pending Review' : (complaint.status | titlecase) }}
+              </mat-chip>
+              </mat-card-content>
+            </mat-card>
+          } @empty {
+            @if (!isLoading) {
+              <p class="text-gray-500 py-10 text-center">You have no open complaints.</p>
+            }
+          }
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="mr-2">check_circle</mat-icon>
+        Closed Complaints
+      </ng-template>
+
+      <div class="p-4">
+        @if (isLoading) {
+           <div class="flex justify-center items-center p-8 h-48">
+            <mat-progress-spinner diameter="50"></mat-progress-spinner>
+          </div>
+        }
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          @for (complaint of closedComplaints; track complaint._id) {
+
+            <mat-card appearance="outlined"
+                      [routerLink]="['/user/complaint', complaint._id]"
+                      class="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 opacity-80 hover:opacity-100 bg-gray-50">
+              <mat-card-header>
+                <div mat-card-avatar class="bg-gray-300 text-gray-600 flex items-center justify-center">
+                  <mat-icon>archive</mat-icon>
+                </div>
+                <mat-card-title class="text-lg">Complaint #{{ complaint._id.slice(-6) }}</mat-card-title>
+                <mat-card-subtitle>{{ complaint.createdAt | date: 'medium' }}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <p class="text-gray-600 truncate" [title]="complaint.details">{{ complaint.details }}</p>
+                <mat-chip color="accent" selected>
+                  {{ complaint.status === 'resolved' ? 'Resolved' : 'Closed' }}
+                </mat-chip>
+              </mat-card-content>
+            </mat-card>
+          } @empty {
+             @if (!isLoading) {
+              <p class="text-gray-500 py-10 text-center">You have no closed complaints.</p>
+            }
+          }
+        </div>
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>
+<mat-divider class="my-2"></mat-divider>

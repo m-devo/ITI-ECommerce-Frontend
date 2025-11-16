@@ -6,6 +6,9 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptor
 import { AuthInterceptor } from './app/core/interceptors/auth.interceptor';
 import { ErrorInterceptor } from './app/core/interceptors/error.interceptor';
 
+import { register } from 'swiper/element/bundle';
+register();
+
 bootstrapApplication(AppComponent, {
   ...appConfig,
   providers: [

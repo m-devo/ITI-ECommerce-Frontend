@@ -1,1 +1,48 @@
-<p>book-card works!</p>
+<div class="relative rounded-md overflow-hidden group border">
+
+  <a [routerLink]="['/book', book.id]">
+    <img [src]="encodeImageUrl(book.imagePath)" [alt]="book.title"
+    class="w-full h-96 object-cover transition-transform duration-500 group-hover:scale-110">
+  </a>
+
+  <div class="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+
+    <div class="absolute top-4 right-4 flex flex-col gap-3">
+
+      <button
+        mat-fab-button
+        color="basic"
+        aria-label="Quick View"
+        (click)="onClickViewClick($event)"
+        class="!w-12 !h-12 !bg-white !text-gray-800 transform scale-0 group-hover:scale-100 transition-transform duration-300"
+        style="transition-delay: 100ms;">
+        <mat-icon>search</mat-icon>
+      </button>
+
+      <button
+        mat-fab-button
+        color="basic"
+        aria-label="Add to cart"
+        (click)="onAddToCartClick($event)"
+        [disabled]="!book || book.stock === 0"
+        class="!w-12 !h-12 !bg-white !text-gray-800 transform scale-0 group-hover:scale-100 transition-transform duration-300"
+        style="transition-delay: 200ms;">
+        <mat-icon>shopping_bag</mat-icon>
+      </button>
+
+    </div>
+  </div>
+  <div class="p-4 text-center">
+    <span class="text-gray-500 text-sm font-medium uppercase tracking-wider">{{ book.author }}</span>
+    <a [routerLink]="['/book', book.id]">
+      <h3 class="font-serif font-bold text-xl text-gray-900 mt-1 truncate hover:text-cyan-600 transition-colors" [title]="book.title">
+        {{ book.title }}
+      </h3>
+    </a>
+    <div class="flex items-baseline justify-center gap-2 mt-2">
+      <span class="font-semibold text-gray-800 text-lg">
+        LE {{ book.price | number:'1.2-2' }}
+      </span>
+    </div>
+  </div>
+</div>

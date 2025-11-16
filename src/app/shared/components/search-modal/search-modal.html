@@ -1,0 +1,68 @@
+<div class="relative w-full max-w-full md:max-w-[600px] mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+  <!-- Header -->
+  <div class="relative p-4 border-b bg-white">
+    <button
+      (click)="closeModal()"
+      class="absolute top-2 right-2 text-gray-500 hover:text-gray-900">
+      <mat-icon>close</mat-icon>
+    </button>
+    <h2 class="text-center text-lg md:text-2xl font-serif font-bold text-gray-900 m-0">
+      Search BookVerse
+    </h2>
+  </div>
+
+  <!-- Content -->
+  <div class="p-4 md:p-6">
+    <!-- Search Input -->
+    <div class="relative w-full">
+      <input
+        type="text"
+        [formControl]="searchControl"
+        placeholder="Search for books, authors, etc..."
+        class="w-full border border-gray-300 rounded-md py-2 pl-4 pr-10 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <!-- Loading or Search Icon -->
+      <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+        <mat-progress-spinner
+          *ngIf="isLoading"
+          [diameter]="24"
+          mode="indeterminate"
+          class="!w-5 !h-5"
+        ></mat-progress-spinner>
+        <mat-icon *ngIf="!isLoading">search</mat-icon>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="mt-4 min-h-[70px]">
+      <ng-container *ngIf="suggestions$ | async as suggestions">
+        <ng-container *ngIf="suggestions.length > 0; else noResults">
+          <div class="flex flex-col space-y-3">
+            <a
+              *ngFor="let book of suggestions;"
+              [routerLink]="['/book', book._id]"
+              (click)="onSuggestionClicked()"
+              class="flex items-center gap-4 p-2 rounded-md hover:bg-gray-100 transition">
+              <div>
+                <h4 class="font-semibold text-gray-800">{{ book.title }}</h4>
+                <p class="text-sm text-gray-500">{{ book.author }}</p>
+              </div>
+            </a>
+          </div>
+        </ng-container>
+        <ng-template #noResults>
+          <p
+            *ngIf="searchControl.value && searchControl.value.length > 1; else waiting"
+            class="text-gray-500 text-sm md:text-base text-center">
+            No results found for "{{ searchControl.value }}".
+          </p>
+          <ng-template #waiting>
+            <p class="text-gray-500 text-sm md:text-base text-center">
+              Search results will appear here...
+            </p>
+          </ng-template>
+        </ng-template>
+      </ng-container>
+    </div>
+  </div>
+</div>

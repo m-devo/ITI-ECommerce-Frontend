@@ -1,0 +1,362 @@
+<!-- Hero Section -->
+<section class="w-full pt-0 pb-1 my-1">
+  <div class="bg-white shadow-xl overflow-hidden" style="height: 700px;">
+
+    <swiper-container
+      #swiperEl
+      class="hero-slider"
+      loop
+      effect="fade"
+      navigation
+      autoplay='{"delay":7000,"disableOnInteraction":false}'>
+
+      <swiper-slide>
+        <div
+          class="slide-background"
+          style="background-image: url('assets/images/horror-hero.avif'); background-position: center center;">
+        </div>
+        <div class="slide-content h-full">
+
+          <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 font-serif" data-animation="fly-from-right">
+              Fear is a Place.
+            </h1>
+            <p class="text-lg md:text-xl max-w-lg mb-8" data-animation="fly-from-right" style="transition-delay: 200ms;">
+              Stephen King, Jaws, Misery. Explore the classics that defined the genre.
+            </p>
+            <div data-animation="fly-from-right" style="transition-delay: 400ms;">
+              <button mat-raised-button color="primary" class="!px-10 !py-6 !text-lg">
+                Explore Horror
+              </button>
+            </div>
+          </div>
+          </div>
+      </swiper-slide>
+
+      <swiper-slide>
+        <div
+          class="slide-background"
+          style="background-image: url('assets/images/lights-out-hero.jpg'); background-position: center center;">
+        </div>
+        <div class="slide-content h-full">
+
+          <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 font-serif" data-animation="fly-from-bottom">
+              LIGHTS OUT
+            </h1>
+            <p class="text-lg md:text-xl max-w-lg mb-8" data-animation="fly-from-bottom" style="transition-delay: 200ms;">
+              Discover the thrillers that will keep you guessing until the very last page.
+            </p>
+            <div data-animation="fly-from-bottom" style="transition-delay: 400ms;">
+              <button mat-raised-button color="primary" class="!px-10 !py-6 !text-lg">
+                Discover Thrillers
+              </button>
+            </div>
+          </div>
+          </div>
+      </swiper-slide>
+
+      <swiper-slide>
+        <div
+          class="slide-background"
+          style="background-image: url('assets/images/stranger-hero.jpg'); background-position: center center;">
+        </div>
+        <div class="slide-content h-full">
+
+          <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 font-serif" data-animation="fly-from-left">
+              Married to a Stranger
+            </h1>
+            <p class="text-lg md:text-xl max-w-lg mb-8" data-animation="fly-from-left" style="transition-delay: 200ms;">
+              Complex characters, gripping stories. Find your next unforgettable romance.
+            </p>
+            <div data-animation="fly-from-left" style="transition-delay: 400ms;">
+              <button mat-raised-button color="primary" class="!px-10 !py-6 !text-lg">
+                Find Your Next Romance
+              </button>
+            </div>
+          </div>
+          </div>
+      </swiper-slide>
+
+    </swiper-container>
+  </div>
+</section>
+
+<!-- Trust Bar -->
+<app-trust-bar></app-trust-bar>
+<!-- Categories Section -->
+<section class="bg-white px-1 py-16 shadow-inner">
+  <div class="container mx-auto px-4">
+    <h2 class="text-4xl font-serif font-bold text-gray-900 text-center mb-12">
+      Browse by Category
+    </h2>
+
+    @if (categoriesSummary$ | async; as categories) {
+
+      @if (categories.length > 0) {
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          @for (category of categories; track category.category) {
+            <div class="relative rounded-2xl shadow-lg overflow-hidden h-[450px] group">
+
+              <img
+                [src]="encodeImageUrl(category.imagePath)"
+                [alt]="category.category + ' Books'"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110">
+
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+
+              <div class="absolute bottom-0 left-0 right-0 z-10 p-8 text-center text-white">
+                <h3 class="text-3xl font-serif font-bold mb-1">{{ category.category }}</h3>
+                <span class="text-white/80 mb-4 block">({{ category.count }} Items)</span>
+
+                <a
+                  [routerLink]="['/shop']"
+                  [queryParams]="{ category: category.category }"
+                  class="font-semibold text-white border-b-2 border-cyan-500 pb-1 hover:text-cyan-400 transition-colors">
+                  Explore Now
+                </a>
+              </div>
+            </div>
+          }
+        </div>
+
+      } @else {
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="relative rounded-2xl shadow-lg overflow-hidden h-[450px] group">
+            <img src="assets/images/category-history.jpg" alt="History Books" class="absolute inset-0 w-full
+            h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 z-10 p-8 text-center text-white">
+              <h3 class="text-3xl font-serif font-bold mb-1">History</h3>
+              <span class="text-white/80 mb-4 block">(11 Items)</span>
+              <a [routerLink]="['/shop']" [queryParams]="{ category: 'History' }" class="font-semibold
+              text-white border-b-2 border-cyan-500 pb-1 hover:text-cyan-400 transition-colors">
+                Explore Now
+              </a>
+            </div>
+          </div>
+          <div class="relative rounded-2xl shadow-lg overflow-hidden h-[450px] group">
+            <img src="assets/images/category-fantasy.jpg" alt="Novels" class="absolute inset-0 w-full h-full
+            object-cover transition-transform duration-500 ease-out group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 z-10 p-8 text-center text-white">
+              <h3 class="text-3xl font-serif font-bold mb-1">Novels</h3>
+              <span class="text-white/80 mb-4 block">(12 Items)</span>
+              <a [routerLink]="['/shop']" [queryParams]="{ category: 'Fantasy' }" class="font-semibold text-white
+              border-b-2 border-cyan-500 pb-1 hover:text-cyan-400 transition-colors">
+                Explore Now
+              </a>
+            </div>
+          </div>
+          <div class="relative rounded-2xl shadow-lg overflow-hidden h-[450px] group">
+            <img src="assets/images/category-design.avif" alt="Design Books" class="absolute inset-0 w-full
+            h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 z-10 p-8 text-center text-white">
+              <h3 class="text-3xl font-serif font-bold mb-1">Design</h3>
+              <span class="text-white/80 mb-4 block">(12 Items)</span>
+              <a [routerLink]="['/shop']" [queryParams]="{ category: 'Design' }" class="font-semibold
+              text-white border-b-2 border-cyan-500 pb-1 hover:text-cyan-400 transition-colors">
+                Explore Now
+              </a>
+            </div>
+          </div>
+        </div>
+      }
+
+    } @else {
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="relative rounded-2xl shadow-lg overflow-hidden h-[450px] group">
+          <img src="assets/images/category-history.jpg" alt="History Books" class="absolute inset-0
+           w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 z-10 p-8 text-center text-white">
+            <h3 class="text-3xl font-serif font-bold mb-1">History</h3>
+            <span class="text-white/80 mb-4 block">(11 Items)</span>
+            <a [routerLink]="['/shop']" [queryParams]="{ category: 'History' }" class="font-semibold
+            text-white border-b-2 border-cyan-500 pb-1 hover:text-cyan-400 transition-colors">
+              Explore Now
+            </a>
+          </div>
+        </div>
+        <div class="relative rounded-2xl shadow-lg overflow-hidden h-[450px] group">
+          <img src="assets/images/category-fantasy.jpg" alt="Novels" class="absolute inset-0 w-full h-full
+          object-cover transition-transform duration-500 ease-out group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 z-10 p-8 text-center text-white">
+            <h3 class="text-3xl font-serif font-bold mb-1">Novels</h3>
+            <span class="text-white/80 mb-4 block">(12 Items)</span>
+            <a [routerLink]="['/shop']" [queryParams]="{ category: 'Novels' }" class="font-semibold text-white
+            border-b-2 border-cyan-500 pb-1 hover:text-cyan-400 transition-colors">
+              Explore Now
+            </a>
+          </div>
+        </div>
+        <div class="relative rounded-2xl shadow-lg overflow-hidden h-[450px] group">
+          <img src="assets/images/category-design.avif" alt="Design Books" class="absolute inset-0 w-full h-full
+           object-cover transition-transform duration-500 ease-out group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 z-10 p-8 text-center text-white">
+            <h3 class="text-3xl font-serif font-bold mb-1">Design</h3>
+            <span class="text-white/80 mb-4 block">(12 Items)</span>
+            <a [routerLink]="['/shop']" [queryParams]="{ category: 'Design' }" class="font-semibold
+            text-white border-b-2 border-cyan-500 pb-1 hover:text-cyan-400 transition-colors">
+              Explore Now
+            </a>
+          </div>
+        </div>
+      </div>
+    }
+
+  </div>
+</section>
+<!-- Books Sections -->
+<section class="bg-white px-1 py-16 shadow-inner">
+  <div class="container mx-auto px-4">
+
+    <h2 class="text-4xl font-serif font-bold text-gray-900 text-center mb-4">
+      Our Books
+    </h2>
+    <div class="w-16 h-1 bg-red-600 mx-auto mb-10"></div>
+
+<div class="flex flex-wrap justify-center gap-4 mb-12">
+  <button
+    (click)="changeCategory('All')"
+    [class.bg-red-600]="activeCategory === 'All'"
+    class="px-6 py-3 rounded-md font-semibold border border-gray-300 hover:bg-red-600 hover:text-white transition-colors">
+    All
+  </button>
+
+  <button
+    (click)="changeCategory('Database')"
+    [class.bg-red-600]="activeCategory === 'Database'"
+    class="px-6 py-3 rounded-md font-semibold border border-gray-300 hover:bg-red-600 hover:text-white transition-colors">
+    Database
+  </button>
+
+  <button
+    (click)="changeCategory('History')"
+    [class.bg-red-600]="activeCategory === 'History'"
+    class="px-6 py-3 rounded-md font-semibold border border-gray-300 hover:bg-red-600 hover:text-white transition-colors">
+    History
+  </button>
+
+  <button
+    (click)="changeCategory('Fantasy')"
+    [class.bg-red-600]="activeCategory === 'Fantasy'"
+    class="px-6 py-3 rounded-md font-semibold border border-gray-300 hover:bg-red-600 hover:text-white transition-colors">
+    Fantasy
+  </button>
+
+  <button
+    (click)="changeCategory('Romance')"
+    [class.bg-red-600]="activeCategory === 'Romance'"
+    class="px-6 py-3 rounded-md font-semibold border border-gray-300 hover:bg-red-600 hover:text-white transition-colors">
+    Romance
+  </button>
+</div>
+
+
+    @if (filteredBooks$ | async; as books) {
+
+      @if (books.length > 0) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+
+          @for (book of books; track book._id) {
+            <div>
+              <app-book-card
+                [book]="book"
+                (quickViewClicked)="onQuickView(book)"
+                (addToCartClicked)="onAddToCart(book)">
+              </app-book-card>
+            </div>
+          }
+
+        </div>
+      } @else {
+        <p class="text-center text-gray-500">No books found in this category.</p>
+      }
+
+    } @else {
+      <p class="text-center text-gray-500">Loading Books...</p>
+    }
+
+  </div>
+</section>
+<!-- Best Sellers -->
+<section class="bg-white px-1 py-16 shadow-inner">
+  <div class="container mx-auto px-4">
+
+    <h2 class="text-4xl font-serif font-bold text-gray-900 text-center mb-4">
+      Top Rated Books
+    </h2>
+    <div class="w-16 h-1 bg-cyan-600 mx-auto mb-10"></div> @if (bestSellers$ | async; as books) {
+
+      @if (books.length > 0) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+
+          @for (book of books; track book._id) {
+            <div>
+              <app-book-card
+                [book]="book"
+                (quickViewClicked)="onQuickView(book)"
+                (addToCartClicked)="onAddToCart(book)">
+              </app-book-card>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="text-center text-gray-500">No top rated books found yet.</p>
+      }
+
+    } @else {
+      <p class="text-center text-gray-500">Loading top books...</p>
+    }
+
+  </div>
+</section>
+
+<!-- News Letter -->
+
+<section class="bg-gray-50 py-20">
+  <div class="container mx-auto px-4 text-center">
+
+    <h2 class="text-4xl font-serif font-bold text-gray-900 mb-4">
+      Join Our Newsletter
+    </h2>
+
+    <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+      Subscribe to get notified about new book arrivals, discounts,
+      and our top picks of the month.
+    </p>
+    <form (ngSubmit)="onSubscribe()" [formGroup]="subscribeForm" class="flex justify-center max-w-lg mx-auto">
+      <input
+        type="email"
+        formControlName="email"
+        placeholder="Your email address"
+        class="
+          flex-grow rounded-l-lg p-4 text-gray-800 border border-gray-300
+          focus:outline-none focus:ring-2 focus:ring-cyan-500
+        "
+      />
+      <button
+        type="submit"
+        [disabled]="subscribeForm.invalid"
+        class="
+          bg-cyan-600 text-white font-bold p-4 rounded-r-lg
+          hover:bg-cyan-700 transition-colors
+          disabled:bg-gray-400
+        ">
+        Subscribe
+      </button>
+    </form>
+
+  </div>
+</section>
+<div class="container mx-auto px-4">
+  <hr class="my-16 border-gray-200">
+</div>
