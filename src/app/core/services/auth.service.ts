@@ -1,134 +1,114 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, finalize, Observable, of, tap,  } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
+import {
+  RegisterRequest,
+  LoginRequest,
+  LoginResponse,
+  AuthResponse,
+} from '../models/api-models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 
 export class AuthService {
+  private apiUrl = environment.apiUrl;
 
-  private http = inject(HttpClient)
-  private router = inject(Router)
+  // logged in user
+  private currentUserSubject = new BehaviorSubject<any>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
 
-  private URL = "http://localhost:4000/api"
+  constructor(private http: HttpClient, private router: Router) {
+    // Load user from localStorage
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      this.currentUserSubject.next(JSON.parse(savedUser));
+    }
+  }
 
-  private userSource = new BehaviorSubject<any | null>(null)
+  // Register
+  register(data: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, data);
+  }
 
-  public currentUser$ = this.userSource.asObservable()
+  // Verify Email
+  verifyEmail(token: string): Observable<AuthResponse> {
+    return this.http.get<AuthResponse>(`${this.apiUrl}/auth/verify/${token}`);
+  }
 
-  public isLoggedIn$ = new BehaviorSubject<boolean>(false)
-  public isAdmin$ = new BehaviorSubject<boolean>(false)
-  public isAuthor$ = new BehaviorSubject<boolean>(false)
-
-  private authStatusChecked = new BehaviorSubject<boolean>(false);
-  public authStatusChecked$ = this.authStatusChecked.asObservable();
-
-login(credentials: { email: string, password: string }): Observable<any> {
-    return this.http.post<any>(`${this.URL}/auth/login`, credentials).pipe(
-      tap(Response => {
-        if (Response && Response.token && Response.role) {
-
-          const token = Response.token;
-          const userRole = Response.role;
-
-          const tempUser = {
-            email: credentials.email,
-            role: userRole
-          };
-
-          localStorage.setItem("token", token);
-
-          this.userSource.next(tempUser);
-          this.isLoggedIn$.next(true);
-
-          if (userRole === "admin") {
-            this.isAdmin$.next(true);
-            this.isAuthor$.next(false);
-          } else if (userRole === "author") {
-            this.isAdmin$.next(false);
-            this.isAuthor$.next(true);
-          } else {
-            this.isAdmin$.next(false);
-            this.isAuthor$.next(false);
+  // Login
+  login(credentials: LoginRequest): Observable<LoginResponse> {
+    return this.http
+      .post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials)
+      .pipe(
+        tap((response) => {
+          // Save to localStorage
+          if (response.token && response.status === 'success') {
+            localStorage.setItem('authToken', response.token);
+            const userData = {
+              email: response.data.email,
+              role: response.role,
+            };
+            localStorage.setItem('user', JSON.stringify(userData));
+            this.currentUserSubject.next(userData);
           }
+        })
+      );
+  }
 
-          this.router.navigate(['/']);
-        } else {
-          this.logoutStates();
-        }
-      }),
-      catchError(error => {
-        console.error("Login failed:", error.error.message);
-        this.logoutStates();
-        return of(null);
-      })
+  // Forgot Password
+  forgotPassword(email: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/forgot-password`, {
+      email,
+    });
+  }
+
+  // Reset Password
+  resetPassword(token: string, newPassword: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(
+      `${this.apiUrl}/auth/reset-password/${token}`,
+      {
+        password: newPassword,
+      }
     );
   }
 
-  constructor(){this.checkAuthStatus()}
-
-  checkAuthStatus(): void {
-    this.http.get<any>(`${this.URL}/auth/profile`).pipe(
-      tap(Response => {
-
-        if (Response && Response.data) {
-
-          const user = Response.data;
-          this.userSource.next(user);
-          this.isLoggedIn$.next(true);
-
-          const userRole = user.role;
-          if (userRole === "admin") {
-            this.isAdmin$.next(true);
-            this.isAuthor$.next(false);
-          } else if (userRole === "author") {
-            this.isAdmin$.next(false);
-            this.isAuthor$.next(true);
-          } else {
-            this.isAdmin$.next(false);
-            this.isAuthor$.next(false);
-          }
-        } else {
-          this.logoutStates();
-        }
-      }
-    ),
-      catchError(error => {
-        this.logoutStates();
-        return of(null);
-      }),
-      finalize(() => {
-        this.authStatusChecked.next(true);
-      })
-    ).subscribe();
+  //Login with Google
+  loginWithGoogle(): void {
+    window.location.href = `${this.apiUrl}/auth/google`;
   }
 
-  logout() {
-    this.http.post(`${this.URL}/auth/logout`, {}).pipe(
-      tap(()=> {
-        this.logoutStates()
-          this.router.navigate(['/']);
-      }),
-        catchError(error => {
-        this.logoutStates()
-        return of(null)
-      })
-    ).subscribe()
+  handleGoogleCallback(token: string, user: any): void {
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    this.currentUserSubject.next(user);
+    this.router.navigate(['/dashboard']);
   }
 
-  private logoutStates() {
-    localStorage.removeItem("token");
-      this.userSource.next(null)
-      this.isLoggedIn$.next(false)
-      this.isAdmin$.next(false)
-      this.isAuthor$.next(false)
+  // Logout
+  logout(): void {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    this.currentUserSubject.next(null);
+    this.router.navigate(['/auth/login']);
   }
 
-  public getCurrentUserId(): string | null {
-    const currentUser = this.userSource.getValue();
+  // Check if is logged in
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('authToken');
+  }
 
-    return currentUser ? currentUser._id : null;
+  // Get user
+  getCurrentUser(): any {
+    return this.currentUserSubject.value;
+  }
+
+  // Get token
+  getToken(): string | null {
+    return localStorage.getItem('authToken');
   }
 }

@@ -3,6 +3,13 @@ import { MainLayout } from './core/layout/main-layout/main-layout';
 import { Home } from './features/home/home';
 import { AuthGuard } from './core/guards/auth.guard';
 import { AdminGuard } from './core/guards/admin.guard';
+import { LoginComponent } from './features/auth/login/login.component';
+import { RegisterComponent } from './features/auth/register/register.component';
+import { VerifyEmailComponent } from './features/auth/verify-email/verify-email.component';
+import { VerifyDeviceComponent } from './features/auth/verify-device/verify-device.component';
+import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './features/auth/reset-password/reset-password.component';
+import { GoogleCallbackComponent } from './features/auth/google-callback/google-callback.component';
 
 export const routes: Routes = [
   // Main Layout (Ordinary User)
@@ -32,9 +39,18 @@ export const routes: Routes = [
                               .then(m => m.ComplaintDetails),
         canActivate: [AuthGuard]
       }
-      // other upcoming routes
-    ]
-  },
+
+
+  // Auth routes
+  { path: 'auth/login', component: LoginComponent },
+  { path: 'auth/register', component: RegisterComponent },
+  { path: 'auth/verify/:token', component: VerifyEmailComponent },
+  { path: 'auth/verify-device/:token', component: VerifyDeviceComponent },
+  { path: 'auth/forgot-password', component: ForgotPasswordComponent },
+  { path: 'auth/reset-password/:token', component: ResetPasswordComponent },
+  { path: 'auth/google/callback', component: GoogleCallbackComponent },
+
+
   // Admin routes
   {
     path: 'admin',

@@ -9,7 +9,8 @@ const URL = 'http://localhost:4000';
 export class BookService {
 
   constructor(private http: HttpClient) {}
-  getBooks(): Observable<any[]> {
+  
+  getBooks(currentPage: number, limit: number): Observable<any[]> {
     return this.http.get<any[]>('/api/books');
   }
   getBookById(id: number): Observable<any> {
