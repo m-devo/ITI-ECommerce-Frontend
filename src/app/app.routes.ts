@@ -39,7 +39,8 @@ export const routes: Routes = [
                               .then(m => m.ComplaintDetails),
         canActivate: [AuthGuard]
       }
-
+    ]
+  },
 
   // Auth routes
   { path: 'auth/login', component: LoginComponent },
