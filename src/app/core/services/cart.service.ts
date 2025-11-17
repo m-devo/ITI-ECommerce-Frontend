@@ -1,22 +1,65 @@
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, finalize, timeout } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, filter, Observable, of, pairwise, startWith, tap } from 'rxjs';
-import { AuthService } from './auth.service';
-import { MatDialog } from '@angular/material/dialog';
-import { MiniCart } from '../../shared/components/mini-cart/mini-cart';
-import { LoginPrompt } from '../../shared/components/login-prompt/login-prompt';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { tap, catchError, throwError } from 'rxjs';
+import { Cart, CartItem, CartUpdateRequest, ApiResponse } from '../models/api-models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
+  private readonly API_URL = `${environment.apiUrl}/cart`;
+  private currentCartSubject = new BehaviorSubject<Cart | null>(null);
+  public cart$ = this.currentCartSubject.asObservable();
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  public loading$ = this.loadingSubject.asObservable();
 
-  private cartItems: any[] = [];
-  private cartSubject = new BehaviorSubject<any[]>(this.cartItems);
+  constructor(private http: HttpClient) {}
 
-  getCart() {
-    return this.cartSubject.asObservable();
+  private handleResponse(response: ApiResponse<Cart>): void {
+    if (response?.success && response.data?._id && response.data?.items) {
+      this.currentCartSubject.next(response.data);
+    }
+  }
+
+  private createHttpRequest<T>(
+    method: 'get' | 'post' | 'put' | 'delete',
+    endpoint: string,
+    body?: any
+  ): Observable<ApiResponse<T>> {
+
+    this.loadingSubject.next(true);
+
+    const request$ =
+            method === 'get' ? this.http.get<ApiResponse<T>>(`${this.API_URL}${endpoint}`) :
+            method === 'post' ? this.http.post<ApiResponse<T>>(`${this.API_URL}${endpoint}`, body) :
+            method === 'put' ? this.http.put<ApiResponse<T>>(`${this.API_URL}${endpoint}`, body) :
+            this.http.delete<ApiResponse<T>>(`${this.API_URL}${endpoint}`);
+
+    return request$.pipe(
+      timeout(10000),
+      tap(response => {
+        this.handleResponse(response as ApiResponse<Cart>);
+      }),
+      finalize(() => this.loadingSubject.next(false)),
+      catchError(error => throwError(() => error))
+    );
+  }
+
+
+  getCart(): Observable<ApiResponse<Cart>> {
+    return this.createHttpRequest<Cart>('get', '');
+  }
+
+
+  updateCart(cartItems: CartUpdateRequest[]): Observable<ApiResponse<Cart>> {
+    return this.createHttpRequest<Cart>('put', '/update', cartItems);
+  }
+
+
+  removeItem(bookId: string): Observable<ApiResponse<Cart>> {
+    return this.createHttpRequest<Cart>('delete', `/items/${bookId}`);
   }
   // -------------------------------------
   private snackBar = inject(MatSnackBar);
@@ -144,39 +187,23 @@ const isLoggedIn = this.authService.isLoggedIn();
     );
   }
 
-  private calculateTotalQuantity(items: any[]): number {
-    if (!items || items.length === 0) {
-      return 0;
-    }
-    return items.reduce((total, item: any) => total + item.quantity, 0);
+
+  clearCart(): Observable<ApiResponse<Cart>> {
+    return this.createHttpRequest<Cart>('delete', '/clear');
   }
 
-  private normalizeCart(rawCart: any): any {
-    if (!rawCart) {
-      return { items: [] };
-    }
-    if (!rawCart.items) {
-       return { ...rawCart, items: [] };
-    }
 
-    const normalizedItems = rawCart.items.map((item: any) => {
-      if (item.book) {
-        return item;
-      }
-      if (item.bookId) {
-        return {
-          ...item,
-          book: item.bookId,
-          bookId: undefined
-        };
-      }
-      return item;
-    });
-
-    return { ...rawCart, items: normalizedItems };
+  incrementItem(bookId: string): Observable<ApiResponse<Cart>> {
+    return this.createHttpRequest<Cart>('put', `/items/${bookId}/increment`, {});
   }
 
-  public getCartValue(): any | null {
-    return this.cartState.getValue();
+
+  decrementItem(bookId: string): Observable<ApiResponse<Cart>> {
+    return this.createHttpRequest<Cart>('put', `/items/${bookId}/decrement`, {});
+  }
+
+
+  getCurrentCart(): Cart | null {
+    return this.currentCartSubject.value;
   }
 }

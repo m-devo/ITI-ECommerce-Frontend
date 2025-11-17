@@ -101,6 +101,54 @@ export const routes: Routes = [
       }
     ]
   },
+    
+// cart
+{
+  path: 'cart',  canActivate: [AuthGuard],
+  loadComponent: () => import('./features/cart/cart-page/cart-page.component')
+    .then(m => m.CartPageComponent)
+},
 
-  // { path: '**', component: NotFound }
+// checkout
+{
+  path: 'checkout',  canActivate: [AuthGuard],
+  loadComponent: () => import('./features/cart/checkout/checkout.component')
+    .then(m => m.CheckoutComponent)
+},
+
+// order-placed
+{
+  path: 'order-placed',  canActivate: [AuthGuard],
+  loadComponent: () => import('./features/cart/order-placed/order-placed')
+    .then(m => m.OrderPlaced)
+},
+
+// user profile
+{
+  path: 'user', canActivate: [AuthGuard],
+  loadComponent: () => import('./features/profile/dashboard/dashboard.component')
+    .then(m => m.DashboardComponent),
+      children: [
+        { path: '', redirectTo: 'profile', pathMatch: 'full' },
+        {
+          path: 'profile',
+          loadComponent: () => import('./features/profile/profile/profile.component')
+            .then(m => m.ProfileComponent)
+        },
+        {
+          path: 'orders',
+          loadComponent: () => import('./features/profile/orders/orders.component')
+            .then(m => m.OrdersComponent)
+        },
+        {
+          path: 'books',
+          loadComponent: () => import('./features/profile/books/books.component')
+            .then(m => m.BooksComponent)
+        }
+      ]
+  },
+
+  //  404
+  { path: '**', loadComponent: () => import('./shared/components/not-found/not-found')
+    .then(m => m.NotFound) }
 ];

@@ -1,15 +1,22 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { AuthInterceptor } from './core/interceptors/auth.interceptor';
-import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { responsePopupInterceptor } from './core/interceptors/response-popup.interceptor';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideRouter(routes),
-    provideAnimationsAsync(),
-    provideHttpClient(withInterceptors([AuthInterceptor, ErrorInterceptor])),
+  providers: [provideRouter(routes), provideAnimationsAsync(),
+    importProvidersFrom(MatSnackBarModule),
+    provideHttpClient(
+      withInterceptors([
+        responsePopupInterceptor, 
+        authInterceptor, 
+        errorInterceptor
+      ])
+    )
   ],
 };

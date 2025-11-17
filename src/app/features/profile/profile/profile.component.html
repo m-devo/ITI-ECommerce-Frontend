@@ -1,0 +1,207 @@
+<div class="max-w-4xl mx-auto p-6" *ngIf="!isLoading && !error && user; else loadingOrError">
+  <mat-card class="shadow-lg rounded-lg">
+    <mat-card-header class="bg-blue-500 text-white p-6">
+      <!-- <div mat-card-avatar class="bg-white/20 flex items-center justify-center w-16 h-16 rounded-full">
+        <span class="text-white font-bold text-xl">{{ getInitials() }}</span>
+      </div> -->
+      <mat-card-title class="text-2xl font-semibold p-3">{{ user.firstName }} {{ user.lastName }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="p-6">
+      <mat-divider class="mb-6"></mat-divider>
+
+      <div class="mb-8">
+        <h3 class="flex items-center text-xl font-semibold my-4 text-gray-800">
+          <mat-icon class="mr-2">person</mat-icon>
+          Personal Information
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <label class="block text-sm font-medium text-gray-600 mb-1">First Name</label>
+            <span class="text-gray-900">{{ user.firstName }}</span>
+          </div>
+
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <label class="block text-sm font-medium text-gray-600 mb-1">Last Name</label>
+            <span class="text-gray-900">{{ user.lastName }}</span>
+          </div>
+
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <label class="block text-sm font-medium text-gray-600 mb-1">Email</label>
+            <span class="text-gray-900">{{ user.email }}</span>
+          </div>
+
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <label class="block text-sm font-medium text-gray-600 mb-1">Role</label>
+            <mat-chip
+              [class]="user.role === 'admin' ? 'bg-red-100 text-red-800' : user.role === 'author' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'">
+              {{ getRoleDisplay() }}
+            </mat-chip>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider class="mb-6"></mat-divider>
+
+      <div>
+        <h3 class="flex items-center text-2xl font-bold my-6 text-gray-800">
+          <mat-icon class="mr-3 text-blue-600">settings</mat-icon>
+          Account Status
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex items-center justify-between p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center">
+              <mat-icon [class]="'mr-4 ' + (isEmailVerified() ? 'text-green-600' : 'text-red-600')">
+                {{ isEmailVerified() ? 'check_circle' : 'cancel' }}
+              </mat-icon>
+              <span class="font-semibold text-gray-800">Email Verification</span>
+            </div>
+            <mat-chip [class]="isEmailVerified() ? 'bg-green-500 text-white font-semibold' : 'bg-red-500 text-white font-semibold'">
+              {{ isEmailVerified() ? 'Verified' : 'Unverified' }}
+            </mat-chip>
+          </div>
+
+          <div class="flex items-center justify-between p-6 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+            <div class="flex items-center">
+              <mat-icon [class]="'mr-4 ' + (isSubscribed() ? 'text-blue-600' : 'text-gray-500')">
+                {{ isSubscribed() ? 'notifications_active' : 'notifications_off' }}
+              </mat-icon>
+              <span class="font-semibold text-gray-800">Newsletter</span>
+            </div>
+            <mat-chip [class]="isSubscribed() ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-500 text-white font-semibold'">
+              {{ isSubscribed() ? 'Subscribed' : 'Not Subscribed' }}
+            </mat-chip>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider class="mb-6"></mat-divider>
+
+
+      <div class="mb-8" *ngIf="user?.role !== 'author'">
+        <h3 class="flex items-center text-xl font-semibold mb-4 text-gray-800">
+          <mat-icon class="my-4">person_add</mat-icon>
+          Become an Author
+        </h3>
+
+        <div *ngIf="!latestAuthorRequest" class="bg-white p-6 rounded-lg border border-gray-200">
+          <p class="text-gray-600 mb-4">Apply to become an author and start publishing your books on our platform.</p>
+          <button mat-raised-button color="primary" (click)="openAuthorRequestModal()">
+            <mat-icon class="mr-2">add</mat-icon>
+            Submit Author Request
+          </button>
+        </div>
+
+        <div *ngIf="latestAuthorRequest" class="bg-white p-6 rounded-lg border border-gray-200">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="text-lg font-semibold text-gray-800">Author Request Status</h4>
+            <mat-chip [class]="getRequestStatusClass(latestAuthorRequest.status)">
+              {{ getRequestStatusText(latestAuthorRequest.status) }}
+            </mat-chip>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1">Full Name</label>
+              <span class="text-gray-900">{{ latestAuthorRequest.fullName }}</span>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1">Submitted</label>
+              <span class="text-gray-900">{{ latestAuthorRequest.createdAt | date }}</span>
+            </div>
+          </div>
+
+          <div class="mb-4" *ngIf="latestAuthorRequest.bio">
+            <label class="block text-sm font-medium text-gray-600 mb-1">Bio</label>
+            <span class="text-gray-900">{{ latestAuthorRequest.bio }}</span>
+          </div>
+
+          <div class="mb-4" *ngIf="latestAuthorRequest.adminNote">
+            <label class="block text-sm font-medium text-gray-600 mb-1">Admin Note</label>
+            <span class="text-gray-900">{{ latestAuthorRequest.adminNote }}</span>
+          </div>
+
+          <div class="flex gap-2" *ngIf="latestAuthorRequest.status === 'pending'">
+            <button mat-stroked-button color="primary" (click)="editRequest(latestAuthorRequest)">
+              <mat-icon class="mr-2">edit</mat-icon>
+              Edit Request
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Author Request Modal -->
+      <div *ngIf="showAuthorRequestForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">
+              {{ editMode ? 'Edit Author Request' : 'Submit Author Request' }}
+            </h3>
+            <button mat-icon-button (click)="closeAuthorRequestForm()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+
+          <form [formGroup]="authorRequestForm" (ngSubmit)="submitAuthorRequest()">
+            <div class="grid grid-cols-1 gap-4">
+              <mat-form-field appearance="fill">
+                <mat-label>Full Name</mat-label>
+                <input matInput formControlName="fullName" placeholder="Enter your full name as it appears on your ID">
+                <mat-error *ngIf="authorRequestForm.get('fullName')?.invalid && authorRequestForm.get('fullName')?.touched">
+                  Full name is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Bio</mat-label>
+                <textarea matInput formControlName="bio" rows="3" placeholder="Tell us about your writing experience and background"></textarea>
+                <mat-error *ngIf="authorRequestForm.get('bio')?.invalid && authorRequestForm.get('bio')?.touched">
+                  Bio is required (minimum 50 characters)
+                </mat-error>
+              </mat-form-field>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">ID Card Photo</label>
+                <input type="file" accept="image/*" (change)="onIdCardSelected($event)" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <p class="text-xs text-gray-500 mt-1">Upload a clear photo of your ID card (JPG, PNG, max 5MB)</p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Selfie Photo</label>
+                <input type="file" accept="image/*" (change)="onSelfieSelected($event)" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <p class="text-xs text-gray-500 mt-1">Upload a clear selfie showing your face (JPG, PNG, max 5MB)</p>
+              </div>
+
+              <div class="flex justify-end mt-6">
+                <button mat-button (click)="closeAuthorRequestForm()">Cancel</button>
+                <button mat-raised-button color="primary" type="submit" [disabled]="authorRequestForm.invalid || !idCardFile || !selfieFile || isSubmitting">
+                  <mat-icon class="mr-2">{{ isSubmitting ? 'sync' : 'send' }}</mat-icon>
+                  {{ isSubmitting ? 'Submitting...' : (editMode ? 'Update Request' : 'Submit Request') }}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<ng-template #loadingOrError>
+  <div class="flex flex-col items-center justify-center h-64">
+    <div *ngIf="isLoading" class="text-center">
+      <mat-icon class="animate-spin text-6xl text-blue-500 mb-4">sync</mat-icon>
+      <p class="text-gray-600">Loading profile...</p>
+    </div>
+
+    <div *ngIf="error" class="text-center">
+      <mat-icon class="text-6xl text-red-500 mb-4">error</mat-icon>
+      <p class="text-red-600 mb-4">{{ error }}</p>
+      <button mat-raised-button color="primary" (click)="loadUserProfile()">
+        Try Again
+      </button>
+    </div>
+  </div>
+</ng-template>
