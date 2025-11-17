@@ -44,12 +44,12 @@ export class VerifyDeviceComponent implements OnInit {
             this.success = true;
 
             // Save token and user data
-            localStorage.setItem('authToken', response.token);
+            localStorage.setItem('token', response.token);
             localStorage.setItem('user', JSON.stringify(response.data));
 
-            // Redirect to dashboard
+            // Redirect to home page
             setTimeout(() => {
-              this.router.navigate(['/dashboard']);
+              this.router.navigate(['/']);
             }, 3000);
           }
         },

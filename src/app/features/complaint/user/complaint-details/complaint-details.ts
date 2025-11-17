@@ -62,9 +62,10 @@ export class ComplaintDetails implements OnInit{
     replyMessage: new FormControl('', Validators.required)
   });
 
-  ngOnInit(): void {
+ngOnInit(): void {
     this.complaintId = this.route.snapshot.paramMap.get('id');
-    this.currentUserId = this.authService.getCurrentUserId();
+    const currentUser = this.authService.getCurrentUser();
+    this.currentUserId = currentUser ? currentUser._id : null;
 
     if (this.complaintId) {
       this.loadComplaint();

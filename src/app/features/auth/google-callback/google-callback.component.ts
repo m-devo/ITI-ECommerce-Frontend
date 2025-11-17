@@ -39,7 +39,7 @@ export class GoogleCallbackComponent implements OnInit {
         };
 
         // Save to localStorage
-        localStorage.setItem('authToken', token);
+        localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
 
         // Redirect to dashboard

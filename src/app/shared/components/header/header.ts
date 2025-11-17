@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -35,6 +35,7 @@ import { CartService } from '../../../core/services/cart.service';
 export class Header{
   isLoggedIn: boolean = true;
   isAdmin: boolean = true;
+  public isScrolled = false;
 
     constructor(
     public dialog: MatDialog,
@@ -43,6 +44,12 @@ export class Header{
     private router: Router
   ) { }
 
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const verticalOffset = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    this.isScrolled = verticalOffset > 10;
+    console.log('SCROLLING! isScrolled is now:', this.isScrolled);
+  }
   @Output() toggleNav = new EventEmitter<void>()
   onToggleNav(): void {
     this.toggleNav.emit()

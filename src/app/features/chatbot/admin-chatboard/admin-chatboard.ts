@@ -83,11 +83,24 @@ export class AdminChatboard implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
   private shouldScroll = false;
 
-  ngOnInit(): void {
-    this.authSub = this.authService.authStatusChecked$.pipe(
-      filter(isChecked => isChecked === true)
-    ).subscribe(() => {
-      this.connect();
+ngOnInit(): void {
+    // --------------------------------------------------
+    this.authSub = this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        // User has connected
+        if (!this.ws || (this.ws.readyState !== WebSocket.OPEN && this.ws.readyState !== WebSocket.CONNECTING)) {
+          this.connect();
+        }
+      } else {
+        // user has logout close chate
+        if (this.ws) {
+          this.ws.close();
+          this.activeChat.set(null); //  empty the chat
+        }
+        if (this.connectionTimer) {
+          clearTimeout(this.connectionTimer); // stop trying to reconnect him
+        }
+      }
     });
   }
 

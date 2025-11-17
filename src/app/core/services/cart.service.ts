@@ -80,7 +80,7 @@ loadCart(): void {
     })
   ).subscribe();
 }addItem(book: any, quantity: number = 1): void {
-  const isLoggedIn = this.authService.isLoggedIn$.getValue();
+const isLoggedIn = this.authService.isLoggedIn();
 
   if (!isLoggedIn) {
     this.dialog.open(LoginPrompt, { width: '380px', autoFocus: false });

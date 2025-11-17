@@ -3,4 +3,16 @@
     display: none !important;
   }
 }
+header.base-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
 
+header.nav-scrolled {
+  background-color: rgba(255, 255, 255, 0.85);
+
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
