@@ -112,7 +112,8 @@
 </section>
 <!-- Trust Bar -->
 <app-trust-bar></app-trust-bar>
-<!-- Categories Section --><section class="bg-white py-16 relative overflow-hidden">
+<!-- Categories Section -->
+ <section class="bg-white py-16 relative overflow-hidden">
   <div class="absolute top-0 right-0 w-64 h-64 bg-gray-50 rounded-full blur-3xl -z-10 opacity-60"></div>
 
   <div class="container mx-auto px-4">
@@ -225,74 +226,102 @@
   </div>
 </ng-template>
 <!-- Books Sections -->
-<section class="bg-white px-1 py-16 shadow-inner">
+ <section class="bg-white py-20">
   <div class="container mx-auto px-4">
 
-    <h2 class="text-4xl font-serif font-bold text-gray-900 text-center mb-4">
-      Our Books
-    </h2>
-    <div class="w-16 h-1 bg-red-600 mx-auto mb-10"></div>
+    <div class="text-center mb-12">
+      <h2 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
+        Our Books
+      </h2>
+      <div class="flex items-center justify-center gap-2">
+        <div class="w-12 h-1.5 bg-[#00BFC5] rounded-full"></div>
+        <div class="w-2 h-1.5 bg-[#00BFC5] rounded-full"></div>
+      </div>
+    </div>
 
-<div class="flex flex-wrap justify-center gap-4 mb-12">
-  <button
-    (click)="changeCategory('All')"
-    [class.bg-red-600]="activeCategory === 'All'"
-    class="px-6 py-3 rounded-md font-semibold border border-gray-300 hover:bg-red-600 hover:text-white transition-colors">
-    All
-  </button>
+    <div class="flex flex-wrap justify-center gap-3 mb-16">
+      <button
+        (click)="changeCategory('All')"
+        [class]="activeCategory === 'All' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-900 hover:text-gray-900'"
+        class="px-6 py-2.5 rounded-full font-bold border-2 transition-all duration-300 shadow-sm">
+        All
+      </button>
 
-  <button
-    (click)="changeCategory('Database')"
-    [class.bg-red-600]="activeCategory === 'Database'"
-    class="px-6 py-3 rounded-md font-semibold border border-gray-300 hover:bg-red-600 hover:text-white transition-colors">
-    Database
-  </button>
+      <button
+        (click)="changeCategory('Database')"
+        [class]="activeCategory === 'Database' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-900 hover:text-gray-900'"
+        class="px-6 py-2.5 rounded-full font-bold border-2 transition-all duration-300 shadow-sm">
+        Database
+      </button>
 
-  <button
-    (click)="changeCategory('Science')"
-    [class.bg-red-600]="activeCategory === 'Science'"
-    class="px-6 py-3 rounded-md font-semibold border border-gray-300 hover:bg-red-600 hover:text-white transition-colors">
-    History
-  </button>
+      <button
+        (click)="changeCategory('Science')"
+        [class]="activeCategory === 'Science' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-900 hover:text-gray-900'"
+        class="px-6 py-2.5 rounded-full font-bold border-2 transition-all duration-300 shadow-sm">
+        History
+      </button>
 
-  <button
-    (click)="changeCategory('Machine Learning')"
-    [class.bg-red-600]="activeCategory === 'Machine Learning'"
-    class="px-6 py-3 rounded-md font-semibold border border-gray-300 hover:bg-red-600 hover:text-white transition-colors">
-    Machine Learning
-  </button>
+      <button
+        (click)="changeCategory('Machine Learning')"
+        [class]="activeCategory === 'Machine Learning' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-900 hover:text-gray-900'"
+        class="px-6 py-2.5 rounded-full font-bold border-2 transition-all duration-300 shadow-sm">
+        Machine Learning
+      </button>
 
-  <button
-    (click)="changeCategory('AI')"
-    [class.bg-red-600]="activeCategory === 'AI'"
-    class="px-6 py-3 rounded-md font-semibold border border-gray-300 hover:bg-red-600 hover:text-white transition-colors">
-    AI
-  </button>
-</div>
+      <button
+        (click)="changeCategory('AI')"
+        [class]="activeCategory === 'AI' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-900 hover:text-gray-900'"
+        class="px-6 py-2.5 rounded-full font-bold border-2 transition-all duration-300 shadow-sm">
+        AI
+      </button>
+    </div>
 
 
     @if (filteredBooks$ | async; as books) {
 
       @if (books.length > 0) {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
-
           @for (book of books; track book._id) {
-            <div>
+            <div class="h-full">
               <app-book-card
                 [book]="book"
                 (quickViewClicked)="onQuickView(book)"
-                (addToCartClicked)="onAddToCart(book)">
+                (addToCartClicked)="onAddToCart(book)"
+                class="h-full block">
               </app-book-card>
             </div>
           }
-
         </div>
+
       } @else {
-        <p class="text-center text-gray-500">No books found in this category.</p>
+        <div class="text-center py-16 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+          <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-700">No books found</h3>
+          <p class="text-gray-500">Try selecting a different category.</p>
+        </div>
       }
 
     } @else {
-      <p class="text-center text-gray-500">Loading Books...</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        @for (item of [1,2,3,4,5,6,7,8]; track $index) {
+          <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm h-[400px] flex flex-col">
+            <div class="h-64 bg-gray-200 animate-pulse w-full"></div>
+            <div class="p-5 space-y-4 flex-1">
+              <div class="flex justify-between">
+                 <div class="h-3 bg-gray-200 rounded w-1/3 animate-pulse"></div>
+                 <div class="h-3 bg-gray-200 rounded w-1/5 animate-pulse"></div>
+              </div>
+              <div class="h-5 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+              <div class="h-3 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+              <div class="h-8 bg-gray-200 rounded w-full animate-pulse mt-auto"></div>
+            </div>
+          </div>
+        }
+      </div>
     }
 
   </div>
