@@ -1,5 +1,5 @@
 .dashboard-container {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -34,7 +34,7 @@
 
 .navbar-links {
   display: flex;
-  margin-left: 40px;
+  justify-content: center;
 }
 
 .nav-link {
@@ -84,7 +84,6 @@
 
 .content-wrapper {
   flex: 1;
-  overflow-y: auto;
   background-color: #fafafa;
   padding: 16px;
 }
@@ -92,7 +91,6 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .navbar-links {
-    margin-left: 20px;
   }
 
   .nav-link {

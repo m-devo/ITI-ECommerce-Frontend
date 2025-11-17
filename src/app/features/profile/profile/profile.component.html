@@ -70,9 +70,13 @@
               </mat-icon>
               <span class="font-semibold text-gray-800">Newsletter</span>
             </div>
-            <mat-chip [class]="isSubscribed() ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-500 text-white font-semibold'">
-              {{ isSubscribed() ? 'Subscribed' : 'Not Subscribed' }}
-            </mat-chip>
+            <button
+              mat-raised-button
+              [color]="isSubscribed() ? 'warn' : 'primary'"
+              (click)="toggleNewsletterSubscription()">
+              <mat-icon class="mr-2">{{ isSubscribed() ? 'unsubscribe' : 'notifications_active' }}</mat-icon>
+              {{ isSubscribed() ? 'Unsubscribe' : 'Subscribe' }}
+            </button>
           </div>
         </div>
       </div>
