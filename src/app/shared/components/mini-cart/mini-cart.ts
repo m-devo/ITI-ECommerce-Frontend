@@ -30,6 +30,7 @@ export class MiniCart {
   public dialogRef = inject(MatDialogRef<MiniCart>)
 
   public cart$: Observable<any |null>
+  loading$ = this.cartService.loading$;
 
   constructor () {
     this.cart$ = this.cartService.cart$

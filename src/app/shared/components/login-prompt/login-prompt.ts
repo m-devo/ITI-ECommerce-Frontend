@@ -16,7 +16,7 @@ private dialogRef = inject(MatDialogRef<LoginPrompt>);
 
   onLogin(): void {
     this.dialogRef.close();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
   }
 
   onClose(): void {
