@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../../core/services/auth.service';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { environment } from '../../../../environments/environment.prod';
 
 type ChatMessage = {
   sender: 'user' | 'bot';
@@ -94,7 +95,7 @@ export class ChatBubble implements OnInit, AfterViewChecked, OnDestroy {
     this.isConnecting.set(true);
     const token = this.authService.getToken();
 
-    let wsUrl = "ws://localhost:4000";
+    let wsUrl = `${environment.wsUrl}`;
 
     if (token) {
       wsUrl += `?token=${token}`;
