@@ -10,6 +10,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { CartService } from '../../../core/services/cart.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Cart, CartItem, Book } from '../../../core/models/api-models';
+import { Header } from "../../../shared/components/header/header";
+import { Footer } from "../../../shared/components/footer/footer";
 
 @Component({
   selector: 'app-cart-page',
@@ -21,8 +23,10 @@ import { Cart, CartItem, Book } from '../../../core/models/api-models';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatDividerModule
-  ],
+    MatDividerModule,
+    Header,
+    Footer
+],
   templateUrl: './cart-page.component.html',
   styleUrls: ['./cart-page.component.css']
 })

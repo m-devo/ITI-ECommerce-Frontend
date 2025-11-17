@@ -11,6 +11,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
+import { Header } from "../../../shared/components/header/header";
+import { Footer } from "../../../shared/components/footer/footer";
 // Temporary - components will be loaded dynamically
 
 @Component({
@@ -29,8 +31,10 @@ import { MatCardModule } from '@angular/material/card';
     MatMenuModule,
     MatBadgeModule,
     MatTooltipModule,
-    MatCardModule
-  ],
+    MatCardModule,
+    Header,
+    Footer
+],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

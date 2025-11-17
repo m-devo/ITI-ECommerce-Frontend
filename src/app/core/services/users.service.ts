@@ -52,5 +52,13 @@ updateAuthorRequest(requestId: string, formData: FormData): Observable<ApiRespon
   return this.http.patch<ApiResponse<AuthorRequest>>(`${environment.apiUrl}/user/requests/${requestId}`, formData);
 }
 
+subscribeToNewsletter(email: string): Observable<ApiResponse<any>> {
+  return this.http.post<ApiResponse<any>>(`${environment.apiUrl}/news/subscribe`, { email });
+}
+
+unsubscribeFromNewsletter(): Observable<ApiResponse<any>> {
+  return this.http.patch<ApiResponse<any>>(`${environment.apiUrl}/news/unsubscribe`, {});
+}
+
 }
 
