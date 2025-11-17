@@ -12,6 +12,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { AdminlayoutComponent } from '../../admin/adminlayout/adminlayout.component';
+import { environment } from '../../../../environments/environment.prod';
 
 type AdminWSMessage = {
   type: 'welcome_admin' |
@@ -84,7 +85,6 @@ export class AdminChatboard implements OnInit, OnDestroy, AfterViewChecked {
   private shouldScroll = false;
 
 ngOnInit(): void {
-    // --------------------------------------------------
     this.authSub = this.authService.currentUser$.subscribe(user => {
       if (user) {
         // User has connected
@@ -127,7 +127,7 @@ ngOnInit(): void {
       return;
     }
 
-    let wsUrl = `ws://localhost:4000?role=admin&token=${token}`;
+    let wsUrl = `${environment.wsUrl}?role=admin&token=${token}`;
 
     this.ws = new WebSocket(wsUrl);
 
