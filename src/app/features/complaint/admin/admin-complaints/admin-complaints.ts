@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { StatusBgPipe } from '../../../../core/pipes/status-bg.pipe';
 import { AdminlayoutComponent } from '../../../admin/adminlayout/adminlayout.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-admin-complaints',
@@ -35,7 +36,8 @@ import { AdminlayoutComponent } from '../../../admin/adminlayout/adminlayout.com
     MatIconModule,
     MatInputModule,
     StatusBgPipe,
-    AdminlayoutComponent
+    AdminlayoutComponent,
+    MatTooltipModule
   ],
   templateUrl: './admin-complaints.html',
   styleUrl: './admin-complaints.css',
