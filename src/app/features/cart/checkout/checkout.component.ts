@@ -15,6 +15,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CheckoutService } from '../../../core/services/checkout.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { CheckoutPreResponse, CheckoutRequest, PaymentMethod } from '../../../core/models/api-models';
+import { Header } from "../../../shared/components/header/header";
+import { Footer } from "../../../shared/components/footer/footer";
 
 @Component({
   selector: 'app-checkout',
@@ -29,8 +31,10 @@ import { CheckoutPreResponse, CheckoutRequest, PaymentMethod } from '../../../co
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
-  ],
+    MatProgressSpinnerModule,
+    Header,
+    Footer
+],
   templateUrl: "./checkout.component.html",
   styles: [`
     .container {

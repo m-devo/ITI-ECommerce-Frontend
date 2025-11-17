@@ -203,4 +203,40 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
+
+  toggleNewsletterSubscription(): void {
+    if (this.isSubscribed()) {
+      this.unsubscribeFromNewsletter();
+    } else {
+      this.subscribeToNewsletter();
+    }
+  }
+
+  subscribeToNewsletter(): void {
+    if (!this.user?.email) return;
+
+    this.usersService.subscribeToNewsletter(this.user.email).subscribe({
+      next: (response: any) => {
+        if (response.success) {
+          this.user!.isSubscribedToNewsService = true;
+        }
+      },
+      error: (error: any) => {
+        console.error('Error subscribing to newsletter:', error);
+      }
+    });
+  }
+
+  unsubscribeFromNewsletter(): void {
+    this.usersService.unsubscribeFromNewsletter().subscribe({
+      next: (response: any) => {
+        if (response.success) {
+          this.user!.isSubscribedToNewsService = false;
+        }
+      },
+      error: (error: any) => {
+        console.error('Error unsubscribing from newsletter:', error);
+      }
+    });
+  }
 }

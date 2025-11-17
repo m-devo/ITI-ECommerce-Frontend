@@ -70,9 +70,13 @@
               </mat-icon>
               <span class="font-semibold text-gray-800">Newsletter</span>
             </div>
-            <mat-chip [class]="isSubscribed() ? 'bg-blue-500 text-white font-semibold' : 'bg-gray-500 text-white font-semibold'">
-              {{ isSubscribed() ? 'Subscribed' : 'Not Subscribed' }}
-            </mat-chip>
+            <button
+              mat-raised-button
+              [color]="isSubscribed() ? 'warn' : 'primary'"
+              (click)="toggleNewsletterSubscription()">
+              <mat-icon class="mr-2">{{ isSubscribed() ? 'unsubscribe' : 'notifications_active' }}</mat-icon>
+              {{ isSubscribed() ? 'Unsubscribe' : 'Subscribe' }}
+            </button>
           </div>
         </div>
       </div>
@@ -104,12 +108,16 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label class="block text-sm font-medium text-gray-600 mb-1">Full Name</label>
-              <span class="text-gray-900">{{ latestAuthorRequest.fullName }}</span>
-            </div>
-            <div>
               <label class="block text-sm font-medium text-gray-600 mb-1">Submitted</label>
               <span class="text-gray-900">{{ latestAuthorRequest.createdAt | date }}</span>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1">Admin Note</label>
+              <span class="text-gray-900">{{ latestAuthorRequest.adminNote }}</span>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-1">Status</label>
+              <span class="text-gray-900">{{ latestAuthorRequest.status }}</span>
             </div>
           </div>
 
@@ -118,10 +126,6 @@
             <span class="text-gray-900">{{ latestAuthorRequest.bio }}</span>
           </div>
 
-          <div class="mb-4" *ngIf="latestAuthorRequest.adminNote">
-            <label class="block text-sm font-medium text-gray-600 mb-1">Admin Note</label>
-            <span class="text-gray-900">{{ latestAuthorRequest.adminNote }}</span>
-          </div>
 
           <div class="flex gap-2" *ngIf="latestAuthorRequest.status === 'pending'">
             <button mat-stroked-button color="primary" (click)="editRequest(latestAuthorRequest)">

@@ -15,13 +15,13 @@
 }
 
 .success-snackbar .mdc-snackbar__surface {
-  background-color: rgb(34 197 94) !important;
+  background-color: rgb(59 130 246) !important;
   border-radius: 8px !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
 }
 
 .success-snackbar .mat-mdc-button {
-  color: rgb(34 197 94) !important;
+  color: rgb(59 130 246) !important;
   background-color: white !important;
   border-radius: 4px !important;
   font-weight: 500 !important;
