@@ -5,21 +5,20 @@ import { environment } from '../../../environments/environment.prod';
 
 const URL = `${environment.apiUrl}`;
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BookService {
-
   constructor(private http: HttpClient) {}
 
   getBooks(currentPage: number, limit: number): Observable<any[]> {
     return this.http.get<any[]>('/api/books');
   }
-  getBookById(id: number): Observable<any> {
-    return this.http.get<any>(`/api/books/${id}`);
+  getBookById(id: string): Observable<any> {
+    return this.http.get<any>(`/books/${id}`);
   }
 
-// Shop Page
-getPublicBooks(params: any = {}): Observable<any> {
+  // Shop Page
+  getPublicBooks(params: any = {}): Observable<any> {
     return this.http.get(`${URL}/public/books`, { params: params });
   }
   ////////////////////Home Page/////////////////
@@ -27,13 +26,13 @@ getPublicBooks(params: any = {}): Observable<any> {
     return this.http.get(`${URL}/features/homepage`);
   }
 
-  getFilterdBooks(params: any): Observable<any>{
-    return this.http.get(`${URL}/search/facets`, {params: params})
+  getFilterdBooks(params: any): Observable<any> {
+    return this.http.get(`${URL}/search/facets`, { params: params });
   }
 
   getSearchSuggestions(query: string): Observable<any> {
     return this.http.get(`${URL}/search/suggest`, {
-      params: { query: query }
+      params: { query: query },
     });
   }
 

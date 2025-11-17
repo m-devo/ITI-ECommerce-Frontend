@@ -20,26 +20,36 @@ export const routes: Routes = [
       {
         path: '',
         component: Home,
-        pathMatch: 'full'
+        pathMatch: 'full',
       },
       {
         path: 'shop',
-        loadComponent: () => import('./features/shop/shop')
-                              .then(m => m.Shop),
+        loadComponent: () => import('./features/shop/shop').then((m) => m.Shop),
       },
       {
         path: 'user/complaints',
-        loadComponent: () => import("./features/complaint/user/user-complaints/user-complaints")
-                              .then(m => m.UserComplaints),
-        canActivate: [AuthGuard]
+        loadComponent: () =>
+          import(
+            './features/complaint/user/user-complaints/user-complaints'
+          ).then((m) => m.UserComplaints),
+        canActivate: [AuthGuard],
       },
       {
         path: 'user/complaint/:id',
-        loadComponent: () => import("./features/complaint/user/complaint-details/complaint-details")
-                              .then(m => m.ComplaintDetails),
-        canActivate: [AuthGuard]
-      }
-    ]
+        loadComponent: () =>
+          import(
+            './features/complaint/user/complaint-details/complaint-details'
+          ).then((m) => m.ComplaintDetails),
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'book/:id',
+        loadComponent: () =>
+          import('./features/book/book-details/book-details').then(
+            (m) => m.BookDetails
+          ),
+      },
+    ],
   },
 
   // Auth routes
@@ -51,7 +61,6 @@ export const routes: Routes = [
   { path: 'auth/reset-password/:token', component: ResetPasswordComponent },
   { path: 'auth/google/callback', component: GoogleCallbackComponent },
 
-
   // Admin routes
   {
     path: 'admin',
@@ -60,95 +69,132 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
-        loadComponent: () => import('./features/admin/dashboard/dashboard.component')
-          .then(m => m.DashboardComponent),
+        loadComponent: () =>
+          import('./features/admin/dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent
+          ),
       },
       {
         path: 'books',
-        loadComponent: () => import('./features/admin/book-management/book-management.component')
-          .then(m => m.BookManagementComponent)
+        loadComponent: () =>
+          import(
+            './features/admin/book-management/book-management.component'
+          ).then((m) => m.BookManagementComponent),
       },
       {
         path: 'authors',
-        loadComponent: () => import('./features/admin/authoradmin/authoradmin.component')
-          .then(m => m.AuthoradminComponent)
+        loadComponent: () =>
+          import('./features/admin/authoradmin/authoradmin.component').then(
+            (m) => m.AuthoradminComponent
+          ),
       },
       {
         path: 'orders',
-        loadComponent: () => import('./features/admin/orderadmin/orderadmin.component')
-          .then(m => m.OrderadminComponent)
+        loadComponent: () =>
+          import('./features/admin/orderadmin/orderadmin.component').then(
+            (m) => m.OrderadminComponent
+          ),
       },
       {
         path: 'users',
-        loadComponent: () => import('./features/admin/useradmin/useradmin.component')
-          .then(m => m.UseradminComponent)
+        loadComponent: () =>
+          import('./features/admin/useradmin/useradmin.component').then(
+            (m) => m.UseradminComponent
+          ),
       },
 
       {
         path: 'complaints',
-        loadComponent: () => import('./features/complaint/admin/admin-complaints/admin-complaints')
-                              .then(m => m.AdminComplaints),
+        loadComponent: () =>
+          import(
+            './features/complaint/admin/admin-complaints/admin-complaints'
+          ).then((m) => m.AdminComplaints),
       },
       {
         path: 'complaint/:id',
-        loadComponent: () => import('./features/complaint/admin/admin-complaint-details/admin-complaint-details')
-                              .then(m => m.AdminComplaintDetails),
+        loadComponent: () =>
+          import(
+            './features/complaint/admin/admin-complaint-details/admin-complaint-details'
+          ).then((m) => m.AdminComplaintDetails),
       },
       {
         path: 'chat',
-        loadComponent: () => import('./features/chatbot/admin-chatboard/admin-chatboard')
-                              .then(m => m.AdminChatboard),
-      }
-    ]
+        loadComponent: () =>
+          import('./features/chatbot/admin-chatboard/admin-chatboard').then(
+            (m) => m.AdminChatboard
+          ),
+      },
+    ],
   },
-    
-// cart
-{
-  path: 'cart',  canActivate: [AuthGuard],
-  loadComponent: () => import('./features/cart/cart-page/cart-page.component')
-    .then(m => m.CartPageComponent)
-},
 
-// checkout
-{
-  path: 'checkout',  canActivate: [AuthGuard],
-  loadComponent: () => import('./features/cart/checkout/checkout.component')
-    .then(m => m.CheckoutComponent)
-},
+  // cart
+  {
+    path: 'cart',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('./features/cart/cart-page/cart-page.component').then(
+        (m) => m.CartPageComponent
+      ),
+  },
 
-// order-placed
-{
-  path: 'order-placed',  canActivate: [AuthGuard],
-  loadComponent: () => import('./features/cart/order-placed/order-placed')
-    .then(m => m.OrderPlaced)
-},
+  // checkout
+  {
+    path: 'checkout',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('./features/cart/checkout/checkout.component').then(
+        (m) => m.CheckoutComponent
+      ),
+  },
 
-// user profile
-{
-  path: 'user', canActivate: [AuthGuard],
-  loadComponent: () => import('./features/profile/dashboard/dashboard.component')
-    .then(m => m.DashboardComponent),
-      children: [
-        { path: '', redirectTo: 'profile', pathMatch: 'full' },
-        {
-          path: 'profile',
-          loadComponent: () => import('./features/profile/profile/profile.component')
-            .then(m => m.ProfileComponent)
-        },
-        {
-          path: 'orders',
-          loadComponent: () => import('./features/profile/orders/orders.component')
-            .then(m => m.OrdersComponent)
-        },
-        {
-          path: 'books',
-          loadComponent: () => import('./features/profile/books/books.component')
-            .then(m => m.BooksComponent)
-        }
-      ]
+  // order-placed
+  {
+    path: 'order-placed',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('./features/cart/order-placed/order-placed').then(
+        (m) => m.OrderPlaced
+      ),
+  },
+
+  // user profile
+  {
+    path: 'user',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('./features/profile/dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent
+      ),
+    children: [
+      { path: '', redirectTo: 'profile', pathMatch: 'full' },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/profile/profile/profile.component').then(
+            (m) => m.ProfileComponent
+          ),
+      },
+      {
+        path: 'orders',
+        loadComponent: () =>
+          import('./features/profile/orders/orders.component').then(
+            (m) => m.OrdersComponent
+          ),
+      },
+      {
+        path: 'books',
+        loadComponent: () =>
+          import('./features/profile/books/books.component').then(
+            (m) => m.BooksComponent
+          ),
+      },
+    ],
   },
 
   //  404
-  { path: '**', loadComponent: () => import('./shared/components/not-found/not-found')
-    .then(m => m.NotFound) }
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./shared/components/not-found/not-found').then((m) => m.NotFound),
+  },
 ];
