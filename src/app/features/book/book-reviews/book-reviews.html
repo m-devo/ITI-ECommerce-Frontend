@@ -1,0 +1,209 @@
+<!-- <p>book-reviews works!</p> -->
+<div class="min-h-screen bg-gray-50 py-12">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Reviews Header -->
+    <div class="bg-white rounded-xl shadow-sm p-8 mb-8">
+      <h2 class="text-3xl font-bold text-dark mb-6">Customer Reviews</h2>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Average Rating -->
+        <div class="text-center lg:text-left">
+          <div class="text-5xl font-bold text-dark mb-2">
+            {{ averageRating | number:'1.1-1' }}
+          </div>
+          <div
+            class="flex items-center justify-center lg:justify-start gap-1 mb-2"
+          >
+            <span
+              *ngFor="let star of getStarArray()"
+              [class.text-accent]="star <= roundedRating"
+              [class.text-gray-300]="star > roundedRating"
+              class="text-2xl"
+              >★</span
+            >
+          </div>
+          <p class="text-dark-light">Based on {{ totalReviews }} reviews</p>
+        </div>
+
+        <!-- Rating Distribution -->
+        <div class="lg:col-span-2 space-y-2">
+          <div
+            *ngFor="let dist of ratingDistribution"
+            class="flex items-center gap-3"
+          >
+            <div class="flex items-center gap-1 w-16">
+              <span class="text-sm font-medium text-dark"
+                >{{ dist.stars }}</span
+              >
+              <span class="text-accent text-sm">★</span>
+            </div>
+            <div class="flex-1 h-3 bg-neutral rounded-full overflow-hidden">
+              <div
+                class="h-full bg-accent transition-all duration-500"
+                [style.width.%]="dist.percentage"
+              ></div>
+            </div>
+            <span class="text-sm text-dark-light w-12 text-right"
+              >{{ dist.count }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters and Sort -->
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div class="flex items-center gap-3">
+        <svg
+          class="w-5 h-5 text-dark-light"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+          />
+        </svg>
+        <select
+          [(ngModel)]="filterRating"
+          (change)="applyFilters()"
+          class="px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-none bg-white text-dark font-medium"
+        >
+          <option value="all">All Ratings</option>
+          <option value="5">5 Stars</option>
+          <option value="4">4 Stars</option>
+          <option value="3">3 Stars</option>
+          <option value="2">2 Stars</option>
+          <option value="1">1 Star</option>
+        </select>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span class="text-sm font-medium text-dark-light">Sort by:</span>
+        <select
+          [(ngModel)]="sortBy"
+          (change)="applyFilters()"
+          class="px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-none bg-white text-dark font-medium"
+        >
+          <option value="recent">Most Recent</option>
+          <option value="highest">Highest Rating</option>
+          <option value="lowest">Lowest Rating</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-12">
+      <div
+        class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"
+      ></div>
+      <p class="text-dark-light mt-4">Loading reviews...</p>
+    </div>
+
+    <!-- Reviews List -->
+    <div *ngIf="!isLoading" class="space-y-6">
+      <div
+        *ngFor="let review of reviews"
+        class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition"
+      >
+        <!-- Review Header -->
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center gap-4">
+            <img
+              [src]="review.user.avatar || 'https://avatar.iran.liara.run/public/' + review.user._id"
+              [alt]="review.user.name"
+              class="w-12 h-12 rounded-full border-2 border-neutral object-cover"
+            />
+            <div>
+              <div class="flex items-center gap-2">
+                <h4 class="font-bold text-dark">{{ review.user.name }}</h4>
+              </div>
+              <p class="text-sm text-dark-light">
+                {{ formatDate(review.createdAt) }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Edit / Delete buttons — owner's only -->
+          <div *ngIf="canEdit(review)" class="flex items-center gap-2">
+            <button
+              class="px-3 py-1 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 transition"
+              (click)="openEdit(review)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+
+            <button
+              class="px-3 py-1 text-sm rounded-lg border border-red-400 text-red-600 hover:bg-red-50 transition"
+              (click)="deleteReview(review._id)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+
+          <!-- Rating Stars -->
+          <div class="flex gap-1">
+            <span
+              *ngFor="let star of getStarArray()"
+              [class.text-accent]="star <= review.rating"
+              [class.text-gray-300]="star > review.rating"
+              class="text-xl"
+              >★</span
+            >
+          </div>
+        </div>
+
+        <!-- Review Content -->
+        <h3 class="text-lg font-bold text-dark mb-2">{{ review.title }}</h3>
+        <p class="text-dark-light leading-relaxed mb-4">{{ review.comment }}</p>
+
+        <!-- Audio Player (if available) -->
+        <div *ngIf="review.audioUrl" class="bg-neutral rounded-lg p-4 mb-4">
+          <div class="flex items-center gap-2 mb-2">
+            <svg
+              class="w-4 h-4 text-primary"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <span class="text-sm font-semibold text-dark">Audio Review</span>
+          </div>
+          <audio [src]="review.audioUrl" controls class="w-full mb-2"></audio>
+          <p
+            *ngIf="review.transcription"
+            class="text-xs text-dark-light italic"
+          >
+            Transcription: "{{ review.transcription }}"
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && reviews.length === 0" class="text-center py-16">
+      <svg
+        class="w-20 h-20 text-gray-300 mx-auto mb-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+        />
+      </svg>
+      <h3 class="text-xl font-semibold text-dark mb-2">No reviews yet</h3>
+      <p class="text-dark-light">Be the first to review this book!</p>
+    </div>
+  </div>
+</div>

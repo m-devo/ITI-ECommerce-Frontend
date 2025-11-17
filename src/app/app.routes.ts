@@ -1,6 +1,10 @@
 import { Routes } from '@angular/router';
+import { BookDetails } from './features/book/book-details/book-details';
+// import { Search } from './features/book/search/search';
 
 export const routes: Routes = [
+  { path: 'book/:id', component: BookDetails },
+  // { path: 'search', component: Search },
   { path: '', redirectTo: 'admin', pathMatch: 'full' },
 
   {
@@ -11,37 +15,47 @@ export const routes: Routes = [
       // Dashboard
       {
         path: 'dashboard',
-        loadComponent: () => import('./features/admin/dashboard/dashboard.component')
-          .then(m => m.DashboardComponent)
+        loadComponent: () =>
+          import('./features/admin/dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent
+          ),
       },
 
       // Books
       {
         path: 'books',
-        loadComponent: () => import('./features/admin/book-management/book-management.component')
-          .then(m => m.BookManagementComponent)
+        loadComponent: () =>
+          import(
+            './features/admin/book-management/book-management.component'
+          ).then((m) => m.BookManagementComponent),
       },
 
       // Authors
       {
         path: 'authors',
-        loadComponent: () => import('./features/admin/authoradmin/authoradmin.component')
-          .then(m => m.AuthoradminComponent)
+        loadComponent: () =>
+          import('./features/admin/authoradmin/authoradmin.component').then(
+            (m) => m.AuthoradminComponent
+          ),
       },
 
       // Orders
       {
         path: 'orders',
-        loadComponent: () => import('./features/admin/orderadmin/orderadmin.component')
-          .then(m => m.OrderadminComponent)
+        loadComponent: () =>
+          import('./features/admin/orderadmin/orderadmin.component').then(
+            (m) => m.OrderadminComponent
+          ),
       },
 
       // Users
       {
         path: 'users',
-        loadComponent: () => import('./features/admin/useradmin/useradmin.component')
-          .then(m => m.UseradminComponent)
-      }
+        loadComponent: () =>
+          import('./features/admin/useradmin/useradmin.component').then(
+            (m) => m.UseradminComponent
+          ),
+      },
     ],
   },
 ];
