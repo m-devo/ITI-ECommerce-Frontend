@@ -1,72 +1,113 @@
-<button
-  mat-icon-button
-  (click)="closeModal()"
-  class="!absolute top-4 right-4 z-20 text-gray-500 hover:text-gray-900">
-  <mat-icon>close</mat-icon>
-</button>
+<div class="relative w-full bg-white overflow-hidden flex flex-col md:flex-row max-h-[90vh] md:h-auto">
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto p-4 md:p-6">
-  <div class="w-full">
-    <img [src]="book.imagePath" [alt]="book.title" class="w-full h-auto object-cover rounded-lg shadow-lg">
+  <button
+    mat-icon-button
+    (click)="closeModal()"
+    class="!absolute top-3 right-3 z-50 text-gray-400 hover:text-red-500 transition-colors duration-300 bg-white/80 backdrop-blur-sm rounded-full shadow-sm">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="w-full md:w-5/12 bg-gray-50 flex items-center justify-center p-6 md:p-8 relative overflow-hidden group">
+    <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 opacity-50"></div>
+    <img [src]="book.imagePath" [alt]="book.title"
+      class="relative z-10 w-40 md:w-48 lg:w-56 h-auto object-cover rounded-md shadow-2xl transform transition-transform duration-500 group-hover:scale-105 group-hover:rotate-1">
   </div>
 
-  <div class="flex flex-col">
+  <div class="w-full md:w-7/12 p-6 md:p-8 flex flex-col overflow-y-auto custom-scrollbar">
 
-    <h2 class="text-2xl font-serif font-bold text-gray-900 mb-2">
-      {{ book.title }}
-    </h2>
-
-    <p class="text-gray-600 mb-4 text-base">
-      Author:{{ book.author }}, <br>
-      Book-Description: {{book.description}}
-    </p>
-
-    <div class="flex items-center gap-3 mb-6 pb-6 border-b border-gray-200">
-      <span class="text-red-600 font-bold text-2xl">
-      Price:  LE {{ book.price | number:'1.2-2' }}
+    <div class="flex justify-between items-start mb-3">
+      <span class="px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#00BFC5] bg-[#00BFC5]/10 rounded-full">
+        {{ book.category }}
       </span>
-    </div>
 
-    <div class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm text-gray-700 mb-6">
-      <div class="font-semibold">Vendor:</div>
-      <div class="text-gray-500">{{ book.author }}</div>
-
-      <div class="font-semibold">Type:</div>
-      <div class="text-gray-500">{{book.category}}</div>
-
-      <div class="font-semibold">Rating:</div>
-      <div class="text-gray-500">{{book.averageRating}}</div>
-    </div>
-
-    <div class="text-sm space-y-3 mb-8">
-      <p><strong>Availability: </strong> <span class="text-green-600">{{book.stock}}</span></p>
-      <p><strong>Sub total:</strong> <span class="text-gray-900 font-bold text-base">
-        LE {{ book.price * quantity | number:'1.2-2' }}</span></p>
-    </div>
-
-    <div class="mb-6">
-      <label class="font-semibold text-sm text-gray-700 mb-2 block">Quantity</label>
-      <div class="flex items-center border rounded-md max-w-fit">
-        <button (click)="decrementQuantity()" mat-icon-button class="!w-12 !h-12 text-gray-500">
-          <mat-icon>remove</mat-icon>
-        </button>
-        <span class="px-5 text-lg font-bold">{{ quantity }}</span>
-        <button (click)="incrementQuantity()" mat-icon-button class="!w-12 !h-12 text-gray-500">
-          <mat-icon>add</mat-icon>
-        </button>
+      <div class="flex items-center gap-1">
+        <ng-container *ngFor="let s of [1,2,3,4,5]">
+          <mat-icon class="!w-4 !h-4 text-[18px]"
+            [ngClass]="book.averageRating >= s ? 'text-yellow-400' : 'text-gray-200'">
+            star
+          </mat-icon>
+        </ng-container>
+        <span class="text-gray-500 text-xs font-medium ml-1">({{ book.averageRating }})</span>
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-3 mb-3">
-      <button (click)="onAddToCart()" mat-raised-button color="warn" class="!py-6 !text-base">
-        Add To Cart
-      </button>
-    <button mat-raised-button color="primary" class="!py-6 !text-base">
-      Buy It Now
-    </button>
-    <!-- </div>
-          <button mat-flat-button class="!py-6 !text-base !bg-gray-200 !text-gray-800">
-        Add To Wishlist
-      </button>
-  </div> -->
+    <h2 class="text-2xl md:text-3xl font-serif font-bold text-gray-900 leading-tight mb-2">
+      {{ book.title }}
+    </h2>
+
+    <p class="text-gray-500 font-medium mb-4">
+      By <span class="text-gray-800">{{ book.author }}</span>
+    </p>
+
+    <div class="mb-4 border-b border-gray-100 pb-4">
+      <div class="flex items-end gap-2">
+        <h3 class="text-3xl font-bold text-[#00BFC5]">
+          LE {{ book.price | number:'1.2-2' }}
+        </h3>
+        <span class="text-gray-400 text-sm mb-1 line-through" *ngIf="book.oldPrice">
+          LE {{ book.oldPrice }}
+        </span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 mb-5 bg-gray-50 p-4 rounded-xl border border-gray-100">
+       <div><span class="font-semibold text-gray-800">Vendor:</span> {{ book.author }}</div>
+       <div><span class="font-semibold text-gray-800">Type:</span> {{ book.category }}</div>
+       <div><span class="font-semibold text-gray-800">Rating:</span> {{ book.averageRating }} / 5</div>
+       <div>
+         <span class="font-semibold text-gray-800">Availability:</span>
+         <span [class.text-green-600]="book.stock > 0" [class.text-red-500]="book.stock === 0" class="font-bold ml-1">
+           {{ book.stock }} Items
+         </span>
+       </div>
+    </div>
+
+    <div class="mb-6">
+      <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-2">Description</h4>
+      <p class="text-gray-600 text-sm leading-relaxed">
+        {{ book.description }}
+      </p>
+    </div>
+
+    <div class="mt-auto space-y-5 bg-white pt-2">
+
+      <div class="flex flex-wrap items-center justify-between gap-4">
+
+        <div class="flex items-center gap-3">
+          <label class="text-sm font-semibold text-gray-700">Quantity:</label>
+          <div class="flex items-center border border-gray-200 rounded-lg bg-gray-50">
+            <button (click)="decrementQuantity()" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-[#00BFC5] transition">
+              <mat-icon class="!w-5 !h-5 text-[20px]">remove</mat-icon>
+            </button>
+            <span class="w-10 text-center font-bold text-gray-800">{{ quantity }}</span>
+            <button (click)="incrementQuantity()" class="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-[#00BFC5] transition">
+              <mat-icon class="!w-5 !h-5 text-[20px]">add</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="text-right">
+          <p class="text-xs text-gray-500 font-medium uppercase">Subtotal</p>
+          <p class="text-xl font-bold text-gray-900">
+            LE {{ (book.price * quantity) | number:'1.2-2' }}
+          </p>
+        </div>
+
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <button (click)="onAddToCart()"
+          class="w-full py-3 px-6 rounded-xl bg-gray-900 text-white font-bold shadow-lg hover:bg-gray-800 hover:shadow-xl transform active:scale-95 transition-all duration-200 flex items-center justify-center gap-2">
+          <mat-icon class="!w-5 !h-5 text-[20px]">shopping_cart</mat-icon>
+          Add to Cart
+        </button>
+
+        <button
+          class="w-full py-3 px-6 rounded-xl border-2 border-[#00BFC5] text-[#00BFC5] font-bold hover:bg-[#00BFC5] hover:text-white transition-all duration-200">
+          Buy Now
+        </button>
+      </div>
+
+    </div>
+  </div>
 </div>

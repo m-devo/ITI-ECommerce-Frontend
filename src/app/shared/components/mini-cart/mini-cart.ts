@@ -8,6 +8,7 @@ import { RouterLink } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CartService } from '../../../core/services/cart.service';
 import { Observable } from 'rxjs';
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
 
 
 @Component({
@@ -18,8 +19,9 @@ import { Observable } from 'rxjs';
     MatButtonModule,
     MatIconModule,
     RouterLink,
-    MatDialogModule
-  ],
+    MatDialogModule,
+    MatProgressSpinner
+],
   templateUrl: './mini-cart.html',
   styleUrl: './mini-cart.css',
 })

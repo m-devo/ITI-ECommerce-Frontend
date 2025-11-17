@@ -120,31 +120,62 @@ export class CartService {
       catchError(this.handleError('GET /cart'))
     );
   }
-   addItem(book: Book, quantity: number = 1): void {
-  const isLoggedIn = this.authService.isLoggedIn();
+
+  updateCart(cartItems: CartUpdateRequest[]): Observable<ApiResponse<Cart> | null> {
+    this._cartIsLoading.next(true);
+    return this.http.put<ApiResponse<Cart>>(`${this.URL}/update`, cartItems).pipe(
+      tap(response => this.updateCartState(response)),
+      finalize(() => this._cartIsLoading.next(false)),
+      catchError(this.handleError('updateCart'))
+    );
+  }
+
+  addItem(book: Book, quantityToAdd: number = 1): void {
+    const isLoggedIn = this.authService.isLoggedIn();
     if (!isLoggedIn) {
       this.dialog.open(LoginPrompt, { width: '380px', autoFocus: false });
       return;
     }
-    const bookId = book._id;
-    this.http.put<ApiResponse<Cart>>(`${this.URL}/items/${bookId}/increment`, { quantity })
-      .pipe(
-        tap(res => {
-          this.updateCartState(res);
-          if (res && res.success) {
-            this.snackBar.open(`Added "${book.title}" x${quantity} to cart`, 'View Cart', {
-              duration: 3000,
-              horizontalPosition: 'center',
-              verticalPosition: 'top',
-            })
 
-            .onAction().subscribe(() => this.openMiniCart());
+    const currentCart = this._cartState.getValue();
+    const existingItem = currentCart?.items.find((item: any) =>
+       item.book?._id === book._id || item.book === book._id
+    );
 
-          }
-        }),
-        catchError(this.handleError('PUT /items/:id/increment'))
-      )
-      .subscribe();
+    let finalQuantity = quantityToAdd;
+    if (existingItem) {
+      finalQuantity = (existingItem.quantity || 0) + quantityToAdd;
+    }
+
+    const updateRequest: CartUpdateRequest[] = [{
+      bookId: book._id,
+      quantity: finalQuantity
+    }];
+
+    this.updateCart(updateRequest).pipe(
+      tap(res => {
+        if (res && res.success) {
+          this.snackBar.open(`Added "${book.title}" to cart`, 'View Cart', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: 'success-snackbar'
+          }).onAction().subscribe(() => this.openMiniCart());
+        }
+      })
+    ).subscribe();
+  }
+
+updateItemQuantity(bookId: string, newQuantity: number): void {
+    const isLoggedIn = this.authService.isLoggedIn();
+    if (!isLoggedIn) return;
+
+    const updateRequest: CartUpdateRequest[] = [{
+      bookId: bookId,
+      quantity: newQuantity
+    }];
+
+    this.updateCart(updateRequest).subscribe();
   }
 
   incrementItem(bookId: string): Observable<ApiResponse<Cart> | null> {
@@ -155,6 +186,7 @@ export class CartService {
       catchError(this.handleError('incrementItem'))
     );
   }
+
   decrementItem(bookId: string): Observable<ApiResponse<Cart> | null> {
     this._cartIsLoading.next(true);
     return this.http.put<ApiResponse<Cart>>(`${this.URL}/items/${bookId}/decrement`, {}).pipe(
@@ -163,10 +195,19 @@ export class CartService {
       catchError(this.handleError('decrementItem'))
     );
   }
+
   removeItem(bookId: string): Observable<ApiResponse<Cart> | null> {
     this._cartIsLoading.next(true);
     return this.http.delete<ApiResponse<Cart>>(`${this.URL}/items/${bookId}`).pipe(
-      tap(this.updateCartState.bind(this)),
+      tap(res => {
+        this.updateCartState(res);
+        this.snackBar.open('Item removed from cart', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          panelClass: 'error-snackbar'
+        });
+      }),
       finalize(() => this._cartIsLoading.next(false)),
       catchError(this.handleError('removeItem'))
     );
@@ -178,15 +219,6 @@ export class CartService {
           tap(this.updateCartState.bind(this)),
         finalize(() => this._cartIsLoading.next(false)),
         catchError(this.handleError('clearCart'))
-      );
-    }
-
-    updateCart(cartItems: CartUpdateRequest[]): Observable<ApiResponse<Cart> | null> {
-      this._cartIsLoading.next(true);
-      return this.http.put<ApiResponse<Cart>>(this.URL, { items: cartItems }).pipe(
-        tap(this.updateCartState.bind(this)),
-        finalize(() => this._cartIsLoading.next(false)),
-        catchError(this.handleError('updateCart'))
       );
     }
 

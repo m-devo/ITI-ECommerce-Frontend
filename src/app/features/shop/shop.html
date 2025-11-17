@@ -1,203 +1,241 @@
-  <mat-divider class="my-4"></mat-divider>
-
-<div class="relative bg-gray-900 h-56 md:h-64 flex items-center justify-center text-white">
+<div class="relative bg-slate-900 h-[400px] flex items-center justify-center overflow-hidden group">
 
   <img
     src="assets/images/shop-hero.jpg"
-    alt="Library background"
-    class="absolute inset-0 w-full h-full object-cover opacity-30">
+    alt="Bookstore Library"
+    class="absolute inset-0 w-full h-full object-cover opacity-60 animate-zoom-infinite"
+  >
 
-  <div class="relative z-10 text-center p-4">
-    <h1 class="text-4xl md:text-5xl font-serif font-bold">Our Shop</h1>
-    <p class="text-lg text-gray-200 mt-2 hidden md:block">Find your next great read.</p>
+  <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-slate-900/30"></div>
+  <div class="absolute inset-0 bg-gradient-to-r from-[#00BFC5]/20 to-purple-900/20 mix-blend-overlay"></div>
+
+  <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-white/5
+    backdrop-blur-sm mb-6 animate-fade-in-up">
+      <span class="text-xs font-medium text-gray-300 uppercase tracking-widest">Home</span>
+      <span class="text-[10px] text-gray-500">•</span>
+      <span class="text-xs font-bold text-[#00BFC5] uppercase tracking-widest">Shop</span>
+    </div>
+
+    <h1 class="text-5xl md:text-7xl font-serif font-bold text-white mb-6 drop-shadow-2xl tracking-tight
+    animate-fade-in-up" style="animation-delay: 100ms;">
+      Our <span class="text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400">BookVerse</span>
+    </h1>
+
+    <p class="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light animate-fade-in-up"
+    style="animation-delay: 200ms;">
+      Explore thousands of titles across genres. From timeless classics to modern bestsellers, find your next great read today.
+    </p>
 
   </div>
+
+  <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-gray-50 to-transparent"></div>
+
 </div>
-  <mat-divider class="my-2"></mat-divider>
 
-<div class="container mx-auto px-4 py-16 mb-20">
-  <div class="flex flex-col lg:flex-row gap-10">
+<div class="bg-gray-50 min-h-screen py-12">
+  <div class="container mx-auto px-4">
 
-    <aside class="w-full lg:w-1/4 lg:sticky lg:top-24 h-fit">
+    <div class="flex flex-col lg:flex-row gap-8">
 
-      <div class="mb-6 relative">
-        <input
-          type="text"
-          [formControl]="searchControl"
-          placeholder="Search by keyword..."
-          class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 pr-10">
-        <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">search</mat-icon>
-      </div>
+      <aside class="w-full lg:w-1/4 lg:sticky lg:top-24 h-fit z-30">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
 
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-bold text-gray-800">Filters</h2>
-        <button (click)="clearFilters()" class="text-sm font-medium text-cyan-600 hover:text-cyan-800">
-          Clear All
-        </button>
-      </div>
+          <div class="relative mb-8">
+            <input
+              type="text"
+              [formControl]="searchControl"
+              placeholder="Search books..."
+              class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none
+              focus:ring-2 focus:ring-[#00BFC5]/50 focus:bg-white transition-all">
+            <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</mat-icon>
+          </div>
 
-      <form [formGroup]="filterForm" class="border-t border-gray-200">
+          <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
+            <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+              <mat-icon class="text-[#00BFC5]">tune</mat-icon> Filters
+            </h2>
+            <button (click)="clearFilters()" class="text-xs font-bold text-red-500 hover:text-red-600
+            hover:bg-red-50 px-2 py-1 rounded transition-colors">
+              RESET ALL
+            </button>
+          </div>
 
-        <div class="border-b border-gray-200 py-5">
-          <button (click)="isPriceExpanded.set(!isPriceExpanded())" class="w-full flex justify-between
-          items-center font-bold text-lg text-gray-800">
-            Price
-            <mat-icon class="transition-transform" [class.rotate-180]="!isPriceExpanded()">expand_more</mat-icon>
-          </button>
-          @if (isPriceExpanded()) {
-            <div class="mt-4 flex items-center gap-3">
-              <input
-                type="number"
-                formControlName="minPrice"
-                placeholder="From"
-                min="0"
-                class="w-1/2 border border-gray-300 rounded-md px-3 py-2
-                text-center focus:outline-none focus:ring-1 focus:ring-cyan-500">
-              <span class="text-gray-400">-</span>
-              <input
-                type="number"
-                formControlName="maxPrice"
-                placeholder="To"
-                min="0"
-                class="w-1/2 border border-gray-300 rounded-md px-3 py-2 text-center
-                focus:outline-none focus:ring-1 focus:ring-cyan-500">
-            </div>
-          }
-        </div>
+          <form [formGroup]="filterForm" class="space-y-2">
 
-        <div class="border-b border-gray-200 py-5">
-          <button (click)="isCategoryExpanded.set(!isCategoryExpanded())" class="w-full flex
-          justify-between items-center font-bold text-lg text-gray-800">
-            Category
-            <mat-icon class="transition-transform" [class.rotate-180]="!isCategoryExpanded()">expand_more</mat-icon>
-          </button>
-          @if (isCategoryExpanded()) {
-            <div class="mt-4 flex flex-col gap-2 max-h-60 overflow-y-auto pr-2">
-              @for (category of facets()?.categories; track category._id) {
-                <label class="flex items-center gap-3 p-1.5 cursor-pointer hover:bg-gray-50 rounded">
-                  <input
-                    type="checkbox"
-                    [checked]="isCategorySelected(category._id)"
-                    (change)="onCategoryChange($event, category._id)"
-                    class="w-5 h-5 rounded text-cyan-600 border-gray-300 focus:ring-cyan-500">
-                  <span class="flex-1 text-gray-700">{{ category._id | titlecase }}</span>
-                  <span class="text-sm text-gray-400">({{ category.count }})</span>
-                </label>
-              } @empty {
-                <p class="text-gray-400 text-sm p-2">No categories found.</p>
+            <div class="border-b border-gray-100 pb-4">
+              <button (click)="isPriceExpanded.set(!isPriceExpanded())" class="w-full flex
+              justify-between items-center font-semibold text-gray-700 hover:text-[#00BFC5] transition-colors py-2">
+                Price Range
+                <mat-icon class="transition-transform text-gray-400"
+                [class.rotate-180]="!isPriceExpanded()">expand_more</mat-icon>
+              </button>
+              @if (isPriceExpanded()) {
+                <div class="mt-3 flex items-center gap-2">
+                  <div class="relative flex-1">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">LE</span>
+                    <input type="number" formControlName="minPrice" placeholder="Min" min="0"
+                      class="w-full pl-8 pr-2 py-2 bg-gray-50 border border-gray-200 rounded-lg
+                       text-sm focus:ring-1 focus:ring-[#00BFC5] focus:outline-none">
+                  </div>
+                  <span class="text-gray-300">-</span>
+                  <div class="relative flex-1">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">LE</span>
+                    <input type="number" formControlName="maxPrice" placeholder="Max" min="0"
+                      class="w-full pl-8 pr-2 py-2 bg-gray-50 border border-gray-200 rounded-lg
+                      text-sm focus:ring-1 focus:ring-[#00BFC5] focus:outline-none">
+                  </div>
+                </div>
               }
             </div>
-          }
-        </div>
 
-        <div class="border-b border-gray-200 py-5">
-          <button (click)="isAuthorExpanded.set(!isAuthorExpanded())" class="w-full flex justify-between
-          items-center font-bold text-lg text-gray-800">
-            Author
-            <mat-icon class="transition-transform" [class.rotate-180]="!isAuthorExpanded()">expand_more</mat-icon>
-          </button>
-          @if (isAuthorExpanded()) {
-            <div class="mt-4 flex flex-col gap-2 max-h-60 overflow-y-auto pr-2">
-              @for (author of facets()?.authors; track author._id) {
-                <label class="flex items-center gap-3 p-1.5 cursor-pointer hover:bg-gray-50 rounded">
-                  <input
-                    type="checkbox"
-                    [checked]="isAuthorSelected(author._id)"
-                    (change)="onAuthorChange($event, author._id)"
-                    class="w-5 h-5 rounded text-cyan-600 border-gray-300 focus:ring-cyan-500">
-                  <span class="flex-1 text-gray-700">{{ author._id }}</span>
-                  <span class="text-sm text-gray-400">({{ author.count }})</span>
-                </label>
-              } @empty {
-                <p class="text-gray-400 text-sm p-2">No authors found.</p>
+            <div class="border-b border-gray-100 pb-4 pt-2">
+              <button (click)="isCategoryExpanded.set(!isCategoryExpanded())" class="w-full flex
+              justify-between items-center font-semibold text-gray-700 hover:text-[#00BFC5] transition-colors py-2">
+                Categories
+                <mat-icon class="transition-transform text-gray-400"
+                 [class.rotate-180]="!isCategoryExpanded()">expand_more</mat-icon>
+              </button>
+              @if (isCategoryExpanded()) {
+                <div class="mt-3 flex flex-col gap-1 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
+                  @for (category of facets()?.categories; track category._id) {
+                    <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer
+                    hover:bg-gray-50 transition-colors group">
+                      <input type="checkbox" [checked]="isCategorySelected(category._id)"
+                      (change)="onCategoryChange($event, category._id)"
+                        class="w-4 h-4 rounded border-gray-300 text-[#00BFC5] focus:ring-[#00BFC5]">
+                      <span class="flex-1 text-sm text-gray-600 group-hover:text-gray-900">{{ category._id | titlecase }}</span>
+                      <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{{ category.count }}</span>
+                    </label>
+                  } @empty { <p class="text-sm text-gray-400 p-2">No categories.</p> }
+                </div>
               }
             </div>
-          }
+
+            <div class="pt-2">
+              <button (click)="isAuthorExpanded.set(!isAuthorExpanded())" class="w-full flex
+              justify-between items-center font-semibold text-gray-700 hover:text-[#00BFC5] transition-colors py-2">
+                Authors
+                <mat-icon class="transition-transform text-gray-400"
+                [class.rotate-180]="!isAuthorExpanded()">expand_more</mat-icon>
+              </button>
+              @if (isAuthorExpanded()) {
+                <div class="mt-3 flex flex-col gap-1 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
+                  @for (author of facets()?.authors; track author._id) {
+                    <label class="flex items-center gap-3 p-2 rounded-lg cursor-pointer
+                    hover:bg-gray-50 transition-colors group">
+                      <input type="checkbox" [checked]="isAuthorSelected(author._id)"
+                      (change)="onAuthorChange($event, author._id)"
+                        class="w-4 h-4 rounded border-gray-300 text-[#00BFC5] focus:ring-[#00BFC5]">
+                      <span class="flex-1 text-sm text-gray-600 group-hover:text-gray-900">{{ author._id }}</span>
+                      <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{{ author.count }}</span>
+                    </label>
+                  } @empty { <p class="text-sm text-gray-400 p-2">No authors.</p> }
+                </div>
+              }
+            </div>
+
+          </form>
+        </div>
+      </aside>
+
+      <main class="w-full lg:w-3/4">
+
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+          <p class="text-gray-500 text-sm">
+            Showing <span class="font-bold text-gray-900">{{ books().length }}</span> of
+            <span class="font-bold text-gray-900">{{ totalBooks() }}</span> books
+          </p>
+
+          <div class="relative w-full sm:w-auto">
+            <select [formControl]="sortControl" class="w-full sm:w-64
+            appearance-none bg-white border border-gray-200 rounded-xl
+            px-4 py-2.5 pr-10 text-sm text-gray-700 focus:outline-none
+            focus:ring-2 focus:ring-[#00BFC5]/50 cursor-pointer shadow-sm">
+              <option value="createdAt:desc">Newest Arrivals</option>
+              <option value="price:asc">Price: Low to High</option>
+              <option value="price:desc">Price: High to Low</option>
+            </select>
+            <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2
+            text-gray-400 pointer-events-none">sort</mat-icon>
+          </div>
         </div>
 
-      </form>
-    </aside>
-
-    <main class="w-full lg:w-3/4">
-
-      <div class="flex flex-col md:flex-row justify-between md:items-center gap-4
-       mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <p class="text-sm text-gray-600">
-          Showing <span class="font-bold">{{ books().length }}</span> of
-          <span class="font-bold">{{ totalBooks() }}</span> results
-        </p>
-        <select [formControl]="sortControl" class="w-full md:w-56 border border-gray-300
-        rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 bg-white">
-          <option value="createdAt:desc">Sort by: Newest</option>
-          <option value="price:asc">Sort by: Price: Low to High</option>
-          <option value="price:desc">Sort by: Price: High to Low</option>
-        </select>
-      </div>
-       @if (activeFilters().length > 0) {
-          <div class="mb-4 flex flex-wrap items-center gap-2 border-b border-gray-200 pb-4">
-            <span class="text-sm font-medium text-gray-700">Active Filters:</span>
-
+        @if (activeFilters().length > 0) {
+          <div class="flex flex-wrap gap-2 mb-6">
             @for (filter of activeFilters(); track filter.value) {
-
-              <div class="bg-cyan-100 text-cyan-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2">
-
-                <span>{{ filter.type }}: {{ filter.value | titlecase }}</span>
-
+              <div class="bg-white border border-[#00BFC5] text-[#00BFC5] text-sm
+              font-medium pl-3 pr-1 py-1 rounded-full flex items-center shadow-sm animate-fade-in">
+                <span>{{ filter.value | titlecase }}</span>
                 <button (click)="removeFilter(filter.paramKey, filter.value)"
-                        class="rounded-full hover:bg-cyan-200 p-0.5">
+                class="ml-1 p-1 rounded-full hover:bg-[#00BFC5] hover:text-white transition-colors flex items-center">
                   <mat-icon class="!text-sm !w-4 !h-4">close</mat-icon>
                 </button>
               </div>
             }
           </div>
         }
-      @if (isLoading()) {
-        <div class="flex justify-center items-center h-96">
-          <div class="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      }
 
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        @for (book of books(); track book._id) {
-          <app-book-card
-            [book]="book"
-            (quickViewClicked)="onQuickView($event)">
-          </app-book-card>
-        } @empty {
-          @if (!isLoading()) {
-            <div class="col-span-full text-center h-96 flex flex-col justify-center items-center rounded-lg bg-gray-50">
-              <mat-icon class="!text-7xl text-gray-300">search_off</mat-icon>
-              <h3 class="text-2xl font-bold text-gray-700 mt-4">No Books Found</h3>
-              <p class="text-gray-500 mt-2">Try adjusting your filters or search term.</p>
-            </div>
-          }
+        @if (isLoading()) {
+          <div class="flex justify-center items-center py-20">
+            <div class="w-12 h-12 border-4 border-gray-200 border-t-[#00BFC5] rounded-full animate-spin"></div>
+          </div>
         }
-      </div>
 
-      @if (totalBooks() > pageSize()) {
-        <div class="mt-8 flex justify-between items-center border-t border-gray-200 pt-6">
-          <button (click)="goToPage(currentPage() - 1)"
-                  [disabled]="currentPage() === 0"
-                  class="flex items-center gap-2 px-4 py-2 bg-white border
-                  border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700
-                  hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-            <mat-icon>keyboard_arrow_left</mat-icon>
-          </button>
-
-          <span class="text-sm text-gray-600">
-            Page <span class="font-bold">{{ currentPage() + 1 }}</span> of <span class="font-bold">{{ totalPages() }}</span>
-            Previous
-          </span>
-
-          <button (click)="goToPage(currentPage() + 1)"
-                  [disabled]="isLastPage()"
-                  class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-            Next
-            <mat-icon>keyboard_arrow_right</mat-icon>
-          </button>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 gap-y-10">
+          @for (book of books(); track book._id) {
+            <app-book-card
+              [book]="book"
+              (quickViewClicked)="onQuickView($event)"
+              class="h-full">
+            </app-book-card>
+          } @empty {
+            @if (!isLoading()) {
+              <div class="col-span-full flex flex-col items-center justify-center py-20
+              text-center bg-white rounded-3xl border border-dashed border-gray-300">
+                <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                  <mat-icon class="!w-10 !h-10 text-[40px] text-gray-400">search_off</mat-icon>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800">No Books Found</h3>
+                <p class="text-gray-500 mt-2 max-w-xs">We couldn't find what you're looking for. Try changing your filters.</p>
+                <button (click)="clearFilters()" class="mt-6 px-6 py-2 bg-[#00BFC5] text-white
+                rounded-lg hover:bg-[#009AA0] transition-colors font-medium">
+                  Clear Filters
+                </button>
+              </div>
+            }
+          }
         </div>
-      }
-    </main>
 
+        @if (totalBooks() > pageSize()) {
+          <div class="mt-16 flex justify-center items-center gap-4">
+
+            <button (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 1"
+              class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center
+              justify-center text-gray-600 hover:border-[#00BFC5] hover:text-[#00BFC5]
+              disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm">
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+
+            <div class="flex items-center gap-2 bg-white px-4 py-2 rounded-full
+            shadow-sm border border-gray-100">
+              <span class="text-sm text-gray-500">Page</span>
+              <span class="font-bold text-gray-900">{{ currentPage() }}</span>
+              <span class="text-sm text-gray-400">of</span>
+              <span class="font-bold text-gray-900">{{ totalPages() }}</span>
+            </div>
+
+            <button (click)="goToPage(currentPage() + 1)" [disabled]="isLastPage()"
+              class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:border-[#00BFC5] hover:text-[#00BFC5] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+
+          </div>
+        }
+
+      </main>
+
+    </div>
   </div>
 </div>

@@ -1,69 +1,99 @@
-@if (cart$ | async; as cart) {
-  <div class="flex items-center justify-between p-4 border-b">
-    <h2 class="text-xl font-semibold">Your Cart</h2>
-    <button mat-icon-button (click)="closeModal()">
+<div class="w-full max-w-md bg-white h-full flex flex-col">
+
+  <div class="flex items-center justify-between p-5 border-b border-gray-100 bg-white sticky top-0 z-10">
+    <div class="flex items-center gap-2">
+      <h2 class="text-lg font-bold text-gray-900">Shopping Cart</h2>
+      <span class="bg-[#00BFC5]/10 text-[#00BFC5] text-xs font-bold px-2 py-0.5 rounded-full" *ngIf="(cart$ | async)?.items?.length">
+        {{ (cart$ | async)?.items?.length }} Items
+      </span>
+    </div>
+    <button mat-icon-button (click)="closeModal()" class="text-gray-400 hover:text-red-500 transition-colors">
       <mat-icon>close</mat-icon>
     </button>
   </div>
-  <div mat-dialog-content class="p-4">
 
-    @if (cart.items && cart.items.length > 0) {
+  <div class="flex-1 overflow-y-auto custom-scrollbar p-4">
+    @if (cart$ | async; as cart) {
 
-      <div class="max-h-[300px] overflow-auto pr-2">
+      @if (cart.items && cart.items.length > 0) {
 
-        @for (item of cart.items; track item.book._id) {
-          <div class="flex items-center gap-4 mb-4">
-            <img [src]="item.book.imagePath" [alt]="item.book.title" class="w-16 h-20 object-cover rounded-md border">
-            <div class="flex-grow">
-              <a [routerLink]="['/book', item.book._id]" (click)="closeModal()" class="font-semibold text-gray-800 hover:text-cyan-600">
-                {{ item.book.title }}
-              </a>
-              <p class="text-gray-500 text-sm">
-                {{ item.quantity }} x {{ item.book.price | number:'1.2-2' }} LE
-              </p>
+        <div class="space-y-4">
+          @for (item of cart.items; track item.book._id) {
+            <div class="flex items-start gap-4 group bg-white p-2 rounded-xl border border-transparent hover:border-gray-100 hover:shadow-sm transition-all">
+
+              <div class="w-16 h-20 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                <img [src]="item.book.imagePath" [alt]="item.book.title" class="w-full h-full object-cover">
+              </div>
+
+              <div class="flex-1 min-w-0 pt-1">
+                <a [routerLink]="['/book', item.book._id]" (click)="closeModal()"
+                   class="text-sm font-bold text-gray-800 hover:text-[#00BFC5] transition-colors line-clamp-2 leading-snug mb-1">
+                  {{ item.book.title }}
+                </a>
+                <p class="text-xs text-gray-500 mb-2">{{ item.book.author }}</p>
+
+                <div class="flex justify-between items-center">
+                  <p class="text-sm font-bold text-[#00BFC5]">
+                    {{ item.quantity }} x {{ item.book.price | number:'1.0-0' }} LE
+                  </p>
+                </div>
+              </div>
+
+              <button (click)="removeItem(item.book._id)"
+                      class="text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-full p-1 transition-colors self-center opacity-0 group-hover:opacity-100">
+                <mat-icon class="!w-5 !h-5 text-[20px]">delete_outline</mat-icon>
+              </button>
             </div>
-            <button
-              mat-icon-button
-              (click)="removeItem(item.book._id)"
-              aria-label="Remove item"
-              class="text-gray-400 hover:text-red-600">
-              <mat-icon>close</mat-icon>
-            </button>
+          }
+        </div>
+
+      } @else {
+        <div class="h-full flex flex-col items-center justify-center text-center py-10">
+          <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+            <mat-icon class="!w-10 !h-10 text-[40px] text-gray-300">production_quantity_limits</mat-icon>
           </div>
-        }
-      </div>
+          <p class="text-gray-800 font-bold text-lg">Your cart is empty</p>
+          <p class="text-gray-500 text-sm mb-6 max-w-xs">Looks like you haven't added any books to your cart yet.</p>
+          <button mat-flat-button (click)="closeModal()" class="!bg-[#00BFC5] !text-white !rounded-full !px-6">
+            Start Shopping
+          </button>
+        </div>
+      }
 
     } @else {
-      <p class="text-gray-500">Your cart is empty.</p>
+      <div class="flex justify-center items-center h-40">
+        <mat-progress-spinner mode="indeterminate" diameter="30"></mat-progress-spinner>
+      </div>
     }
   </div>
 
-  <div mat-dialog-actions class="flex flex-col gap-3 p-4 border-t">
+  <ng-container *ngIf="(cart$ | async) as cart">
+    @if (cart.items && cart.items.length > 0) {
+      <div class="p-5 border-t border-gray-100 bg-gray-50">
 
-    <div class="flex justify-between font-bold text-lg">
-      <span>Sub Total:</span>
-      <span>{{ calculateSubtotal(cart.items) | number:'1.2-2' }} LE</span>
-    </div>
+        <div class="flex justify-between items-end mb-4">
+          <span class="text-sm text-gray-500 font-medium">Subtotal</span>
+          <span class="text-xl font-bold text-gray-900">{{ calculateSubtotal(cart.items) | number:'1.2-2' }} LE</span>
+        </div>
 
-    <button
-      mat-stroked-button
-      routerLink="/cart"
-      (click)="closeModal()"
-      class="!py-5 !w-full">
-      View Cart
-    </button>
-    <button
-      mat-raised-button
-      color="primary"
-      routerLink="/checkout"
-      (click)="closeModal()"
-      class="!py-5 !w-full">
-      Checkout
-    </button>
-  </div>
+        <div class="grid grid-cols-2 gap-3">
+          <button
+            routerLink="/cart"
+            (click)="closeModal()"
+            class="w-full py-3 rounded-xl font-bold border border-gray-300 text-gray-700 hover:bg-white hover:border-gray-400 transition-all">
+            View Cart
+          </button>
 
-} @else {
-  <div class="p-8 text-center">
-    <p class="text-gray-500">Your cart is empty.</p>
-  </div>
-}
+          <button
+            routerLink="/checkout"
+            (click)="closeModal()"
+            class="w-full py-3 rounded-xl font-bold bg-[#00BFC5] text-white shadow-md hover:bg-[#009AA0] hover:shadow-lg transition-all">
+            Checkout
+          </button>
+        </div>
+
+      </div>
+    }
+  </ng-container>
+
+</div>

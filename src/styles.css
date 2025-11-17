@@ -1,75 +1,66 @@
-/* Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* You can add global styles to this file, and also import other style files */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Snackbar styles */
-.success-snackbar .mat-mdc-snack-bar-label {
-  color: white !important;
-  font-weight: 500 !important;
-}
-
-.success-snackbar .mdc-snackbar__surface {
-  background-color: rgb(34 197 94) !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-}
-
-.success-snackbar .mat-mdc-button {
-  color: rgb(34 197 94) !important;
-  background-color: white !important;
-  border-radius: 4px !important;
-  font-weight: 500 !important;
-}
-
-.error-snackbar .mat-mdc-snack-bar-label {
-  color: white !important;
-  font-weight: 500 !important;
-}
-
-.error-snackbar .mdc-snackbar__surface {
-  background-color: rgb(239 68 68) !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-}
-
-.error-snackbar .mat-mdc-button {
-  color: rgb(239 68 68) !important;
-  background-color: white !important;
-  border-radius: 4px !important;
-  font-weight: 500 !important;
-}
-
-.info-snackbar .mat-mdc-snack-bar-label {
-  color: white !important;
-  font-weight: 500 !important;
-}
-
-.info-snackbar .mdc-snackbar__surface {
-  background-color: rgb(59 130 246) !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-}
-
-.info-snackbar .mat-mdc-button {
-  color: rgb(59 130 246) !important;
-  background-color: white !important;
-  border-radius: 4px !important;
-  font-weight: 500 !important;
-}
-
+/* Global Styles */
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
 body {
-  @apply bg-gray-100;
+  @apply bg-gray-50;
 }
 
 .active-link {
-  @apply text-cyan-500 font-semibold;
+  @apply text-[#00BFC5] font-bold after:w-full !important;
+}
+
+.success-snackbar {
+  --mdc-snackbar-container-color: #10b981;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}
+.success-snackbar .mat-mdc-snack-bar-label {
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+}
+.success-snackbar .mat-mdc-snack-bar-action {
+  font-weight: 800 !important;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: #ef4444;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}
+.error-snackbar .mat-mdc-snack-bar-label {
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+}
+.error-snackbar .mat-mdc-snack-bar-action {
+  font-weight: 800 !important;
+}
+
+.info-snackbar {
+  --mdc-snackbar-container-color: #00BFC5;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}
+.info-snackbar .mat-mdc-snack-bar-label {
+  font-weight: 600 !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #00BFC5;
 }
