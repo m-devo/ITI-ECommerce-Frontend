@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatMenu, MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { SearchModal } from '../search-modal/search-modal';
 import {MatDividerModule} from '@angular/material/divider';
 import { AuthService } from '../../../core/services/auth.service';
@@ -35,6 +35,7 @@ import { CartService } from '../../../core/services/cart.service';
 export class Header{
   isLoggedIn: boolean = true;
   isAdmin: boolean = true;
+  public isScrolled = false;
 
     constructor(
     public dialog: MatDialog,

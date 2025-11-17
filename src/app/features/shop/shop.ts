@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
@@ -37,7 +37,8 @@ import { MatDivider } from "@angular/material/divider";
     MatInputModule,
     MatButtonModule,
     BookCardComponent,
-    MatDivider
+    MatDivider,
+    TitleCasePipe
 ],
   templateUrl: './shop.html',
   styleUrl: './shop.css'
@@ -48,6 +49,8 @@ export class Shop implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
+  private currentParams = signal<any>({});
+
 
   isCategoryExpanded = signal(true);
   isAuthorExpanded = signal(true);
@@ -74,11 +77,33 @@ constructor() {
     maxPrice: new FormControl(null)
   });
 }
+activeFilters = computed(() => {
+    const params = this.currentParams();
+    const chips: { type: string, value: string, paramKey: string }[] = [];
+
+    const categories = params['category'] ? params['category'].split(',') : [];
+    const authors = params['author'] ? params['author'].split(',') : [];
+
+    for (const cat of categories) {
+      if (cat) {
+        chips.push({ type: 'Category', value: cat, paramKey: 'categories' });
+      }
+    }
+
+    for (const auth of authors) {
+      if (auth) {
+        chips.push({ type: 'Author', value: auth, paramKey: 'authors' });
+      }
+    }
+
+    return chips;
+  });
 
   ngOnInit(): void {
     this.route.queryParams.pipe(
       debounceTime(50)
     ).subscribe(params => {
+      this.currentParams.set(params);
       if (params['category']) {
         this.filterForm.controls['categories'].setValue(params['category'].split(','), { emitEvent: false });
       } else {
@@ -194,6 +219,21 @@ loadBooks(): void {
       panelClass: 'quick-view-dialog'
     });
   }
+
+  removeFilter(paramKey: string, valueToRemove: string): void {
+    const control = this.filterForm.get(paramKey);
+
+    if (control) {
+      const currentValues = [...control.value] as string[];
+
+      const index = currentValues.indexOf(valueToRemove);
+      if (index > -1) {
+        currentValues.splice(index, 1);
+      }
+      control.setValue(currentValues);
+    }
+  }
+
 clearFilters(): void {
   this.searchControl.setValue('');
   this.filterForm.reset({

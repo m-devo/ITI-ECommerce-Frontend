@@ -57,9 +57,20 @@ export class ChatBubble implements OnInit, AfterViewChecked, OnDestroy {
   private shouldScroll = false;
 
   ngOnInit(): void {
-    this.authSub = this.authService.authStatusChecked$.pipe(
-      filter(isChecked => isChecked === true)
-    ).subscribe(() => {
+  // listen to any change
+    this.authSub = this.authService.currentUser$.subscribe(() => {
+    //  if user state changed start a new connection
+
+      if (this.ws) {
+        // stop automatic try connection
+        this.ws.onclose = null;
+        this.ws.close();
+      }
+      // stop any old timer
+      if (this.connectionTimer) {
+        clearTimeout(this.connectionTimer);
+      }
+      // start a new connection if there is a token
       this.connect();
     });
   }
@@ -81,7 +92,7 @@ export class ChatBubble implements OnInit, AfterViewChecked, OnDestroy {
 
   connect(): void {
     this.isConnecting.set(true);
-    const token = localStorage.getItem("token");
+    const token = this.authService.getToken();
 
     let wsUrl = "ws://localhost:4000";
 

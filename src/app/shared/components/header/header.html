@@ -83,24 +83,40 @@
           <h4 class="text-sm font-bold uppercase text-gray-500 mb-4">Book Type</h4>
           <div class="flex flex-col space-y-2">
             <a routerLink="/shop" class="text-gray-700 hover:text-cyan-600 hover:underline">All Books</a>
-            <a [routerLink]="['/shop']" [queryParams]="{ category: 'Science' }"
-            class="text-gray-700 hover:text-cyan-600 hover:underline">Science</a>
-            <a [routerLink]="['/shop']" [queryParams]="{ category: 'Humanities' }"
-            class="text-gray-700 hover:text-cyan-600 hover:underline">Humanities</a>
-            <a [routerLink]="['/shop']" [queryParams]="{ category: 'Fantasy' }"
-            class="text-gray-700 hover:text-cyan-600 hover:underline">Fantasy</a>
+            <a [routerLink]="['/shop']"
+            [queryParams]="{ category: 'Machine Learning' }"
+            queryParamsHandling="merge"
+            class="text-gray-700 hover:text-cyan-600 hover:underline">Machine Learning</a>
+
+            <a [routerLink]="['/shop']"
+            [queryParams]="{ category: 'Database' }"
+            queryParamsHandling="merge"
+            class="text-gray-700 hover:text-cyan-600 hover:underline">Database</a>
+
+            <a [routerLink]="['/shop']"
+            [queryParams]="{ category: 'AI' }"
+            queryParamsHandling="merge"
+            class="text-gray-700 hover:text-cyan-600 hover:underline">AI</a>
           </div>
         </div>
 
         <div>
           <h4 class="text-sm font-bold uppercase text-gray-500 mb-4">Featured Authors</h4>
           <div class="flex flex-col space-y-2">
-            <a [routerLink]="['/shop']" [queryParams]="{ author: 'Erik Larson' }"
-            class="text-gray-700 hover:text-cyan-600 hover:underline">Erik Larson</a>
-            <a [routerLink]="['/shop']" [queryParams]="{ author: 'Stephen King' }"
-            class="text-gray-700 hover:text-cyan-600 hover:underline">Stephen King</a>
-            <a [routerLink]="['/shop']" [queryParams]="{ author: 'J.K. Rowling' }"
-            class="text-gray-700 hover:text-cyan-600 hover:underline">J.K. Rowling</a>
+            <a [routerLink]="['/shop']"
+            [queryParams]="{ author: 'François Chollet' }"
+            queryParamsHandling="merge"
+            class="text-gray-700 hover:text-cyan-600 hover:underline">François Chollet</a>
+
+            <a [routerLink]="['/shop']"
+            [queryParams]="{ author: 'Prakash Jashnani' }"
+            queryParamsHandling="merge"
+            class="text-gray-700 hover:text-cyan-600 hover:underline">Prakash Jashnani</a>
+
+            <a [routerLink]="['/shop']"
+            [queryParams]="{ author: 'Joe Kissell ll' }"
+            queryParamsHandling="merge"
+            class="text-gray-700 hover:text-cyan-600 hover:underline">Joe Kissell ll</a>
           </div>
         </div>
       </div>
@@ -148,8 +164,8 @@
       <div class="px-4 py-2 w-48">
         <h4 class="font-bold text-gray-800">MY ACCOUNT</h4>
         <mat-divider class="my-2"></mat-divider>
-        <button mat-menu-item routerLink="/login">Log in</button>
-        <button mat-menu-item routerLink="/register">Create account</button>
+        <button mat-menu-item routerLink="/auth/login">Log in</button>
+        <button mat-menu-item routerLink="/auth/register">Create account</button>
       </div>
     }
   </mat-menu>

@@ -41,9 +41,9 @@ export class LoginComponent {
             return;
           }
 
-          // Redirect to dashboard
+          // Redirect to home
           if (response.status === 'success') {
-            this.router.navigate(['/dashboard']);
+          this.router.navigate(['/']);
           }
         },
         error: (error: any) => {

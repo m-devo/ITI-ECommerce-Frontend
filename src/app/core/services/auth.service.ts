@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap , map} from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import {
@@ -22,12 +22,23 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
+  public isLoggedIn$: Observable<boolean>;
+  public isAdmin$: Observable<boolean>;
+
   constructor(private http: HttpClient, private router: Router) {
     // Load user from localStorage
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       this.currentUserSubject.next(JSON.parse(savedUser));
     }
+
+    this.isLoggedIn$ = this.currentUser$.pipe(
+      map(user => !!user)
+    );
+
+    this.isAdmin$ = this.currentUser$.pipe(
+      map(user => user?.role === 'admin')
+    );
   }
 
   // Register
@@ -48,8 +59,9 @@ export class AuthService {
         tap((response) => {
           // Save to localStorage
           if (response.token && response.status === 'success') {
-            localStorage.setItem('authToken', response.token);
+            localStorage.setItem('token', response.token);
             const userData = {
+              _id: response.data._id,
               email: response.data.email,
               role: response.role,
             };
@@ -83,15 +95,15 @@ export class AuthService {
   }
 
   handleGoogleCallback(token: string, user: any): void {
-    localStorage.setItem('authToken', token);
+    localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSubject.next(user);
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/']);
   }
 
   // Logout
   logout(): void {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.currentUserSubject.next(null);
     this.router.navigate(['/auth/login']);
@@ -99,7 +111,7 @@ export class AuthService {
 
   // Check if is logged in
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('authToken');
+    return !!localStorage.getItem('token');
   }
 
   // Get user
@@ -109,6 +121,6 @@ export class AuthService {
 
   // Get token
   getToken(): string | null {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem('token');
   }
 }

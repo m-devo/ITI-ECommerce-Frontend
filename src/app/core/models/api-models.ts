@@ -168,6 +168,7 @@ export interface LoginResponse {
   message: string;
   token: string;
   data: {
+    _id: string
     email: string;
   };
   role: string;
