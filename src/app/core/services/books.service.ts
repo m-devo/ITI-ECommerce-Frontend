@@ -9,7 +9,7 @@ import { environment } from '../../../environments/environment.prod';
 export class BookService {
   constructor(private http: HttpClient) { }
   getBooks(page: number = 1, limit: number = 10): Observable<any> {
-    return this.http.get(`http://localhost:4000/api/admin/book/allBooks?page=${page}&limit=${limit}`);
+    return this.http.get(`${environment.apiUrl}/admin/book/allBooks?page=${page}&limit=${limit}`);
   }
   getBooksBYId(id: string) {
     return this.http.get(`${environment.apiUrl}/admin/book/getOneBook/${id}`)
