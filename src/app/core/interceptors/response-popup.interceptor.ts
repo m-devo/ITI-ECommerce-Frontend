@@ -11,8 +11,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { NotificationService } from '../services/notification.service';
 
-
-export const responsePopupInterceptor: HttpInterceptorFn = (
+export const ResponsePopupInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> => {
