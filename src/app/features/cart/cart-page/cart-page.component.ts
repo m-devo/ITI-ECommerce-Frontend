@@ -53,12 +53,16 @@ export class CartPageComponent implements OnInit, OnDestroy {
     return this.cartService.loading$;
   }
 
-  private loadCart(): void {
+private loadCart(): void {
     this.error = null;
     this.cartService.getCart()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
+          if (!response) {
+             this.error = 'Network error or service unavailable.';
+             return;
+          }
           if (response.statusCode === 200 && response.data) {
             this.cart = response.data;
             this.updateCartSummary();

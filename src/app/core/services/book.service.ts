@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment.prod';
 
-const URL = 'http://localhost:4000';
+const URL = `${environment.apiUrl}`;
 @Injectable({
   providedIn: 'root'
 })
 export class BookService {
 
   constructor(private http: HttpClient) {}
-  
+
   getBooks(currentPage: number, limit: number): Observable<any[]> {
     return this.http.get<any[]>('/api/books');
   }
@@ -19,29 +20,29 @@ export class BookService {
 
 // Shop Page
 getPublicBooks(params: any = {}): Observable<any> {
-    return this.http.get(`${URL}/api/public/books`, { params: params });
+    return this.http.get(`${URL}/public/books`, { params: params });
   }
   ////////////////////Home Page/////////////////
   getHomePageData(): Observable<any> {
-    return this.http.get(`${URL}/api/features/homepage`);
+    return this.http.get(`${URL}/features/homepage`);
   }
 
   getFilterdBooks(params: any): Observable<any>{
-    return this.http.get(`${URL}/api/search/facets`, {params: params})
+    return this.http.get(`${URL}/search/facets`, {params: params})
   }
 
   getSearchSuggestions(query: string): Observable<any> {
-    return this.http.get(`${URL}/api/search/suggest`, {
+    return this.http.get(`${URL}/search/suggest`, {
       params: { query: query }
     });
   }
 
   //news
   subscribeToNewsletter(email: string): Observable<any> {
-    return this.http.post(`${URL}/api/news/subscribe`, { email: email });
+    return this.http.post(`${URL}/news/subscribe`, { email: email });
   }
 
   unsubscribeFromNewsletter(): Observable<any> {
-    return this.http.patch(`${URL}/api/news/unsubscribe`, {});
+    return this.http.patch(`${URL}/news/unsubscribe`, {});
   }
 }
