@@ -116,6 +116,13 @@ export const routes: Routes = [
     .then(m => m.CheckoutComponent)
 },
 
+// order-placed
+{
+  path: 'order-placed',  canActivate: [AuthGuard],
+  loadComponent: () => import('./features/cart/order-placed/order-placed')
+    .then(m => m.OrderPlaced)
+},
+
 // user profile
 {
   path: 'user', canActivate: [AuthGuard],
@@ -139,5 +146,9 @@ export const routes: Routes = [
             .then(m => m.BooksComponent)
         }
       ]
-  }
+  },
+
+  //  404
+  { path: '**', loadComponent: () => import('./shared/components/not-found/not-found')
+    .then(m => m.NotFound) }
 ];
