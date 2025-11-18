@@ -1,0 +1,196 @@
+<app-adminlayout>
+  <div class="container mx-auto px-4 py-12 mb-20">
+
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+      <div>
+        <h1 class="text-3xl font-serif font-bold text-gray-800 flex items-center gap-2">
+          <mat-icon class="text-[#00BFC5]">support_agent</mat-icon> Manage Complaint
+        </h1>
+        <p class="text-gray-500 text-sm mt-1">View ticket details and respond to user.</p>
+      </div>
+      <button mat-stroked-button routerLink="/admin/complaints"
+        class="!border-gray-300 !text-gray-600 hover:!bg-gray-50 hover:!text-[#00BFC5] transition-colors">
+        <mat-icon>arrow_back</mat-icon>
+        Back to List
+      </button>
+    </div>
+
+    @if (isLoading | async) {
+      <div class="flex justify-center items-center h-96">
+        <div class="w-12 h-12 border-4 border-gray-200 border-t-[#00BFC5] rounded-full animate-spin"></div>
+      </div>
+    } @else {
+
+      @if (complaint$ | async; as complaint) {
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+          <div class="lg:col-span-1 order-2 lg:order-1">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-24">
+
+              <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
+                <h3 class="font-bold text-gray-800 text-lg">Ticket Details</h3>
+                <span class="bg-gray-100 text-gray-600 font-mono text-xs px-2 py-1 rounded">
+                  #{{ complaint._id.slice(-6) }}
+                </span>
+              </div>
+
+              <div class="space-y-5">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-[#00BFC5]/10 text-[#00BFC5] flex items-center justify-center font-bold">
+                    {{ complaint.user.firstName.charAt(0) }}
+                  </div>
+                  <div>
+                    <p class="text-sm font-bold text-gray-900">{{ complaint.user.firstName }} {{ complaint.user.lastName }}</p>
+                    <p class="text-xs text-gray-500">{{ complaint.user.email }}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Status</p>
+                  <span class="px-3 py-1 rounded-full text-xs font-bold uppercase inline-block"
+                        [class]="complaint.status | statusBg">
+                    {{ complaint.status }}
+                  </span>
+                </div>
+
+                <div>
+                  <p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Submitted On</p>
+                  <p class="text-sm text-gray-700 font-medium">{{ complaint.createdAt | date:'medium' }}</p>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                  <p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-2">Original Issue</p>
+                  <p class="text-sm text-gray-600 leading-relaxed italic">
+                    "{{ complaint.details }}"
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="lg:col-span-2 order-1 lg:order-2">
+
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[600px]">
+
+              <div class="p-4 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                <h2 class="font-bold text-gray-700 flex items-center gap-2">
+                  <mat-icon class="text-gray-400">forum</mat-icon> Conversation History
+                </h2>
+              </div>
+
+              <div class="flex-1 p-6 overflow-y-auto bg-gray-50 space-y-6 custom-scrollbar">
+
+                <div class="flex justify-start">
+                  <div class="max-w-[85%]">
+                     <div class="flex items-end gap-2">
+                        <div class="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0 flex items-center justify-center text-xs font-bold text-gray-600">
+                          {{ complaint.user.firstName.charAt(0) }}
+                        </div>
+                        <div class="bg-white border border-gray-200 text-gray-800 p-4 rounded-2xl rounded-bl-none shadow-sm">
+                          <p class="text-xs font-bold text-gray-400 mb-1">{{ complaint.user.firstName }} (User)</p>
+                          <p class="text-sm leading-relaxed">{{ complaint.details }}</p>
+                        </div>
+                     </div>
+                     <p class="text-[10px] text-gray-400 mt-1 ml-10">{{ complaint.createdAt | date:'short' }}</p>
+                  </div>
+                </div>
+
+                @for (reply of complaint.replies; track reply._id) {
+                  @if (reply.sender.role === 'admin') {
+                    <div class="flex justify-end">
+                      <div class="max-w-[85%]">
+                        <div class="flex items-end gap-2 flex-row-reverse">
+                          <div class="w-8 h-8 rounded-full bg-[#00BFC5] flex-shrink-0 flex items-center justify-center text-xs font-bold text-white">
+                             A
+                          </div>
+                          <div class="bg-[#00BFC5] text-white p-4 rounded-2xl rounded-br-none shadow-md">
+                            <p class="text-xs font-bold text-cyan-100 mb-1 text-right">Support Team</p>
+                            <p class="text-sm leading-relaxed">{{ reply.message }}</p>
+                          </div>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-1 text-right mr-10">{{ reply.createdAt | date:'short' }}</p>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="flex justify-start">
+                      <div class="max-w-[85%]">
+                         <div class="flex items-end gap-2">
+                            <div class="w-8 h-8 rounded-full bg-gray-300 flex-shrink-0 flex items-center justify-center text-xs font-bold text-gray-600">
+                              {{ reply.sender.firstName.charAt(0) }}
+                            </div>
+                            <div class="bg-white border border-gray-200 text-gray-800 p-4 rounded-2xl rounded-bl-none shadow-sm">
+                              <p class="text-xs font-bold text-gray-400 mb-1">{{ reply.sender.firstName }} (User)</p>
+                              <p class="text-sm leading-relaxed">{{ reply.message }}</p>
+                            </div>
+                         </div>
+                         <p class="text-[10px] text-gray-400 mt-1 ml-10">{{ reply.createdAt | date:'short' }}</p>
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
+
+              <div class="p-4 bg-white border-t border-gray-100">
+                @if (complaint.status === 'closed') {
+                  <div class="bg-gray-100 rounded-lg p-4 text-center">
+                    <p class="text-gray-500 font-medium flex items-center justify-center gap-2">
+                      <mat-icon>lock</mat-icon> This ticket is closed.
+                    </p>
+                  </div>
+                } @else {
+                  <form [formGroup]="replyForm" (ngSubmit)="submitReply()">
+
+                    <div class="relative mb-3">
+                      <textarea id="replyMessage" formControlName="replyMessage" rows="3"
+                                placeholder="Type your reply..."
+                                class="block w-full rounded-xl border-gray-300 bg-gray-50 p-3 text-sm focus:bg-white focus:border-[#00BFC5] focus:ring-[#00BFC5] transition-colors resize-none"></textarea>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+
+                      <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <label for="newStatus" class="text-xs font-bold text-gray-500 uppercase">Set Status:</label>
+                        <select id="newStatus" formControlName="newStatus"
+                                class="block w-full sm:w-40 rounded-lg border-gray-200 text-sm py-1.5 focus:border-[#00BFC5] focus:ring-[#00BFC5]">
+                          <option value="new">New</option>
+                          <option value="inProgress">In Progress</option>
+                          <option value="resolved">Resolved</option>
+                          <option value="closed">Closed</option>
+                        </select>
+                      </div>
+
+                      <button type="submit"
+                              class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2 text-sm font-bold
+                              text-white bg-[#00BFC5] rounded-lg shadow-md hover:bg-[#009AA0] transition-all
+                              disabled:opacity-50 disabled:cursor-not-allowed gap-2"
+                              [disabled]="replyForm.invalid">
+                        <span>Send Reply</span>
+                        <mat-icon class="!w-4 !h-4 text-[16px]">send</mat-icon>
+                      </button>
+                    </div>
+
+                  </form>
+                }
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      } @else {
+        <div class="flex flex-col items-center justify-center h-96 bg-gray-50 rounded-2xl border border-dashed border-gray-300">
+          <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+             <mat-icon class="!text-4xl text-gray-400">search_off</mat-icon>
+          </div>
+          <h3 class="text-xl font-bold text-gray-700">Complaint Not Found</h3>
+          <p class="text-gray-500 mt-2">The requested ticket does not exist.</p>
+          <button mat-flat-button color="primary" routerLink="/admin/complaints" class="mt-6">
+            Go Back
+          </button>
+        </div>
+      }
+    }
+  </div>
+</app-adminlayout>

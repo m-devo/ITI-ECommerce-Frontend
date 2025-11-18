@@ -1,0 +1,5 @@
+@media (min-width: 768px) {
+  button[mat-icon-button].md\:hidden {
+    display: none !important;
+  }
+}

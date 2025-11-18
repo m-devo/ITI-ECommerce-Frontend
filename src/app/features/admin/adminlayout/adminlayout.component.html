@@ -1,0 +1,78 @@
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside [ngClass]="{'w-64': !collapsed, 'w-20': collapsed}"
+    class="bg-[#333333] text-white flex flex-col justify-between shadow-lg fixed top-0 left-0 h-full z-50 transition-all duration-300">
+
+    <!-- Collapse Button -->
+    <div class="flex justify-end p-3">
+      <button (click)="collapsed = !collapsed" class="text-white focus:outline-none">
+        <span *ngIf="!collapsed">⬅️</span>
+        <span *ngIf="collapsed">➡️</span>
+      </button>
+    </div>
+
+    <!-- Profile -->
+    <div class="flex flex-col items-center gap-3 px-2 sm:px-6 py-6 border-b border-gray-700">
+      <img [src]="admin.profileImage || 'assets/default-admin.png'" alt="Admin"
+        [ngClass]="{'w-16 h-16 border-2 border-[#00BFC5]': !collapsed, 'w-12 h-12 border-2 border-[#00BFC5]': collapsed}"
+        class="rounded-full object-cover transition-all duration-300" />
+      <h2 *ngIf="!collapsed" class="text-white text-lg font-semibold text-center truncate">{{ admin.name }}</h2>
+    </div>
+
+    <!-- Links -->
+    <nav class="flex flex-col mt-6 space-y-1 flex-grow overflow-y-auto">
+      <a *ngFor="let link of links" href="{{link.path}}" [ngClass]="{'justify-center': collapsed, 'px-2 sm:px-6': true}"
+        class="flex items-center justify-between py-3 hover:bg-[#00BFC5]/20 transition-all duration-300 rounded-md">
+
+        <div class="flex items-center gap-3">
+          <span class="text-xl flex-shrink-0">{{ link.icon }}</span>
+          <span *ngIf="!collapsed" class="font-medium truncate">{{ link.label }}</span>
+        </div>
+        <span *ngIf="!collapsed" class="transition-transform duration-300 group-hover:translate-x-2">➜</span>
+      </a>
+    </nav>
+
+    <!-- Footer -->
+
+    <div class="px-2 sm:px-6 py-4 border-t border-gray-700 text-sm text-gray-300 text-center">
+      © 2025
+      <span *ngIf="!collapsed" class="text-[#00BFC5] font-semibold truncate block">Bookverse</span>
+      <span *ngIf="collapsed" class="text-[#00BFC5] font-semibold text-xl">📚</span>
+    </div>
+
+  </aside>
+
+  <!-- Main Content -->
+  <div [ngClass]="{'ml-20 sm:ml-64': !collapsed, 'ml-20': collapsed}"
+    class="flex-1 p-8 transition-all duration-300 bg-[#f9fafb] min-h-screen">
+
+    <!-- Top Bar -->
+    <div [ngClass]="{
+      'bg-[#00BFC5] shadow-md text-white': scrolled,
+      'bg-[#f9fafb] text-[#333333]': !scrolled
+    }"
+      class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8 sticky top-0 z-40 py-3 px-4 transition-all duration-300">
+
+      <div class="flex flex-col sm:flex-row sm:items-center gap-4 w-full sm:w-auto">
+        <h1 class="text-2xl font-extrabold whitespace-nowrap">
+          Bookverse Dashboard
+        </h1>
+      </div>
+
+      <!-- Profile Dropdown -->
+      <div class="relative flex items-center gap-2 cursor-pointer" (click)="dropdownOpen = !dropdownOpen">
+        <img [src]="admin.profileImage || 'assets/default-admin.png'" alt="Admin"
+          class="w-10 h-10 rounded-full object-cover border border-gray-300" />
+        <span class="font-medium truncate max-w-[100px]">{{ admin.name }}</span>
+
+        <div *ngIf="dropdownOpen"
+          class="absolute right-0 top-12 w-40 bg-white rounded-xl shadow-lg border border-gray-200 z-50">
+          <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-[#00BFC5]/20">Profile</a>
+          <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-[#00BFC5]/20">Logout</a>
+        </div>
+      </div>
+    </div>
+
+    <ng-content></ng-content>
+  </div>
+</div>

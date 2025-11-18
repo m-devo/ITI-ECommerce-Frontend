@@ -1,0 +1,308 @@
+/* Cart Page Styles */
+
+/* CSS Variables for consistent theming */
+:root {
+  --primary-color: #3b82f6;
+  --accent-color: #10b981;
+  --warn-color: #ef4444;
+  --text-light: #ffffff;
+  --border-radius-sm: 0.375rem;
+  --border-radius-lg: 0.75rem;
+  --transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+
+.mat-primary {
+  background-color: var(--primary-color) !important;
+  color: var(--text-light) !important;
+}
+
+.mat-accent {
+  background-color: var(--accent-color) !important;
+  color: var(--text-light) !important;
+}
+
+.mat-warn {
+  background-color: var(--warn-color) !important;
+  color: var(--text-light) !important;
+}
+
+/* Custom card hover effects */
+.cart-item-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+}
+
+.cart-item-card:hover {
+  border-color: #e5e7eb;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Quantity button styling */
+.quantity-btn {
+  width: 40px !important;
+  height: 40px !important;
+  transition: all 0.2s ease;
+}
+
+.quantity-btn:hover:not([disabled]) {
+  transform: scale(1.1);
+}
+
+.quantity-btn[disabled] {
+  background-color: #f3f4f6 !important;
+  color: #9ca3af !important;
+}
+
+.quantity-display {
+  min-width: 3rem;
+  text-align: center;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+  transition: all 0.2s ease;
+}
+
+.quantity-display:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Order summary styling */
+.order-summary {
+  position: sticky;
+  top: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.order-summary .mat-card-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 0.75rem 0.75rem 0 0;
+  margin: -1px -1px 1rem -1px;
+  padding: 1.5rem;
+}
+
+.order-summary .mat-card-title {
+  color: white !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+}
+
+/* Checkout button styling */
+.checkout-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3), 0 2px 4px -1px rgba(16, 185, 129, 0.06) !important;
+  transition: all 0.3s ease !important;
+}
+
+.checkout-btn:hover:not([disabled]) {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4), 0 4px 6px -2px rgba(16, 185, 129, 0.05) !important;
+}
+
+/* Stock status indicators */
+.stock-indicator {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stock-low {
+  background-color: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fcd34d;
+}
+
+.stock-out {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+.stock-available {
+  background-color: #d1fae5;
+  color: #059669;
+  border: 1px solid #6ee7b7;
+}
+
+/* Loading states */
+.loading-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+}
+
+/* Empty state styling */
+.empty-state-icon {
+  color: #d1d5db;
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+/* Book image placeholder */
+.book-placeholder {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+  .order-summary {
+    position: static;
+    margin-top: 2rem;
+  }
+
+  .cart-item-card .mat-card-content {
+    padding: 1rem !important;
+  }
+
+  .quantity-btn {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .checkout-btn {
+    font-size: 1rem !important;
+    padding: 1rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .cart-item-card .mat-card-content {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+
+  .book-placeholder {
+    width: 80px !important;
+    height: 80px !important;
+    font-size: 2rem !important;
+  }
+}
+
+/* Animations with performance optimizations */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.cart-update-animation {
+  animation: pulse 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+/* Message states with consistent styling */
+/* Message styles with common properties */
+.success-message,
+.error-message {
+  border-radius: var(--border-radius-sm);
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  transition: var(--transition-base);
+}
+
+.success-message {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+.error-message {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+/* Optimized scrollbar styles */
+.cart-items-container {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+}
+
+/* Modern scrollbar styling */
+@media (hover: hover) {
+  .cart-items-container {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+  }
+
+  .cart-items-container::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .cart-items-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+  }
+
+  .cart-items-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+    transition: background 0.2s ease;
+  }
+
+  .cart-items-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+/* Focus states for accessibility */
+button:focus,
+.mat-form-field:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Price formatting */
+.price-highlight {
+  font-weight: 700;
+  color: #059669;
+  font-size: 1.125rem;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Badge styling */
+.cart-badge {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}

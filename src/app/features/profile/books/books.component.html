@@ -1,0 +1,82 @@
+<div class="max-w-7xl mx-auto p-6">
+  <!-- Loading  -->
+  <div *ngIf="isLoading" class="flex flex-col items-center justify-center h-64">
+    <mat-spinner class="mb-4"></mat-spinner>
+    <p class="text-gray-600">Loading your library...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+    <mat-icon class="text-red-500 text-6xl mb-4">error</mat-icon>
+    <p class="text-red-600 mb-4">{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadUserBooks()">Try Again</button>
+  </div>
+
+  <!-- Books  -->
+  <div *ngIf="!isLoading && !error && books.length > 0">
+    <!-- Header -->
+    <div class="mb-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-2">My Books Library</h2>
+      <p class="text-gray-600">your purchased books</p>
+    </div>
+
+    <!-- Books -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <mat-card *ngFor="let book of books" class="shadow-lg hover:shadow-xl transition-all duration-200 hover:transform hover:scale-105">
+        <div class="relative overflow-hidden">
+          <img
+            mat-card-image
+            [src]="book.imagePath"
+            [alt]="book.title"
+            class="w-full h-64 object-cover transition-transform duration-200 hover:scale-110"
+            onerror="this.src='https://via.placeholder.com/300x400?text=No+Cover'"
+          >
+        </div>
+
+        <mat-card-header class="pb-2">
+          <mat-card-title class="text-lg font-semibold line-clamp-2">{{ book.title }}</mat-card-title>
+          <mat-card-subtitle class="text-gray-600">{{ book.author }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="pt-0">
+          <p class="text-sm text-gray-600 line-clamp-3 mb-3">{{ book.description || 'No description available.' }}</p>
+
+          <div class="flex items-center justify-between text-sm text-gray-500 mb-3">
+            <span class="flex items-center">
+              <mat-icon class="text-xs mr-1">category</mat-icon>
+              {{ book.category || 'General' }}
+            </span>
+            <span class="flex items-center">
+              <mat-icon class="text-xs mr-1">star</mat-icon>
+              {{ book.averageRating || 'N/A' }}
+            </span>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions class="flex justify-between px-4 pb-4">
+          <a
+            mat-stroked-button
+            color="primary"
+            [href]="book.bookPath"
+            target="_blank"
+            class="flex-1 mr-2 text-center"
+          >
+            <mat-icon class="mr-1">visibility</mat-icon>
+            Read
+          </a>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- No Books -->
+  <div *ngIf="!isLoading && !error && books.length === 0" class="flex flex-col items-center justify-center h-64 text-center">
+    <mat-icon class="text-6xl text-gray-400 mb-4">library_books</mat-icon>
+    <h3 class="text-xl font-semibold text-gray-600 mb-2">Your Library is Empty</h3>
+    <p class="text-gray-500 mb-4">You haven't purchased any books yet. Start exploring our collection!</p>
+    <button mat-raised-button color="primary" routerLink="/shop">
+      <mat-icon class="mr-2">shopping_cart</mat-icon>
+      Browse Books
+    </button>
+  </div>
+</div>

@@ -1,0 +1,194 @@
+<div class="max-w-6xl mx-auto p-6">
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="flex flex-col items-center justify-center h-64">
+    <mat-spinner class="mb-4"></mat-spinner>
+    <p class="text-gray-600">Loading orders...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+    <mat-icon class="text-red-500 text-6xl mb-4">error</mat-icon>
+    <p class="text-red-600 mb-4">{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="refreshOrders()">Try Again</button>
+  </div>
+
+  <!-- Orders -->
+  <div *ngIf="!isLoading && !error && orders.length > 0" class="space-y-6">
+    <!-- Order Summary Cards -->
+   <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+     <mat-card class="bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-lg border-l-4 border-blue-300">
+       <mat-card-content class="p-4">
+         <div class="flex items-center justify-between">
+           <div>
+             <p class="text-blue-100 text-sm font-medium">Total Orders</p>
+             <p class="text-3xl font-bold">{{ orders.length }}</p>
+           </div>
+           <mat-icon class="text-4xl opacity-80">receipt</mat-icon>
+         </div>
+       </mat-card-content>
+     </mat-card>
+
+     <mat-card class="bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-lg border-l-4 border-emerald-300">
+       <mat-card-content class="p-4">
+         <div class="flex items-center justify-between">
+           <div>
+             <p class="text-emerald-100 text-sm font-medium">Completed</p>
+             <p class="text-3xl font-bold">{{ getOrdersByStatus('completed').length + getOrdersByStatus('paid').length}}</p>
+           </div>
+           <mat-icon class="text-4xl opacity-80">check_circle</mat-icon>
+         </div>
+       </mat-card-content>
+     </mat-card>
+
+     <mat-card class="bg-gradient-to-br from-amber-500 to-amber-700 text-white shadow-lg border-l-4 border-amber-300">
+       <mat-card-content class="p-4">
+         <div class="flex items-center justify-between">
+           <div>
+             <p class="text-amber-100 text-sm font-medium">Pending</p>
+             <p class="text-3xl font-bold">{{ getOrdersByStatus('pending').length }}</p>
+           </div>
+           <mat-icon class="text-4xl opacity-80">schedule</mat-icon>
+         </div>
+       </mat-card-content>
+     </mat-card>
+
+     <mat-card class="bg-gradient-to-br from-red-500 to-red-700 text-white shadow-lg border-l-4 border-red-300">
+       <mat-card-content class="p-4">
+         <div class="flex items-center justify-between">
+           <div>
+             <p class="text-red-100 text-sm font-medium">Cancelled</p>
+             <p class="text-3xl font-bold">{{ getOrdersByStatus('cancelled').length }}</p>
+           </div>
+           <mat-icon class="text-4xl opacity-80">cancel</mat-icon>
+         </div>
+       </mat-card-content>
+     </mat-card>
+   </div>
+
+    <!-- Order Cards -->
+    <div class="space-y-4">
+      <mat-card *ngFor="let order of orders"
+                class="shadow-lg hover:shadow-xl transition-all duration-300 border-l-4"
+                [class]="getOrderBorderColor(order.status)">
+        <mat-card-header class="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+          <div class="flex justify-between items-center w-full">
+            <div class="flex items-center space-x-4">
+              <div [class]="getOrderStatusChipClasses(order.status)">
+                  {{ order.status | titlecase }}
+              </div>
+
+              <div>
+                <mat-card-title class="text-lg font-semibold text-gray-800">Order #{{ order._id.slice(-8) }}</mat-card-title>
+                <mat-card-subtitle class="text-gray-600 flex items-center">
+                  {{ formatDate(order.createdAt) }}
+                </mat-card-subtitle>
+              </div>
+            </div>
+            <button mat-icon-button
+                    *ngIf="order.status === 'completed' || order.status === 'paid'"
+                    (click)="printOrder(order)"
+                    matTooltip="Print Invoice"
+                    class="ml-2">
+              <mat-icon color="primary">print</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+
+        <mat-card-content class="p-6">
+          <!-- Summary -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 my-4">
+            <div class="flex items-center p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200">
+              <mat-icon class="text-blue-600 mr-3 text-xl">{{ getPaymentMethodIcon(order.paymentMethod) }}</mat-icon>
+              <div>
+                <p class="text-xs text-gray-500 font-medium">Payment Method</p>
+                <p class="font-semibold text-gray-800">{{ getPaymentMethodLabel(order.paymentMethod) }}</p>
+              </div>
+            </div>
+
+            <div class="flex items-center p-4 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-lg border border-emerald-200">
+              <mat-icon class="text-emerald-600 mr-3 text-xl">shopping_cart</mat-icon>
+              <div>
+                <p class="text-xs text-gray-500 font-medium">Items</p>
+                <p class="font-semibold text-gray-800">{{ getTotalItems(order) }} item(s)</p>
+              </div>
+            </div>
+
+            <div class="flex items-center p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg border border-purple-200">
+              <mat-icon class="text-purple-600 mr-3 text-xl">attach_money</mat-icon>
+              <div>
+                <p class="text-xs text-gray-500 font-medium">Total Amount</p>
+                <p class="font-semibold text-xl text-gray-800">{{ order.totalPrice | currency }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Items List -->
+          <mat-expansion-panel class="shadow-none py-4 border border-gray-300 rounded-lg hover:shadow-md transition-shadow">
+            <mat-expansion-panel-header class="px-4 py-3 bg-gray-50 hover:bg-gray-100">
+              <mat-panel-title class="text-base font-semibold text-gray-800 flex items-center">
+                <mat-icon class="mr-2 text-gray-600">inventory_2</mat-icon>
+                Order Items ({{ order.items.length }})
+              </mat-panel-title>
+              <mat-panel-description class="text-gray-600">
+                Click to view detailed items and pricing
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div class="px-2 pb-4">
+              <div class="overflow-x-auto">
+                <table class="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                  <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                    <tr>
+                      <th class="text-left py-3 px-4 font-semibold text-gray-700 border-b border-gray-200">Book Details</th>
+                      <th class="text-center py-3 px-4 font-semibold text-gray-700 border-b border-gray-200">Quantity</th>
+                      <th class="text-right py-3 px-4 font-semibold text-gray-700 border-b border-gray-200">Unit Price</th>
+                      <th class="text-right py-3 px-4 font-semibold text-gray-700 border-b border-gray-200">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of order.items; let i = index"
+                        class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                        [class]="i % 2 === 0 ? 'bg-white' : 'bg-gray-25'">
+                      <td class="py-4 px-4">
+                        <div class="flex items-start space-x-3">
+                          <div class="min-w-0 flex-1">
+                            <div class="font-semibold text-gray-900 text-sm line-clamp-2">{{ item.title }}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="py-4 px-4 text-center">
+                        <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-800 rounded-full font-semibold text-sm">
+                          {{ item.quantity }}
+                        </span>
+                      </td>
+                      <td class="py-4 px-4 text-right text-gray-700 font-medium">{{ item.price | currency }}</td>
+                      <td class="py-4 px-4 text-right">
+                        <span class="font-semibold text-lg text-gray-900">{{ calculateItemTotal(item) | currency }}</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot class="bg-gradient-to-r from-gray-100 to-gray-200">
+                    <tr>
+                      <td colspan="3" class="py-3 px-4 text-right font-semibold text-gray-700">Order Total:</td>
+                      <td class="py-3 px-4 text-right">
+                        <span class="font-bold text-xl text-gray-900">{{ order.totalPrice | currency }}</span>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- No Orders State -->
+  <div *ngIf="!isLoading && !error && orders.length === 0" class="flex flex-col items-center justify-center h-64 text-center">
+    <mat-icon class="text-6xl text-gray-400 mb-4">receipt_long</mat-icon>
+    <h3 class="text-xl font-semibold text-gray-600 mb-2">No Orders Yet</h3>
+    <p class="text-gray-500">You haven't placed any orders yet. Start shopping to see your orders here!</p>
+  </div>
+</div>
+

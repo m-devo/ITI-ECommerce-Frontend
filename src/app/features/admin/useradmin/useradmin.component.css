@@ -1,0 +1,26 @@
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.25s ease-out;
+}
+
+thead {
+  background: linear-gradient(to right, #00bfc5, #00d4d8);
+  color: white;
+}
+tbody tr:hover {
+  background-color: #f0fdfa;
+  transition: background 0.3s;
+}

@@ -1,0 +1,21 @@
+<app-header></app-header>
+<div class="dashboard-container">
+  <mat-toolbar color="primary" class="top-navbar">
+    <span class="spacer"></span>
+    <div class="navbar-links">
+      <a
+        *ngFor="let item of navItems"
+        [routerLink]="[item.route.split('/').pop()]"
+        routerLinkActive="active-link"
+        class="nav-link">
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span>{{ item.label }}</span>
+      </a>
+    </div>
+    <span class="spacer"></span>
+  </mat-toolbar>
+  <div class="content-wrapper">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+<app-footer></app-footer>

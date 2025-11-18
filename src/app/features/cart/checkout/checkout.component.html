@@ -1,0 +1,169 @@
+<app-header></app-header>
+
+<div class="container mx-auto px-4 py-8 max-w-4xl" *ngIf="!loadingPre; else loadingTpl">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title class="flex items-center">
+        <mat-icon class="mr-2">lock</mat-icon>
+        Secure Checkout
+      </mat-card-title>
+      <mat-card-subtitle *ngIf="preData">
+        {{ preData.items.length }} item(s) • Total: {{ preData.totalAmount | currency:'USD':'symbol':'1.2-2' }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Order Summary -->
+      <div *ngIf="preData" class="mb-6 bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-lg font-semibold mb-4 flex items-center">
+          <mat-icon class="mr-2">shopping_cart</mat-icon>
+          Order Summary
+        </h3>
+
+        <div class="space-y-2">
+          <div *ngFor="let item of preData.items" class="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+            <div class="flex-1">
+              <div class="font-medium">{{ item.title || 'Unknown Book' }}</div>
+              <div class="text-sm text-gray-600">{{ item.author || 'Unknown Author' }}</div>
+              <div class="text-sm text-gray-500">Qty: {{ item.quantity }}</div>
+            </div>
+            <div class="text-right">
+              <div class="font-semibold">{{ (item.price || 0) * item.quantity | currency:'USD':'symbol':'1.2-2' }}</div>
+              <div class="text-sm text-gray-500">{{ item.price || 0 | currency:'USD':'symbol':'1.2-2' }} each</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-300 mt-4 pt-4">
+          <div class="flex justify-between items-center text-lg font-bold">
+            <span>Total</span>
+            <span class="text-blue-500">{{ preData.totalAmount | currency:'USD':'symbol':'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <mat-horizontal-stepper [linear]="true" #stepper>
+        <!-- Billing Info -->
+        <mat-step [stepControl]="billingForm">
+          <form [formGroup]="billingForm">
+            <ng-template matStepLabel>Billing details</ng-template>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <mat-form-field appearance="fill">
+                <mat-label>Phone</mat-label>
+                <input matInput formControlName="phone" placeholder="+201234567890" />
+                <mat-error *ngIf="billingForm.get('phone')?.errors as errors">
+                  <span *ngIf="errors['required']">Phone is required</span>
+                  <span *ngIf="errors['pattern']">Please enter a valid phone number (e.g. +201234567890)</span>
+                </mat-error>
+                <mat-hint>Enter your phone number with country code</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Country</mat-label>
+                <input matInput formControlName="country" placeholder="Egypt" />
+                <mat-error *ngIf="billingForm.get('country')?.errors as errors">
+                  <span *ngIf="errors['required']">Country is required</span>
+                  <span *ngIf="errors['minlength']">Country name must be at least 2 characters</span>
+                  <span *ngIf="errors['pattern']">Please enter a valid country name (letters only)</span>
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>State</mat-label>
+                <input matInput formControlName="state" placeholder="Cairo" />
+                <mat-error *ngIf="billingForm.get('state')?.errors as errors">
+                  <span *ngIf="errors['required']">State is required</span>
+                  <span *ngIf="errors['minlength']">State name must be at least 2 characters</span>
+                  <span *ngIf="errors['pattern']">Please enter a valid state name (letters only)</span>
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>City</mat-label>
+                <input matInput formControlName="city" placeholder="Cairo" />
+                <mat-error *ngIf="billingForm.get('city')?.errors as errors">
+                  <span *ngIf="errors['required']">City is required</span>
+                  <span *ngIf="errors['minlength']">City name must be at least 2 characters</span>
+                  <span *ngIf="errors['pattern']">Please enter a valid city name (letters only)</span>
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="flex justify-end mt-6">
+              <button mat-raised-button color="primary" (click)="goToPayment(stepper)" [disabled]="billingForm.invalid">
+                Continue to payment
+              </button>
+            </div>
+          </form>
+        </mat-step>
+
+        <!-- Payment Method -->
+        <mat-step [stepControl]="paymentForm">
+          <form [formGroup]="paymentForm">
+            <ng-template matStepLabel>Payment</ng-template>
+
+            <div class="mt-4 space-y-4">
+              <div class="border rounded-lg p-3 flex items-center cursor-pointer"
+                    [class.border-blue-500]="paymentForm.get('paymentMethod')?.value === 'paymob'"
+                    (click)="paymentForm.get('paymentMethod')?.setValue('paymob')">
+                <mat-icon class="mr-3 text-blue-600">credit_card</mat-icon>
+                <div>
+                  <div class="font-semibold">Paymob</div>
+                  <div class="text-xs text-gray-500">
+                    Complete your payment securely via Paymob.
+                  </div>
+                </div>
+                <mat-icon class="ml-auto text-blue-600" *ngIf="paymentForm.get('paymentMethod')?.value === 'paymob'">
+                  check_circle
+                </mat-icon>
+              </div>
+
+              <div class="border rounded-lg p-3 flex items-center cursor-pointer"
+                    [class.border-blue-500]="paymentForm.get('paymentMethod')?.value === 'cod'"
+                    (click)="paymentForm.get('paymentMethod')?.setValue('cod')">
+                <mat-icon class="mr-3 text-blue-500">local_shipping</mat-icon>
+                <div>
+                  <div class="font-semibold">Cash on Delivery</div>
+                  <div class="text-xs text-gray-500">
+                    Pay when your order is delivered to your door.
+                  </div>
+                </div>
+                <mat-icon class="ml-auto text-blue-500" *ngIf="paymentForm.get('paymentMethod')?.value === 'cod'">
+                  check_circle
+                </mat-icon>
+              </div>
+
+              <mat-error *ngIf="paymentForm.get('paymentMethod')?.hasError('required')">
+                Payment method is required
+              </mat-error>
+            </div>
+
+            <div class="flex justify-between mt-6">
+              <button mat-stroked-button color="primary" (click)="stepper.previous()">
+                Back
+              </button>
+
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="submitCheckout()"
+                [disabled]="paymentForm.invalid || submitting">
+                <mat-spinner *ngIf="submitting" diameter="20" class="mr-2"></mat-spinner>
+                <span *ngIf="!submitting">Place order & pay</span>
+              </button>
+            </div>
+          </form>
+        </mat-step>
+      </mat-horizontal-stepper>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="flex items-center justify-center min-h-[300px]">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+</ng-template>
+
+<app-footer></app-footer>

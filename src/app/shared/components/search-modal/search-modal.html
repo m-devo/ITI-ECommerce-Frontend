@@ -1,0 +1,102 @@
+<div class="relative w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+
+  <div class="flex items-center justify-between p-5 border-b border-gray-100">
+    <h2 class="text-xl font-serif font-bold text-gray-900">
+      Search BookVerse<span class="text-[#00BFC5]">.</span>
+    </h2>
+    <button
+      (click)="closeModal()"
+      class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors">
+      <mat-icon class="!w-5 !h-5 text-[20px]">close</mat-icon>
+    </button>
+  </div>
+
+  <div class="p-5 bg-white">
+    <div class="relative group">
+      <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-[#00BFC5] transition-colors">
+        <mat-icon>search</mat-icon>
+      </div>
+
+      <input
+        type="text"
+        [formControl]="searchControl"
+        placeholder="Search by title, author, or ISBN..."
+        class="w-full bg-gray-50 border border-gray-200 rounded-xl py-4 pl-12 pr-12 text-gray-800 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-[#00BFC5] focus:ring-4 focus:ring-[#00BFC5]/10 transition-all text-lg"
+        autoFocus
+      />
+
+      <div class="absolute right-4 top-1/2 transform -translate-y-1/2" *ngIf="isLoading">
+        <mat-progress-spinner [diameter]="24" mode="indeterminate" class="!w-6 !h-6"></mat-progress-spinner>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-1 overflow-y-auto p-5 pt-0 custom-scrollbar min-h-[300px]">
+
+    <ng-container *ngIf="suggestions$ | async as suggestions">
+
+      <ng-container *ngIf="suggestions.length > 0; else noResultsBlock">
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-1">
+          Found {{ suggestions.length }} results
+        </p>
+
+        <div class="space-y-2">
+          <a *ngFor="let book of suggestions"
+             [routerLink]="['/book', book._id]"
+             (click)="onSuggestionClicked()"
+             class="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 hover:shadow-sm border border-transparent hover:border-gray-100 transition-all group cursor-pointer">
+
+            <div class="w-12 h-16 bg-gray-200 rounded-md overflow-hidden flex-shrink-0 shadow-sm">
+               <img *ngIf="book.imagePath" [src]="book.imagePath" [alt]="book.title" class="w-full h-full object-cover">
+               <mat-icon *ngIf="!book.imagePath" class="text-gray-400 m-auto">image</mat-icon>
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <h4 class="font-bold text-gray-800 group-hover:text-[#00BFC5] transition-colors truncate text-base">
+                {{ book.title }}
+              </h4>
+              <p class="text-sm text-gray-500 truncate">{{ book.author }}</p>
+              <p class="text-xs text-[#00BFC5] font-semibold mt-1">LE {{ book.price }}</p>
+            </div>
+
+            <mat-icon class="text-gray-300 group-hover:text-[#00BFC5] transform group-hover:translate-x-1 transition-all">
+              chevron_right
+            </mat-icon>
+          </a>
+        </div>
+      </ng-container>
+
+      <ng-template #noResultsBlock>
+        <div class="h-full flex flex-col items-center justify-center text-center py-10 opacity-70">
+
+          <ng-container *ngIf="searchControl.value && searchControl.value.length > 1; else emptyState">
+            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+              <mat-icon class="!w-8 !h-8 text-gray-400 text-[32px]">search_off</mat-icon>
+            </div>
+            <p class="text-gray-800 font-semibold text-lg">No results found</p>
+            <p class="text-gray-500 text-sm mt-1">
+              We couldn't find any books matching "<span class="font-bold text-gray-700">{{ searchControl.value }}</span>".
+            </p>
+          </ng-container>
+
+          <ng-template #emptyState>
+            <div class="w-16 h-16 bg-[#00BFC5]/10 rounded-full flex items-center justify-center mb-4">
+              <mat-icon class="!w-8 !h-8 text-[#00BFC5] text-[32px]">auto_stories</mat-icon>
+            </div>
+            <p class="text-gray-800 font-semibold text-lg">Start typing to search</p>
+            <p class="text-gray-500 text-sm mt-1 max-w-xs">
+              Find your favorite books by title, author, or category.
+            </p>
+          </ng-template>
+
+        </div>
+      </ng-template>
+
+    </ng-container>
+  </div>
+
+  <div class="p-3 bg-gray-50 border-t border-gray-100 text-center text-xs text-gray-400">
+    Press <span class="font-bold border border-gray-300 rounded px-1 bg-white">ESC</span> to close
+  </div>
+
+</div>
