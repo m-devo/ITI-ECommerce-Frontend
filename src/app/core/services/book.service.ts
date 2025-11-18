@@ -13,8 +13,9 @@ export class BookService {
   getBooks(currentPage: number, limit: number): Observable<any[]> {
     return this.http.get<any[]>('/api/books');
   }
+
   getBookById(id: string): Observable<any> {
-    return this.http.get<any>(`/books/${id}`);
+    return this.http.get<any>(`${environment.apiUrl}/public/books/${id}`);
   }
 
   // Shop Page

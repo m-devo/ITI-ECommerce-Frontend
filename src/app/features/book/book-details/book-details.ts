@@ -43,26 +43,28 @@ export class BookDetails implements OnInit {
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
-      if (id) {
-        this.service.getBookById(id).subscribe({
-          next: (data) => {
-            this.book = data.book;
+console.log('Book ID from route:', id);
+if (id) {
+  this.service.getBookById(id).subscribe({
+    next: (data) => {
+      console.log('Book data:', data);
+      this.book = data.book;
 
-            // Now check cart AFTER book is loaded
-            this.cartService.getCart().subscribe((cart) => {
-              this.isInCart = this.cartService.isInCart(this.book._id);
+      this.cartService.getCart().subscribe((cart) => {
+        this.isInCart = this.cartService.isInCart(this.book._id);
 
-              if (this.isInCart) {
-                this.quantity = this.cartService.getItemQuantity(this.book._id);
-              }
-            });
-          },
-          error: (err) => {
-            console.log(err);
-            // this.Router.navigate(['/NotFound']);
-          },
-        });
-      }
+        if (this.isInCart) {
+          this.quantity = this.cartService.getItemQuantity(this.book._id);
+        }
+      });
+    },
+    error: (err) => {
+      console.error('Error fetching book:', err);
+      this.Router.navigate(['/NotFound']);
+    },
+  });
+}
+
     });
   }
 

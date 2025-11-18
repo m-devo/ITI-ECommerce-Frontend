@@ -10,6 +10,7 @@ import { VerifyDeviceComponent } from './features/auth/verify-device/verify-devi
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password.component';
 import { GoogleCallbackComponent } from './features/auth/google-callback/google-callback.component';
+import { BookDetails } from './features/book/book-details/book-details';
 
 export const routes: Routes = [
   // Main Layout (Ordinary User)
@@ -42,15 +43,11 @@ export const routes: Routes = [
           ).then((m) => m.ComplaintDetails),
         canActivate: [AuthGuard],
       },
-      {
-        path: 'book/:id',
-        loadComponent: () =>
-          import('./features/book/book-details/book-details').then(
-            (m) => m.BookDetails
-          ),
-      },
+      { path: 'book/:id', component: BookDetails },
+      
     ],
   },
+  { path: 'book/:id', component: BookDetails },
 
   // Auth routes
   { path: 'auth/login', component: LoginComponent },
