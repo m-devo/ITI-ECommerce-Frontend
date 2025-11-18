@@ -14,7 +14,7 @@ export class BookService {
   getBooks(currentPage: number, limit: number): Observable<any[]> {
     return this.http.get<any[]>('/api/books');
   }
-  getBookById(id: number): Observable<any> {
+  getBookById(id: string): Observable<any> {
     return this.http.get<any>(`/api/books/${id}`);
   }
 

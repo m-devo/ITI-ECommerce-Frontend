@@ -36,35 +36,36 @@ export class BookDetails implements OnInit {
     private service: BookService,
     private cartService: CartService,
     private route: ActivatedRoute,
-    private Router: Router,
+    private router: Router,
     private authService: AuthService
   ) {}
   //68e7ed98aa7000812ffe6213
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
-console.log('Book ID from route:', id);
-if (id) {
-  this.service.getBookById(id).subscribe({
-    next: (data) => {
-      console.log('Book data:', data);
-      this.book = data.book;
+      console.log('Book ID from route:', id);
+      if (id) {
+        this.service.getBookById(id).subscribe({
+          next: (data) => {
+            console.log('Book data:', data);
+            this.book = data.book;
 
-      this.cartService.getCart().subscribe((cart) => {
-        this.isInCart = this.cartService.isInCart(this.book._id);
-
-        if (this.isInCart) {
-          this.quantity = this.cartService.getItemQuantity(this.book._id);
-        }
-      });
-    },
-    error: (err) => {
-      console.error('Error fetching book:', err);
-      this.Router.navigate(['/NotFound']);
-    },
-  });
-}
-
+            this.cartService.getCart().subscribe((cart) => {
+              if (cart && cart.success && cart.data) {
+                const item = cart.data.items.find(item => item.book._id === this.book._id);
+                this.isInCart = !!item;
+                if (item) {
+                  this.quantity = item.quantity;
+                }
+              }
+            });
+          },
+          error: (err) => {
+            console.error('Error fetching book:', err);
+            this.router.navigate(['/NotFound']);
+          },
+        });
+      }
     });
   }
 
@@ -74,20 +75,20 @@ if (id) {
 
   updateQuantity() {
     if (this.isInCart) {
-      this.cartService.addToCart(this.book._id, this.quantity);
+      this.cartService.updateItemQuantity(this.book._id, this.quantity);
     }
   }
 
   addToCart() {
     if (!this.authService.isLoggedIn()) {
-      this.Router.navigate(['/login']);
+      this.router.navigate(['/login']);
       return;
     }
     if (!this.isInCart) {
-      this.cartService.addToCart(this.book._id, this.quantity);
+      this.cartService.addItem(this.book, this.quantity);
       this.isInCart = true;
     } else {
-      this.Router.navigate(['/cart']);
+      this.router.navigate(['/cart']);
     }
   }
 }
