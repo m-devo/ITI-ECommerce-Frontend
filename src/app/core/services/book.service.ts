@@ -13,6 +13,8 @@ export class BookService {
     return this.http.get<any[]>(`${environment.apiUrl}/public/books`);
   }
 
+
+// Get book details by ID
   getBookById(id: string): Observable<any> {
     return this.http.get<any>(`${environment.apiUrl}/public/books/${id}`);
   }

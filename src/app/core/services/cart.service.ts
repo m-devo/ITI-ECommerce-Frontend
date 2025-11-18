@@ -66,6 +66,7 @@ getTotalPrice(): number {
       return this.cartItems.reduce((t, i) => t + (i.book.price * i.quantity), 0);
 
 }
+
   // Load cart from backend
   loadCart() {
     this.http.get<ApiResponse>(`${environment.apiUrl}/cart`).subscribe({

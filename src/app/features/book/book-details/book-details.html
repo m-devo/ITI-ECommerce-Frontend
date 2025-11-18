@@ -4,7 +4,7 @@
 
 <!-- Breadcrumb -->
 <div
-  class="relative bg-[url('https://susan-demo.myshopify.com/cdn/shop/files/bread.jpg?v=1567943980')] bg-cover bg-center py-24"
+  class="relative bg-[url('/assets/images/bread.webp')] bg-cover bg-center py-24"
 >
   <div class="absolute inset-0 bg-white/60"></div>
 
@@ -28,25 +28,12 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
       <!-- Image -->
       <div class="flex justify-center">
-        <div class="relative">
-          <img
-            [src]="book.imagePath"
-            [alt]="book.title"
-            class="w-80 h-auto rounded-xl shadow-md border border-gray-200 object-cover"
-            [class.opacity-50]="book.isDeleted || book.stock === 0"
-          />
-          <!-- Overlay for deleted/out of stock -->
-          <div
-            *ngIf="book.isDeleted || book.stock === 0"
-            class="absolute inset-0 bg-black bg-opacity-50 rounded-xl flex items-center justify-center"
-          >
-            <span
-              class="bg-red-600 text-white px-6 py-3 rounded-lg font-bold text-lg"
-            >
-              {{ book.isDeleted ? 'UNAVAILABLE' : 'OUT OF STOCK' }}
-            </span>
-          </div>
-        </div>
+        <img
+          [src]="book.imagePath"
+          [alt]="book.title"
+          class="w-80 h-auto rounded-xl shadow-md border border-gray-200 object-cover"
+          [class.opacity-50]="book.isDeleted || book.stock === 0"
+        />
       </div>
 
       <!-- Info -->

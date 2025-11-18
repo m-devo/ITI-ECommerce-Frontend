@@ -5,6 +5,7 @@ module.exports = {
   ],
   theme: {
     extend: {
+      
       colors: {
         neutral: "#F6F6F6",
         primary: "#00BFC5",
@@ -12,7 +13,8 @@ module.exports = {
         accent: "#FFB703",
         dark: "#333333",
         "dark-light": "#666666",
-      }
+      },
+      
     },
   },
   plugins: [],

@@ -19,6 +19,8 @@ export interface Book {
   isDeleted: boolean;
 }
 
+
+
 export interface SearchFilters {
   query?: string;
   author?: string;

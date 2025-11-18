@@ -1,18 +1,69 @@
 import { Routes } from '@angular/router';
+import { MainLayout } from './core/layout/main-layout/main-layout';
+import { Home } from './features/home/home';
+import { AuthGuard } from './core/guards/auth.guard';
+import { AdminGuard } from './core/guards/admin.guard';
+import { LoginComponent } from './features/auth/login/login.component';
+import { RegisterComponent } from './features/auth/register/register.component';
+import { VerifyEmailComponent } from './features/auth/verify-email/verify-email.component';
+import { VerifyDeviceComponent } from './features/auth/verify-device/verify-device.component';
+import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './features/auth/reset-password/reset-password.component';
+import { GoogleCallbackComponent } from './features/auth/google-callback/google-callback.component';
 import { BookDetails } from './features/book/book-details/book-details';
-// import { Search } from './features/book/search/search';
 
 export const routes: Routes = [
+  // Main Layout (Ordinary User)
+  {
+    path: '',
+    component: MainLayout,
+    children: [
+      {
+        path: '',
+        component: Home,
+        pathMatch: 'full',
+      },
+      {
+        path: 'shop',
+        loadComponent: () => import('./features/shop/shop').then((m) => m.Shop),
+      },
+      {
+        path: 'user/complaints',
+        loadComponent: () =>
+          import(
+            './features/complaint/user/user-complaints/user-complaints'
+          ).then((m) => m.UserComplaints),
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'user/complaint/:id',
+        loadComponent: () =>
+          import(
+            './features/complaint/user/complaint-details/complaint-details'
+          ).then((m) => m.ComplaintDetails),
+        canActivate: [AuthGuard],
+      },
+      { path: 'book/:id', component: BookDetails },
+      
+    ],
+  },
   { path: 'book/:id', component: BookDetails },
-  // { path: 'search', component: Search },
-  { path: '', redirectTo: 'admin', pathMatch: 'full' },
 
+  // Auth routes
+  { path: 'auth/login', component: LoginComponent },
+  { path: 'auth/register', component: RegisterComponent },
+  { path: 'auth/verify/:token', component: VerifyEmailComponent },
+  { path: 'auth/verify-device/:token', component: VerifyDeviceComponent },
+  { path: 'auth/forgot-password', component: ForgotPasswordComponent },
+  { path: 'auth/reset-password/:token', component: ResetPasswordComponent },
+  { path: 'auth/google/callback', component: GoogleCallbackComponent },
+
+  // Admin routes
   {
     path: 'admin',
+    canActivate: [AuthGuard, AdminGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-
-      // Dashboard
       {
         path: 'dashboard',
         loadComponent: () =>
@@ -20,8 +71,6 @@ export const routes: Routes = [
             (m) => m.DashboardComponent
           ),
       },
-
-      // Books
       {
         path: 'books',
         loadComponent: () =>
@@ -29,8 +78,6 @@ export const routes: Routes = [
             './features/admin/book-management/book-management.component'
           ).then((m) => m.BookManagementComponent),
       },
-
-      // Authors
       {
         path: 'authors',
         loadComponent: () =>
@@ -38,8 +85,6 @@ export const routes: Routes = [
             (m) => m.AuthoradminComponent
           ),
       },
-
-      // Orders
       {
         path: 'orders',
         loadComponent: () =>
@@ -47,8 +92,6 @@ export const routes: Routes = [
             (m) => m.OrderadminComponent
           ),
       },
-
-      // Users
       {
         path: 'users',
         loadComponent: () =>
@@ -56,6 +99,99 @@ export const routes: Routes = [
             (m) => m.UseradminComponent
           ),
       },
+
+      {
+        path: 'complaints',
+        loadComponent: () =>
+          import(
+            './features/complaint/admin/admin-complaints/admin-complaints'
+          ).then((m) => m.AdminComplaints),
+      },
+      {
+        path: 'complaint/:id',
+        loadComponent: () =>
+          import(
+            './features/complaint/admin/admin-complaint-details/admin-complaint-details'
+          ).then((m) => m.AdminComplaintDetails),
+      },
+      {
+        path: 'chat',
+        loadComponent: () =>
+          import('./features/chatbot/admin-chatboard/admin-chatboard').then(
+            (m) => m.AdminChatboard
+          ),
+      },
     ],
+  },
+
+  // cart
+  {
+    path: 'cart',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('./features/cart/cart-page/cart-page.component').then(
+        (m) => m.CartPageComponent
+      ),
+  },
+
+  // checkout
+  {
+    path: 'checkout',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('./features/cart/checkout/checkout.component').then(
+        (m) => m.CheckoutComponent
+      ),
+  },
+
+  // order-placed
+  {
+    path: 'order-placed',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('./features/cart/order-placed/order-placed').then(
+        (m) => m.OrderPlaced
+      ),
+  },
+
+  // user profile
+  {
+    path: 'user',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('./features/profile/dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent
+      ),
+    children: [
+      { path: '', redirectTo: 'profile', pathMatch: 'full' },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/profile/profile/profile.component').then(
+            (m) => m.ProfileComponent
+          ),
+      },
+      {
+        path: 'orders',
+        loadComponent: () =>
+          import('./features/profile/orders/orders.component').then(
+            (m) => m.OrdersComponent
+          ),
+      },
+      {
+        path: 'books',
+        loadComponent: () =>
+          import('./features/profile/books/books.component').then(
+            (m) => m.BooksComponent
+          ),
+      },
+    ],
+  },
+
+  //  404
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./shared/components/not-found/not-found').then((m) => m.NotFound),
   },
 ];
