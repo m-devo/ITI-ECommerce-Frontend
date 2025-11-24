@@ -34,7 +34,7 @@ export class NotificationService {
       duration: 3000,
       panelClass: ['info-snackbar'],
       horizontalPosition: this.horizontalPosition,
-      verticalPosition: this.verticalPosition  
+      verticalPosition: this.verticalPosition
     });
   }
 }
