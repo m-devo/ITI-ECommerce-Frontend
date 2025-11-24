@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-verify-device',
@@ -20,8 +21,9 @@ export class VerifyDeviceComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
-  ) {}
+    private http: HttpClient,
+    private authService: AuthService
+  ) { }
 
   ngOnInit() {
     const token = this.route.snapshot.paramMap.get('token');
@@ -44,8 +46,7 @@ export class VerifyDeviceComponent implements OnInit {
             this.success = true;
 
             // Save token and user data
-            localStorage.setItem('token', response.token);
-            localStorage.setItem('user', JSON.stringify(response.data));
+            this.authService.setSession(response.token, response.data);
 
             // Redirect to home page
             setTimeout(() => {
