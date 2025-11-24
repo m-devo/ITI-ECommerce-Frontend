@@ -97,13 +97,17 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <button (click)="onAddToCart()"
-          class="w-full py-3 px-6 rounded-xl bg-gray-900 text-white font-bold shadow-lg hover:bg-gray-800 hover:shadow-xl transform active:scale-95 transition-all duration-200 flex items-center justify-center gap-2">
+          class="w-full py-3 px-6 rounded-xl bg-gray-900 text-white
+          font-bold shadow-lg hover:bg-gray-800 hover:shadow-xl transform
+          active:scale-95 transition-all duration-200 flex items-center justify-center gap-2">
           <mat-icon class="!w-5 !h-5 text-[20px]">shopping_cart</mat-icon>
           Add to Cart
         </button>
 
         <button
-          class="w-full py-3 px-6 rounded-xl border-2 border-[#00BFC5] text-[#00BFC5] font-bold hover:bg-[#00BFC5] hover:text-white transition-all duration-200">
+        (click)="onBuyNow()"
+          class="w-full py-3 px-6 rounded-xl border-2 border-[#00BFC5]
+          text-[#00BFC5] font-bold hover:bg-[#00BFC5] hover:text-white transition-all duration-200">
           Buy Now
         </button>
       </div>
