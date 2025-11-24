@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ReviewsService, Review } from '../../../core/services/reviews.service';
@@ -30,7 +30,8 @@ export class AddReviews {
     private reviewsService: ReviewsService,
     private http: HttpClient,
     private authService: AuthService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private ngZone: NgZone
   ) { }
 
   apiUrl = environment.apiUrl;
@@ -93,9 +94,11 @@ export class AddReviews {
       this.mediaRecorder.ondataavailable = (e) => this.audioChunks.push(e.data);
 
       this.mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
-        this.selectedFile = new File([audioBlob], 'recording.wav', { type: 'audio/wav' });
-        this.audioPreviewUrl = URL.createObjectURL(audioBlob);
+        this.ngZone.run(() => {
+          const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
+          this.selectedFile = new File([audioBlob], 'recording.wav', { type: 'audio/wav' });
+          this.audioPreviewUrl = URL.createObjectURL(audioBlob);
+        });
       };
 
       this.mediaRecorder.start();
@@ -160,5 +163,5 @@ export class AddReviews {
     return [1, 2, 3, 4, 5];
   }
 
-  
+
 }
