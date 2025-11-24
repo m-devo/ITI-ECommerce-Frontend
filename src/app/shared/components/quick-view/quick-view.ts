@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { CartService } from '../../../core/services/cart.service';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-quick-view',
   standalone:true,
@@ -23,6 +23,8 @@ book: any;
   quantity: number = 1;
 
 private cartService = inject(CartService);
+private router = inject(Router);
+
   constructor(
     public dialogRef: MatDialogRef<QuickView>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -51,11 +53,21 @@ private cartService = inject(CartService);
       this.quantity--;
     }
   }
-onAddToCart(): void {
+
+  onAddToCart(): void {
   console.log('Book Data:', this.book);
   console.log('Quantity:', this.quantity);
   this.cartService.addItem(this.book, this.quantity);
   this.closeModal();
 
   }
+
+  onBuyNow(): void {
+    this.cartService.addItem(this.book, this.quantity);
+
+    this.closeModal();
+
+    this.router.navigate(['/checkout']);
+  }
+
 }
