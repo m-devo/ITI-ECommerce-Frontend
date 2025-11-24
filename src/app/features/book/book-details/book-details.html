@@ -2,6 +2,7 @@
   <app-search></app-search>
 </div>
 
+@if (book) {
 <!-- Breadcrumb -->
 <div
   class="relative bg-[url('/assets/images/bread.webp')] bg-cover bg-center py-24"
@@ -293,3 +294,8 @@
     </mat-tab-group>
   </div>
 </div>
+} @else {
+<div class="flex justify-center items-center py-24 min-h-[50vh]">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+}

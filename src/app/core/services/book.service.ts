@@ -9,17 +9,17 @@ const URL = `${environment.apiUrl}`;
 })
 export class BookService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getBooks(currentPage: number, limit: number): Observable<any[]> {
-    return this.http.get<any[]>('/api/books');
+    return this.http.get<any[]>(`${URL}/public/books`);
   }
   getBookById(id: string): Observable<any> {
-    return this.http.get<any>(`/api/books/${id}`);
+    return this.http.get<any>(`${URL}/public/books/${id}`);
   }
 
-// Shop Page
-getPublicBooks(params: any = {}): Observable<any> {
+  // Shop Page
+  getPublicBooks(params: any = {}): Observable<any> {
     return this.http.get(`${URL}/public/books`, { params: params });
   }
   ////////////////////Home Page/////////////////
@@ -27,8 +27,8 @@ getPublicBooks(params: any = {}): Observable<any> {
     return this.http.get(`${URL}/features/homepage`);
   }
 
-  getFilterdBooks(params: any): Observable<any>{
-    return this.http.get(`${URL}/search/facets`, {params: params})
+  getFilterdBooks(params: any): Observable<any> {
+    return this.http.get(`${URL}/search/facets`, { params: params })
   }
 
   getSearchSuggestions(query: string): Observable<any> {

@@ -1,9 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { ReviewsService , Review } from '../../../core/services/reviews.service';
+import { ReviewsService, Review } from '../../../core/services/reviews.service';
 import { environment } from '../../../../environments/environment.prod';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../core/services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { LoginPrompt } from '../../../shared/components/login-prompt/login-prompt';
 
 
 interface RatingDistribution {
@@ -15,18 +18,20 @@ interface RatingDistribution {
 @Component({
   selector: 'app-add-reviews',
   standalone: true,
-  imports: [FormsModule, CommonModule ],
+  imports: [FormsModule, CommonModule],
   templateUrl: './add-reviews.html',
   styleUrl: './add-reviews.css',
 })
 export class AddReviews {
-  
+
   @Input() bookId!: string;
 
   constructor(
     private reviewsService: ReviewsService,
-    private http: HttpClient
-  ) {}
+    private http: HttpClient,
+    private authService: AuthService,
+    private dialog: MatDialog
+  ) { }
 
   apiUrl = environment.apiUrl;
 
@@ -111,6 +116,10 @@ export class AddReviews {
 
   // 📩 SUBMIT REVIEW
   submitReview() {
+    if (!this.authService.isLoggedIn()) {
+      this.dialog.open(LoginPrompt, { width: '380px', autoFocus: false });
+      return;
+    }
     if (!this.rating) {
       alert('Please select a rating');
       return;
@@ -129,18 +138,7 @@ export class AddReviews {
 
     if (this.selectedFile) formData.append('audio', this.selectedFile);
 
-    this.reviewsService.addReview(formData).subscribe({
-      next: () => {
-        this.resetForm();
-        this.isSubmitting = false;
-        alert('Review submitted successfully!');
-      },
-      error: (err) => {
-        console.error(err);
-        this.isSubmitting = false;
-        alert('Error submitting review');
-      }
-    });
+    this.reviewsService.addReview(formData).subscribe();
   }
 
   resetForm() {
@@ -157,7 +155,7 @@ export class AddReviews {
       year: 'numeric'
     });
   }
-    // Get star array for template
+  // Get star array for template
   getStarArray() {
     return [1, 2, 3, 4, 5];
   }

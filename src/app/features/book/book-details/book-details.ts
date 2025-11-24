@@ -8,9 +8,12 @@ import { CartService } from '../../../core/services/cart.service';
 import { Book } from '../../../core/services/search.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BookReviewsComponent } from '../book-reviews/book-reviews';
 import { AddReviews } from '../add-reviews/add-reviews';
 import { AuthService } from '../../../core/services/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { LoginPrompt } from '../../../shared/components/login-prompt/login-prompt';
 
 @Component({
   selector: 'app-book-details',
@@ -23,6 +26,7 @@ import { AuthService } from '../../../core/services/auth.service';
     MatTabsModule,
     AddReviews,
     BookReviewsComponent,
+    MatProgressSpinnerModule
   ],
   templateUrl: './book-details.html',
   styleUrl: './book-details.css',
@@ -37,9 +41,10 @@ export class BookDetails implements OnInit {
     private cartService: CartService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
-  ) {}
-  //68e7ed98aa7000812ffe6213
+    private authService: AuthService,
+    private dialog: MatDialog
+  ) { }
+
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
@@ -52,7 +57,7 @@ export class BookDetails implements OnInit {
 
             this.cartService.getCart().subscribe((cart) => {
               if (cart && cart.success && cart.data) {
-                const item = cart.data.items.find(item => item.book._id === this.book._id);
+                const item = cart.data.items.find((item: any) => item.book._id === this.book._id);
                 this.isInCart = !!item;
                 if (item) {
                   this.quantity = item.quantity;
@@ -81,7 +86,7 @@ export class BookDetails implements OnInit {
 
   addToCart() {
     if (!this.authService.isLoggedIn()) {
-      this.router.navigate(['/login']);
+      this.dialog.open(LoginPrompt, { width: '380px', autoFocus: false });
       return;
     }
     if (!this.isInCart) {
