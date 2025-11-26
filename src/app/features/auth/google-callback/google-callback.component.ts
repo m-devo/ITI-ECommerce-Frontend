@@ -22,7 +22,7 @@ export class GoogleCallbackComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
@@ -38,12 +38,11 @@ export class GoogleCallbackComponent implements OnInit {
           isVerified: params['isVerified'] !== 'false',
         };
 
-        // Save to localStorage
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
+        // Save token and user data
+        this.authService.setSession(token, user);
 
         // Redirect to dashboard
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/']);
       } else {
         // Handle error when no token
         this.router.navigate(['/auth/login'], {

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { tap , map} from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import {
@@ -95,10 +95,14 @@ export class AuthService {
   }
 
   handleGoogleCallback(token: string, user: any): void {
+    this.setSession(token, user);
+    this.router.navigate(['/']);
+  }
+
+  setSession(token: string, user: any): void {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSubject.next(user);
-    this.router.navigate(['/']);
   }
 
   // Logout
