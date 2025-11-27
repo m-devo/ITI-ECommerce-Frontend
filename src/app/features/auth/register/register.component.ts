@@ -54,7 +54,7 @@ export class RegisterComponent {
         lastName: this.lastName,
         email: this.email,
         password: this.password,
-        role: 'user',
+        // SECURITY: Never send role from client - backend should default to 'user'
       })
       .subscribe({
         next: (response: any) => {

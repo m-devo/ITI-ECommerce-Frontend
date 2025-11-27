@@ -3,9 +3,8 @@ interface BaseUser {
   firstName: string;
   lastName: string;
   email: string;
-  role: "user" | "admin" | "author";
+  role: 'user' | 'admin' | 'author';
 }
-
 
 export interface User extends BaseUser {
   password: string;
@@ -155,7 +154,6 @@ export interface RegisterRequest {
   lastName: string;
   email: string;
   password: string;
-  role?: string;
 }
 
 export interface LoginRequest {
@@ -168,7 +166,7 @@ export interface LoginResponse {
   message: string;
   token: string;
   data: {
-    _id: string
+    _id: string;
     email: string;
   };
   role: string;
